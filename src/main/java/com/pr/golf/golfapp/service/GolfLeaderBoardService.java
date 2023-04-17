@@ -1,5 +1,6 @@
 package com.pr.golf.golfapp.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +24,8 @@ public class GolfLeaderBoardService {
         return GolfLeaderBoard.builder().build();
     }
 
-    public List<GolfLeaderBoard> createGolfLeaderBoard(List<GolfLeaderBoard> leaderBoard) {
-        return golfLeaderBoardRepository.save(leaderBoard);
+    public List<GolfLeaderBoard> createGolfLeaderBoard(List<GolfLeaderBoard> leaderBoardList) {
+        return golfLeaderBoardRepository.saveAll(leaderBoardList);
     }
 
     public GolfLeaderBoard update(List<Score> scores) {
@@ -36,7 +37,7 @@ public class GolfLeaderBoardService {
     }
     
     public Optional<List<GolfLeaderBoard>> findByCompetitionId(Long competitionId) {
-        return golfLeaderBoardRepository.findByCompetitionId(competitionId);
+       return Optional.ofNullable(golfLeaderBoardRepository.findByCompetitionId(competitionId));
     }
 
     public Optional<GolfLeaderBoard> findByEventId(Long eventId) {

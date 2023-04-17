@@ -38,10 +38,10 @@ create table golfapp.GOLF_LEADER_BOARD(
     id int auto_increment,
     competition_id int ,
     player_id int,
-    avgScorePerRound int,
-    bestFiveTotalRound int,
-    bonusRounds int,
-    totalPoints int,
+    avg_score_per_round int,
+    best_five_total_round int,
+    bonus_rounds int,
+    total_points int,
     total_score int,
     primary key(id),
     foreign key(competition_id)
@@ -59,7 +59,3 @@ create table golfapp.GOLF_EVENT(
     foreign key(competition_id)
           references competition(id)
 );
-
-CREATE DATABASE 'golfapp';
-CREATE USER 'pronane'@localhost IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON *.* TO 'user1'@localhost IDENTIFIED BY 'password1';
