@@ -1,0 +1,65 @@
+    private Long id;
+
+    private String name;
+
+    public String venue;
+
+    public Type type;
+
+
+    private String month;
+
+    private Date date;
+
+    /**
+     * K = Player Id
+     * V = Player Id List of Scores for an Event
+     */
+    private Map<Long, List<Score>> playerScoresMap;
+    
+    private Long competitionId;
+
+
+create table golfapp.COMPETITION(
+    id int auto_increment,
+    name varchar(40) not null, 
+    primary key(id)
+);
+
+create table golfapp.PLAYER(
+    id int auto_increment,
+    name varchar(40) not null, 
+    username varchar(40) not null,
+    handicap int,
+    primary key(id)
+);
+
+create table golfapp.GOLF_LEADER_BOARD(
+    id int auto_increment,
+    competition_id int ,
+    player_id int,
+    avgScorePerRound int,
+    bestFiveTotalRound int,
+    bonusRounds int,
+    totalPoints int,
+    total_score int,
+    primary key(id),
+    foreign key(competition_id)
+        references competition(id)
+);
+
+create table golfapp.GOLF_EVENT(
+    id int auto_increment,
+    competition_id int ,
+    name varchar(40) not null,
+    venue varchar(40),
+    type varchar(20),
+    date date,
+    primary key(id),
+    foreign key(competition_id)
+          references competition(id)
+);
+
+CREATE DATABASE 'golfapp';
+CREATE USER 'pronane'@localhost IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON *.* TO 'user1'@localhost IDENTIFIED BY 'password1';

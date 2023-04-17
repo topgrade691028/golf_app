@@ -1,0 +1,22 @@
+[     
+    {  
+        "playerId": 1,
+        "competitionId":1,
+        "score": 4,
+        "hole": 1,
+        "par": 4,
+        "points":3,
+        "stroke": 1,
+        "handicap": 18
+    },
+    {  
+        "playerId": 1,
+        "competitionId":1,
+        "score": 5,
+        "hole": 2,
+        "par": 3,
+        "points": 1,
+        "stroke": 2,
+        "handicap": 18
+    }
+]
