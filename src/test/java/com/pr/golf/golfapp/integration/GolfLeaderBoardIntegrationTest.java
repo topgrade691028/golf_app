@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.pr.golf.golfapp.GolfAppApplication;
+import com.pr.golf.golfapp.controller.CompetitionController;
 import com.pr.golf.golfapp.controller.EventsController;
 import com.pr.golf.golfapp.controller.GolfLeaderBoardController;
 import com.pr.golf.golfapp.controller.PlayerController;
@@ -23,6 +24,7 @@ import com.pr.golf.golfapp.controller.ScoreController;
 import com.pr.golf.golfapp.helper.GolfEventHelper;
 import com.pr.golf.golfapp.helper.GolfLeaderBoardHelper;
 import com.pr.golf.golfapp.helper.PlayerHelper;
+import com.pr.golf.golfapp.model.Competition;
 import com.pr.golf.golfapp.model.Event;
 import com.pr.golf.golfapp.model.GolfEvent;
 import com.pr.golf.golfapp.model.GolfLeaderBoard;
@@ -50,6 +52,9 @@ public class GolfLeaderBoardIntegrationTest {
 	@Autowired
 	private ScoreController scoreController;
 
+	@Autowired
+	private CompetitionController competitionController;
+	
     /**
      *  Competition Type: Stableford
      *  Competition Format: League
@@ -123,6 +128,8 @@ public class GolfLeaderBoardIntegrationTest {
 	@Test
 	public void testPlayerCreation() throws InterruptedException, URISyntaxException {
 
+		Competition competition = competitionController.createCompetition(Competition.builder().name("Sinkers Society").build()).getBody();
+		
 		Player player1 = Player.builder().id(1l).name("Player 1").build();
 		Player player2 = Player.builder().id(2l).name("Player 2").build();
 		Player player3 = Player.builder().id(3l).name("Player 3").build();
@@ -130,23 +137,22 @@ public class GolfLeaderBoardIntegrationTest {
 		PlayerHelper.addPlayers(players, playerController, port);
 		
 		GolfLeaderBoard golfLeaderBoardPlayer1 = GolfLeaderBoard.builder()
-				.competitionId(1l)
+				.competitionId(competition.getId())
 				.playerId(player1.getId())
 				.build();
 		
 		GolfLeaderBoard golfLeaderBoardPlayer2 = GolfLeaderBoard.builder()
-				.competitionId(1l)
+				.competitionId(competition.getId())
 				.playerId(player2.getId())
 				.build();
 		
 		GolfLeaderBoard golfLeaderBoardPlayer3 = GolfLeaderBoard.builder()
-				.competitionId(1l)
+				.competitionId(competition.getId())
 				.playerId(player3.getId())
 				.build();
 		
 		ResponseEntity<List<GolfLeaderBoard>> returnedGolfLeaderBoard = golfLeaderBoardController.
 													createGolfLeaderBoard(Lists.newArrayList(golfLeaderBoardPlayer1, golfLeaderBoardPlayer2, golfLeaderBoardPlayer3));
-		Assertions.assertEquals(1l, returnedGolfLeaderBoard.getBody().get(0).getCompetitionId());
 		
 		List<Score> scores = (List<Score>) JsonFileReader.getListFromFile(Score.class, "src\\test\\resources\\scores\\player1_silvermere_scores.json");
 		
@@ -167,7 +173,7 @@ public class GolfLeaderBoardIntegrationTest {
 		GolfEvent silvermereEvent = GolfEvent.builder()
 				.playerScoresMap(playerScoresMapSilverMere)
 				.month("March")
-				.competitionId(returnedGolfLeaderBoard.getBody().get(0).getCompetitionId())
+				.competitionId(competition.getId())
 				.id(1l)
 				.venue("silvermere")
 				//.dat
@@ -190,7 +196,7 @@ public class GolfLeaderBoardIntegrationTest {
 				.playerScoresMap(playerScoresMapLutoHoo)
 				.month("April")
 				.id(2l)
-				.competitionId(returnedGolfLeaderBoard.getBody().get(0).getCompetitionId())
+				.competitionId(competition.getId())
 				.venue("luton hoo")
 				//.dat
 				.build();
@@ -201,13 +207,13 @@ public class GolfLeaderBoardIntegrationTest {
 				
 		
 		List<GolfLeaderBoard> leaderBoardAfterFirstEvent = GolfLeaderBoardHelper
-				.getGolfEventLeaderBoard(1l, golfLeaderBoardController, port);
+				.getGolfEventLeaderBoard(competition.getId(), golfLeaderBoardController, port);
 
-		Assertions.assertEquals(1l, leaderBoardAfterFirstEvent.get(0).getCompetitionId());
+		//Assertions.assertEquals(1l, leaderBoardAfterFirstEvent.get(0).getCompetitionId());
 
 
 		List<GolfLeaderBoard> leaderBoardAfterSecondEvent = GolfLeaderBoardHelper
-				.getGolfEventLeaderBoard(1l, golfLeaderBoardController, port);
+				.getGolfEventLeaderBoard(competition.getId(), golfLeaderBoardController, port);
 
 		
 

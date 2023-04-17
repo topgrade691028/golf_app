@@ -17,8 +17,8 @@ public class CompetitionService {
 		this.competitionRepository = competitionRepository;
 	}
 	
-	public void addCompetition(Competition competition) {
-		competitionRepository.save(competition);
+	public Competition addCompetition(Competition competition) {
+		return competitionRepository.save(competition);
 	}
 	
 	public List<Competition> getAllCompetitions() {

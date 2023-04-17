@@ -1,9 +1,17 @@
 package com.pr.golf.golfapp.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pr.golf.golfapp.model.Competition;
 import com.pr.golf.golfapp.service.CompetitionService;
 
 @RestController
@@ -14,5 +22,14 @@ public class CompetitionController {
     
     public CompetitionController(@Autowired CompetitionService competitionService) {
     	this.competitionService = competitionService;
+    }
+    
+    @RequestMapping(
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Competition> createCompetition(@RequestBody Competition competition) throws URISyntaxException {
+        System.out.print("Creating Competition");
+        Competition savedCompetition = competitionService.addCompetition(competition);
+        return ResponseEntity.created(new URI("/competition/" + 1)).body(savedCompetition);
     }
 }
