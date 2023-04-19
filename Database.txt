@@ -59,3 +59,18 @@ create table golfapp.GOLF_EVENT(
     foreign key(competition_id)
           references competition(id)
 );
+
+create table golfapp.SCORE(
+    id int auto_increment,
+    competition_id int ,
+    player_id int,
+    event_id int,
+    par int,
+    score int,
+    points int,
+    hole int,
+    stroke int,
+    primary key(id),
+    foreign key(competition_id)
+          references competition(id)
+);

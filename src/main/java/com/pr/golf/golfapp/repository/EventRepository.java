@@ -4,29 +4,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import com.pr.golf.golfapp.model.Event;
 
-@Component
-public class EventRepository {
-    ConcurrentHashMap<Long, Event> eventMap = new ConcurrentHashMap();
+@Repository
+public interface EventRepository extends JpaRepository<Event, Long> {
 
-    public Optional<Event> findById(Long id) {
-        return Optional.of(eventMap.get(id));
-    }
-
-    public Event save(Event event) {
-         eventMap.put(event.getId(), event);
-         return event;
-    }
-
-    public void deleteById(Long id) {
-        eventMap.remove(id);
-    }
-
-	public Optional<List<Event>> findByCompetitionId(Long competitionId) {
-		return null;
-	}
+	@Query(value = "SELECT e.*  FROM golf_event e WHERE competition_id = :competitionId", 
+			  nativeQuery = true)
+	public Optional<List<Event>> findByCompetitionId(Long competitionId);
 
 }

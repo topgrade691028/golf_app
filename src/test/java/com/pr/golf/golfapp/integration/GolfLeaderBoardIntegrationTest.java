@@ -1,12 +1,15 @@
 package com.pr.golf.golfapp.integration;
 
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Maps;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -130,6 +133,8 @@ public class GolfLeaderBoardIntegrationTest {
 
 		Competition competition = competitionController.createCompetition(Competition.builder().name("Sinkers Society").build()).getBody();
 		
+		DateTimeFormatter expectedDateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		
 		Player player1 = Player.builder().id(1l).name("Player 1").build();
 		Player player2 = Player.builder().id(2l).name("Player 2").build();
 		Player player3 = Player.builder().id(3l).name("Player 3").build();
@@ -170,13 +175,14 @@ public class GolfLeaderBoardIntegrationTest {
 		playerScoresMapSilverMere.put(2l, silverMereScoresForPlayer2);
 		playerScoresMapSilverMere.put(3l, silverMereScoresForPlayer3);
 		
+		Date silverMereDate = Date.from(LocalDate.parse("11/03/2023",expectedDateFormat).atStartOfDay(ZoneId.systemDefault()).toInstant());
 		GolfEvent silvermereEvent = GolfEvent.builder()
 				.playerScoresMap(playerScoresMapSilverMere)
-				.month("March")
+				.date(silverMereDate)
 				.competitionId(competition.getId())
 				.id(1l)
 				.venue("silvermere")
-				//.dat
+				.name("silvermere")
 				.build();
 
 		List<Score> lutonHooScoresForPlayer1 = Lists.newArrayList(Score.builder()
@@ -191,14 +197,15 @@ public class GolfLeaderBoardIntegrationTest {
 		Map<Long, List<Score>> playerScoresMapLutoHoo = Maps.newHashMap(1l, lutonHooScoresForPlayer1);
 		playerScoresMapLutoHoo.put(2l, lutonHooScoresForPlayer2);
 		playerScoresMapLutoHoo.put(3l, lutonHooScoresForPlayer3);				
-				
+			
+		Date lutonHooDate = Date.from(LocalDate.parse("01/04/2023",expectedDateFormat).atStartOfDay(ZoneId.systemDefault()).toInstant());
 		GolfEvent lutonHooEvent = GolfEvent.builder()
 				.playerScoresMap(playerScoresMapLutoHoo)
-				.month("April")
+				.date(lutonHooDate)
 				.id(2l)
 				.competitionId(competition.getId())
 				.venue("luton hoo")
-				//.dat
+				.name("luton hoo")
 				.build();
 		List<Event>  events = Lists.newArrayList(silvermereEvent, lutonHooEvent);
 		GolfEventHelper.addEvents(events, eventsController, port);

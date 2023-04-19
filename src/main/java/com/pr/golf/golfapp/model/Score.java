@@ -1,6 +1,11 @@
 package com.pr.golf.golfapp.model;
 
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import lombok.*;
 
 /**
@@ -12,6 +17,7 @@ import lombok.*;
  *
  */
 
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -20,11 +26,15 @@ import lombok.*;
 @EqualsAndHashCode
 public class Score {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private long competitionId;
 
     private long playerId;
+    
+    private long eventId;
 
     private int par;
 
@@ -36,6 +46,7 @@ public class Score {
 
     private int stroke;
 
+    @Transient
     private int handicap;
 
 }

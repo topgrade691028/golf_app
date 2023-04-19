@@ -1,53 +1,25 @@
 package com.pr.golf.golfapp.repository;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.pr.golf.golfapp.model.Score;
 
-@Component
-public class ScoreRepository {
+@Repository
+public interface ScoreRepository extends JpaRepository<Score, Long>{
 
-    ConcurrentHashMap<Long, Score> scoreMap = new ConcurrentHashMap();
+	@Query(value = "SELECT s.*  FROM SCORE s WHERE event_id = :eventId", 
+			  nativeQuery = true)
+    public Optional<List<Score>> findByEventId(@Param("eventId")Long eventId);
 
-    public Optional<Score> findById(Long id) {
-        return Optional.of(scoreMap.get(id));
-    }
-
-    public List<Score> save(List<Score> scores) {
-        scores.forEach(score -> {
-            scoreMap.put(score.getId(), score);
-        } );
-
-        return scores;
-    }
-
-    public void deleteById(Long id) {
-        scoreMap.remove(id);
-    }
-
-    public Optional<Collection<Score>> findByEventId(Long id) {
-        return Optional.of(scoreMap.values());
-    }
-
-    public List<Score> update(List<Score> scores) {
-       scores.stream().forEach( score -> {
-            //scoreMap.merge(score.getId(), score,  (oldScore, newScore) -> {
-             //  if(oldScore.get)
-             //   return newSet;
-            //})
-            scoreMap.put(score.getId(), score);
-        });
-        return scores;
-    }
-
-	public Optional<List<Score>> findByEventIdAndPlayerId(Long eventId, Long playerId) {
-		// TODO Auto-generated method stub
-		return Optional.of(Collections.emptyList());
-	}
+	@Query(value = "SELECT s.*  FROM SCORE s WHERE event_id = :eventId "
+																+ " and player_id = :playerId ", 
+			  nativeQuery = true)
+	public Optional<List<Score>> findByEventIdAndPlayerId(@Param("eventId")Long eventId,
+															@Param("playerId")Long playerId);
 }
