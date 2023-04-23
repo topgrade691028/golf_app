@@ -1,0 +1,49 @@
+package com.pr.golf.golfapp.model;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Transient;
+import lombok.*;
+
+/**
+ * | ________________________________________________
+ * | Player_Name | Par | Score | Points | Hole | Stroke | Handicap
+ * | Player 1    | 4   |  4    | 3      | 1    | 18     | 18
+ * | Player 2    | 4   |  4    | 3      | 1    | 18     | 22
+ * | Player 3    | 4   |  4    | 3      | 1    | 18     | 24
+ *
+ */
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Builder
+@Setter
+@EqualsAndHashCode
+public class Hole {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    private int par;
+
+    private String name;
+
+    private int stroke;
+    
+    private int distanceFromWhite;
+   
+    private int distanceFromYellow;
+    
+    private int distanceFromRed;
+}

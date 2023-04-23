@@ -1,0 +1,42 @@
+[     
+    {  
+        "playerId": 1,
+        "competitionId":1,
+        "eventId":1,
+        "score": 9,
+        "hole": 1,
+        "par": 5,
+        "stroke": 7,
+        "handicap": 28
+    },
+    {  
+        "playerId": 2,
+        "competitionId":1,
+        "eventId":1,
+        "score": 5,
+        "hole": 1,
+        "par": 5,
+        "stroke": 7,
+        "handicap": 21
+    },
+    {  
+        "playerId": 1,
+        "competitionId":1,
+        "eventId":1,
+        "score": 5,
+        "hole": 2,
+        "par": 4,
+        "stroke": 15,
+        "handicap": 28
+    },
+    {  
+        "playerId": 2,
+        "competitionId":1,
+        "eventId":1,
+        "score": 5,
+        "hole": 2,
+        "par": 4,
+        "stroke": 15,
+        "handicap": 21
+    }
+]

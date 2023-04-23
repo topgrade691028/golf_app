@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pr.golf.golfapp.dto.ScoreDTO;
 import com.pr.golf.golfapp.model.Score;
 
 import lombok.experimental.UtilityClass;
@@ -30,6 +31,7 @@ public class JsonFileReader {
 		List<?> listOfValues = null;
 		try {
 			listOfValues = objectMapper.readValue(file,new TypeReference<List>(){});
+			listOfValues = objectMapper.convertValue(listOfValues, new TypeReference<List<ScoreDTO>>() { });
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

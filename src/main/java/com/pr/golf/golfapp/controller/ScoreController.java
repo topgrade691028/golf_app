@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pr.golf.golfapp.model.Score;
 import com.pr.golf.golfapp.model.Table;
-import com.pr.golf.golfapp.repository.ScoreRepository;
+import com.pr.golf.golfapp.service.ScoreService;
 import com.pr.golf.golfapp.service.TableService;
 
 @RestController
@@ -30,12 +30,12 @@ public class ScoreController {
 
     private final static AtomicLong subIdCounter = new AtomicLong(System.nanoTime());
 
-    private ScoreRepository scoreRepository;
+    private ScoreService scoreService;
     
     private TableService tableService;
     
-    public ScoreController(@Autowired  ScoreRepository scoreRepository, @Autowired TableService tableService) {
-    	this.scoreRepository = scoreRepository;
+    public ScoreController(@Autowired  ScoreService scoreService, @Autowired TableService tableService) {
+    	this.scoreService = scoreService;
     	this.tableService = tableService;
     }
 
@@ -48,27 +48,27 @@ public class ScoreController {
             Long scoreId = subIdCounter.incrementAndGet();
             score.setId(scoreId);
         });
-        List<Score> savedScore = scoreRepository.saveAll(scores);
+        List<Score> savedScore = scoreService.saveAll(scores);
         Table table = tableService.updateTable(savedScore);
         return ResponseEntity.created(new URI("/scores/" + 1)).body(table);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity updateScore(@PathVariable Long id, @RequestBody List<Score> scores) {
-        List<Score> updatedScore = scoreRepository.saveAll(scores);
+        List<Score> updatedScore = scoreService.saveAll(scores);
 
         return ResponseEntity.ok(updatedScore);
     }
     @GetMapping("/{id}")
     public Score getEvent(@PathVariable Long id) {
-        return scoreRepository.findById(id).orElseThrow(RuntimeException::new);
+        return scoreService.findById(id).orElseThrow(RuntimeException::new);
     }
 
     @RequestMapping(value = "/eventId/{eventId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<Score> getScoresForEvent(@PathVariable Long eventId) {
-        return scoreRepository.findByEventId(eventId).orElseThrow(RuntimeException::new);
+        return scoreService.findByEventId(eventId).orElseThrow(RuntimeException::new);
     }
     
     @RequestMapping(value = "/event",
@@ -76,6 +76,6 @@ public class ScoreController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Score> getScoresByEventIdAndPlayerId(@RequestParam Long eventId, 
     													@RequestParam Long playerId) {
-        return scoreRepository.findByEventIdAndPlayerId(eventId, playerId).orElseThrow(RuntimeException::new);
+        return scoreService.findByEventIdAndPlayerId(eventId, playerId).orElseThrow(RuntimeException::new);
     }
 }
