@@ -4,7 +4,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,5 +36,15 @@ public class GolfEvent extends Event {
     @Transient
     private Map<Long, List<Score>> playerScoresMap;
     
-    private Long competitionId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name= "competition_id")
+    @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
+    private Competition competition;
+    
+    
+	/**
+	 * @FIXME Set below throws a wobbly.
+	 */
+    @OneToMany(mappedBy="event", fetch = FetchType.LAZY)
+    private List<Score> scores;
 }

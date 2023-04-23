@@ -19,7 +19,7 @@ public class GolfLeaderBoardHelper {
                  .host("127.0.0.1")
                  .port(port)
                  .path("golfleaderboard")
-                 .queryParam("competitionId", 1l)
+                 .queryParam("competitionId", competitionId)
                  .build();
 
 		 List<GolfLeaderBoard> leaderBoardReturned =  WebTestClient

@@ -2,16 +2,16 @@ package com.pr.golf.golfapp.repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.pr.golf.golfapp.model.Event;
+import com.pr.golf.golfapp.model.GolfEvent;
 
 @Repository
-public interface EventRepository extends JpaRepository<Event, Long> {
+public interface EventRepository extends JpaRepository<GolfEvent, Long> {
 
 	@Query(value = "SELECT e.*  FROM golf_event e WHERE competition_id = :competitionId", 
 			  nativeQuery = true)

@@ -39,7 +39,6 @@ public class ScoreController {
     	this.tableService = tableService;
     }
 
-
     @RequestMapping(
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,14 +48,14 @@ public class ScoreController {
             Long scoreId = subIdCounter.incrementAndGet();
             score.setId(scoreId);
         });
-        List<Score> savedScore = scoreRepository.save(scores);
+        List<Score> savedScore = scoreRepository.saveAll(scores);
         Table table = tableService.updateTable(savedScore);
         return ResponseEntity.created(new URI("/scores/" + 1)).body(table);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity updateScore(@PathVariable Long id, @RequestBody List<Score> scores) {
-        List<Score> updatedScore = scoreRepository.update(scores);
+        List<Score> updatedScore = scoreRepository.saveAll(scores);
 
         return ResponseEntity.ok(updatedScore);
     }

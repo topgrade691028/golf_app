@@ -1,5 +1,7 @@
 package com.pr.golf.golfapp.integration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -179,7 +181,8 @@ public class GolfLeaderBoardIntegrationTest {
 		GolfEvent silvermereEvent = GolfEvent.builder()
 				.playerScoresMap(playerScoresMapSilverMere)
 				.date(silverMereDate)
-				.competitionId(competition.getId())
+				//.competitionId(competition)
+				.competition(competition)
 				.id(1l)
 				.venue("silvermere")
 				.name("silvermere")
@@ -203,7 +206,8 @@ public class GolfLeaderBoardIntegrationTest {
 				.playerScoresMap(playerScoresMapLutoHoo)
 				.date(lutonHooDate)
 				.id(2l)
-				.competitionId(competition.getId())
+				//.competitionId(competition.getId())
+				.competition(competition)
 				.venue("luton hoo")
 				.name("luton hoo")
 				.build();
@@ -222,9 +226,13 @@ public class GolfLeaderBoardIntegrationTest {
 		List<GolfLeaderBoard> leaderBoardAfterSecondEvent = GolfLeaderBoardHelper
 				.getGolfEventLeaderBoard(competition.getId(), golfLeaderBoardController, port);
 
+		Competition retrievedCompetition = competitionController.getCompetition(leaderBoardAfterFirstEvent.get(0).getCompetitionId()).getBody();
+		assertEquals(2, retrievedCompetition.getEvents().size());
 		
-
-
+		GolfEvent event = eventsController.getEvent(silvermereEvent.getId());
+		
+		assertEquals("silvermere", event.getName());
+		
 		Thread.sleep(10000);
 
 	}

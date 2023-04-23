@@ -20,6 +20,13 @@
     private Long competitionId;
 
 
+drop table golfapp.GOLF_EVENT;
+drop table golfapp.COMPETITION;
+drop table golfapp.PLAYER;
+drop table golfapp.GOLF_LEADER_BOARD;
+drop table golfapp.score;
+
+
 create table golfapp.COMPETITION(
     id int auto_increment,
     name varchar(40) not null, 

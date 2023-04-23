@@ -30,12 +30,12 @@ public class EventsController {
 	}
 
     @GetMapping("/{id}")
-    public Event getEvent(@PathVariable Long id) {
+    public GolfEvent getEvent(@PathVariable Long id) {
         return eventRepository.findById(id).orElseThrow(RuntimeException::new);
     }
     
     @GetMapping("/competition/{id}")
-    public List<Event> getEvents(@PathVariable Long competitionId) {
+    public List<Event> getEventsByCompetitionId(@PathVariable Long competitionId) {
         return eventRepository.findByCompetitionId(competitionId).orElseThrow(RuntimeException::new);
     }
 
@@ -47,15 +47,15 @@ public class EventsController {
 
     @PutMapping("/{id}")
     public ResponseEntity updateEvent(@PathVariable Long id, @RequestBody GolfEvent event) {
-        Event currentEvent = eventRepository.findById(id).orElseThrow(RuntimeException::new);
-        Event newEvent = GolfEvent.builder()
+        GolfEvent currentEvent = eventRepository.findById(id).orElseThrow(RuntimeException::new);
+        GolfEvent newEvent = GolfEvent.builder()
         						.name(event.getName())
         						.venue(event.getVenue())
         						.date(event.getDate())
         						.build();
-        currentEvent = eventRepository.save(currentEvent);
+        newEvent = eventRepository.save(newEvent);
 
-        return ResponseEntity.ok(currentEvent);
+        return ResponseEntity.ok(newEvent);
     }
 
     @DeleteMapping("/{id}")

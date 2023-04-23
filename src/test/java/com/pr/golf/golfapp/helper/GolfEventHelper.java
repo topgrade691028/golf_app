@@ -8,6 +8,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class GolfEventHelper {
@@ -22,7 +24,7 @@ public class GolfEventHelper {
 			
 			List<Event> events =  (List<Event>) WebTestClient
 	                .bindToController(eventsController)
-	                .build()
+	                .build().mutate().responseTimeout(Duration.of(36000l, ChronoUnit.MILLIS)).build()
 	                .post()
 	                .uri(uri.toString()+ "/events")
 	                .bodyValue(event)
