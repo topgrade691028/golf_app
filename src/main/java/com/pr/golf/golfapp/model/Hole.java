@@ -1,7 +1,6 @@
 package com.pr.golf.golfapp.model;
 
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,7 +20,7 @@ import lombok.Setter;
  *
  */
 
-@Entity
+//@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -34,6 +33,8 @@ public class Hole {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private int holeNumber;
+	
     private int par;
 
     private String name;

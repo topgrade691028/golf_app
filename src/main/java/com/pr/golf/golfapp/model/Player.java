@@ -1,5 +1,9 @@
 package com.pr.golf.golfapp.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -8,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -17,7 +22,9 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class Player {
 
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     private String name;
 

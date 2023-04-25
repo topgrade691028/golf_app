@@ -40,5 +40,5 @@ public class GolfCourse {
 
     private String address;
     
-    private List<Hole> holes;
+    //private List<Hole> holes;
 }
