@@ -36,29 +36,29 @@ public class ScoreCardController {
     public ResponseEntity<ScoreCardResponseBody> getScoreCard(@PathVariable Long id) {
 		System.out.println("Got here in ScoreCardControler");
     	List<Player> players = List.of(Player.builder().id(1l)
-    										.name("Paul Ronane").handicap(21).build(),
+    										.name("Darragh Flynn").handicap(28).build(),
     									Player.builder().id(2l)
-    											.name("Darragh Flynn").handicap(28).build());
+    											.name("Paul Ronane").handicap(21).build());
     	
     	Competition competition = Competition.builder().id(1l).name("Sinkers Society").build();
     	
     	List<Hole> holes = List.of(Hole.builder()
-    							.distanceFromWhite(456)
-    							.distanceFromYellow(435)
+    							.distanceFromWhite(560)
+    							.distanceFromYellow(549)
     							.id(1l)
     							.holeNumber(1)
     							.name("Everest")
-    							.stroke(5)
-    							.par(4)
+    							.stroke(7)
+    							.par(5)
     							.build(), 
     							Hole.builder()
-    							.distanceFromWhite(220)
-    							.distanceFromYellow(122)
+    							.distanceFromWhite(325)
+    							.distanceFromYellow(312)
     							.id(2l)
     							.holeNumber(2)
     							.name("Long wash")
-    							.stroke(1)
-    							.par(3)
+    							.stroke(15)
+    							.par(4)
     							.build());
     	
     	ScoreCardResponseBody scoreCardReponsoBody = ScoreCardResponseBody.builder()

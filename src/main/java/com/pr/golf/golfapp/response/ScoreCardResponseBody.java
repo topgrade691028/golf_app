@@ -8,7 +8,6 @@ import com.pr.golf.golfapp.model.Hole;
 import com.pr.golf.golfapp.model.Player;
 import com.pr.golf.golfapp.model.Score;
 
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

@@ -22,6 +22,10 @@ public class PlayerService {
 		return playerRepository.saveAll(players);
 	}
 
+	public List<Player> update(List<Player> players) {
+		return playerRepository.saveAll(players);
+	}
+
 	public Optional<Player> findById(Long id) {
 		return playerRepository.findById(id);
 	}

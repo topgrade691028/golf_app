@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pr.golf.golfapp.model.Score;
 import com.pr.golf.golfapp.model.Table;
+import com.pr.golf.golfapp.request.ScoreRequestBody;
 import com.pr.golf.golfapp.service.ScoreService;
 import com.pr.golf.golfapp.service.TableService;
 
@@ -42,19 +43,15 @@ public class ScoreController {
     @RequestMapping(
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Table> createScore(@RequestBody List<Score> scores) throws URISyntaxException {
+    public ResponseEntity<Table> createScore(@RequestBody List<ScoreRequestBody> scoreRequestBody) throws URISyntaxException {
         System.out.print("Test");
-        scores.forEach(score -> {
-            Long scoreId = subIdCounter.incrementAndGet();
-            score.setId(scoreId);
-        });
-        List<Score> savedScore = scoreService.saveAll(scores);
+        List<Score> savedScore = scoreService.saveAll(scoreRequestBody);
         Table table = tableService.updateTable(savedScore);
         return ResponseEntity.created(new URI("/scores/" + 1)).body(table);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateScore(@PathVariable Long id, @RequestBody List<Score> scores) {
+    public ResponseEntity updateScore(@PathVariable Long id, @RequestBody List<ScoreRequestBody> scores) {
         List<Score> updatedScore = scoreService.saveAll(scores);
 
         return ResponseEntity.ok(updatedScore);

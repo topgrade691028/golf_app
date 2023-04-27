@@ -42,6 +42,7 @@ public class GolfEvent extends Event {
     private Competition competition;
     
     
+    
 	/**
 	 * @FIXME Set below throws a wobbly.
 	 */

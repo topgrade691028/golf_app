@@ -10,7 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Transient;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -39,28 +39,24 @@ public class Score {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    private long competitionId;
-
-    private long playerId;
     
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name= "event_id")
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private GolfEvent event;
 
-    private int par;
-
     private int score;
 
     private int points;
 
-    private int hole;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "hole_id", referencedColumnName = "id")
+    private Hole hole;
 
-    private int stroke;
-
-    @Transient
-    private int handicap;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name= "player_id")
+    @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
+    private Player player;
     
     public int getPoints() {
     	/**
@@ -72,9 +68,9 @@ public class Score {
     	 * 
     	 */
     	//0
-    	int o = par - score;
+    	int o = hole.getPar() - score;
     	//M
-    	int m = handicap - stroke;
+    	int m = player.getHandicap() - hole.getStroke();
     	//=IF(M<0,0,IF(M<18,1,IF(M<36,2,3)))
         int n;
     	if(m < 0) {
