@@ -19,13 +19,19 @@
     
     private Long competitionId;
 
-
+drop table golfapp.golf_course;
 drop table golfapp.GOLF_EVENT;
 drop table golfapp.COMPETITION;
 drop table golfapp.PLAYER;
 drop table golfapp.GOLF_LEADER_BOARD;
 drop table golfapp.score;
 
+create table golfapp.golf_course(
+    id int auto_increment,
+    name varchar(40) not null,
+    address varchar(50) null, 
+    primary key(id)
+);
 
 create table golfapp.COMPETITION(
     id int auto_increment,
@@ -69,15 +75,17 @@ create table golfapp.GOLF_EVENT(
 
 create table golfapp.HOLE(
     id int auto_increment,
-    hole_number int ,
-    player_id int,
-    event_id int,
+    course_id int,
+    name varchar(20),
+    hole_number int,
     par int,
-    hole int,
     stroke int,
+    white int,
+    yellow int,
+    red    int,
     primary key(id),
-    foreign key(player_id)
-          references player(id)
+    foreign key(course_id)
+          references golf_course(id)
 );
 
 create table golfapp.SCORE(
@@ -88,9 +96,23 @@ create table golfapp.SCORE(
     par int,
     score int,
     points int,
-    hole int,
+    hole_id int,
     stroke int,
     primary key(id),
     foreign key(competition_id)
           references competition(id)
 );
+
+create table golfapp.EVENT_LEADER_BOARD(
+    id int auto_increment,
+    event_id int,
+    player_id int,
+    hole int,
+    totalScore int,
+    totalPoints int,
+    holesPlayed int,
+    handicap int,
+    foreign key(event_id)
+          references event(id)
+);
+

@@ -40,7 +40,7 @@ public class Score {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name= "event_id")
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private GolfEvent event;
@@ -49,11 +49,11 @@ public class Score {
 
     private int points;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "hole_id", referencedColumnName = "id")
     private Hole hole;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name= "player_id")
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private Player player;

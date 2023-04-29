@@ -3,6 +3,7 @@ package com.pr.golf.golfapp.model;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +16,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * | ________________________________________________
@@ -32,6 +34,7 @@ import lombok.Setter;
 @Builder
 @Setter
 @EqualsAndHashCode
+@ToString
 public class GolfCourse {
 
 	@Id
@@ -45,6 +48,6 @@ public class GolfCourse {
 	/**
 	 * @FIXME Set below throws a wobbly.
 	 */
-    @OneToMany(mappedBy="golfCourse", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "golfCourse", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Hole> holes;
 }

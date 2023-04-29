@@ -47,11 +47,11 @@ public class Hole {
 
     private int stroke;
     
-    private int distanceFromWhite;
+    private int white;
    
-    private int distanceFromYellow;
+    private int yellow;
     
-    private int distanceFromRed;
+    private int red;
     
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name= "course_id")

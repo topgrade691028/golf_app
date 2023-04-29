@@ -1,6 +1,6 @@
 package com.pr.golf.golfapp.model;
 
-import lombok.*;
+import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -13,7 +13,11 @@ import lombok.experimental.SuperBuilder;
 
 @SuperBuilder(toBuilder = true)
 @Getter
-public class EventLeaderBoard extends Table {
+public class EventLeaderBoard {
+	
+	private long eventId;
+	
+	private Player player;
 
     private int hole;
 
@@ -22,7 +26,5 @@ public class EventLeaderBoard extends Table {
     private int totalPoints;
 
     private int holesPlayed;
-
-    private int handicap;
 
 }

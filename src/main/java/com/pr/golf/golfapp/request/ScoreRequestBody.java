@@ -23,6 +23,7 @@ public class ScoreRequestBody {
 	
 	private int points;
 	
-	private int holeNumber;
+	private long holeId;
 	
+	private int holeNumber;
 }

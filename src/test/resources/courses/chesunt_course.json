@@ -1,0 +1,21 @@
+{
+    "name" : "Chesunt",
+    "holes" : [
+        {
+            "holeNumber": 1,
+            "white": 560,
+            "yellow": 549,
+            "red": 459,
+            "par": 5,
+            "stroke": 7
+        },
+        {
+            "holeNumber": 2,
+            "white": 325,
+            "yellow": 312,
+            "red": 302,
+            "par": 4,
+            "stroke": 15
+        }
+    ]
+}
