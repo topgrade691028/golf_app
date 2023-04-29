@@ -22,6 +22,10 @@ public class GolfCourseService {
         this.golfCourseRepository = golfCourseRepository;
         this.holeRepository = holeRepository;
     }
+    
+    public GolfCourse getGolfCourseByName(String name) {
+    	return golfCourseRepository.findByName(name);
+    }
 
     public void saveOrUpdateGolfCourses(List<GolfCourse> golfCourses) {
         for (GolfCourse golfCourse : golfCourses) {

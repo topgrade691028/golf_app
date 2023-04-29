@@ -2,6 +2,7 @@ package com.pr.golf.golfapp.controller;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pr.golf.golfapp.dto.HoleDTO;
 import com.pr.golf.golfapp.model.Competition;
-import com.pr.golf.golfapp.model.Hole;
+import com.pr.golf.golfapp.model.GolfCourse;
 import com.pr.golf.golfapp.model.Player;
 import com.pr.golf.golfapp.response.ScoreCardResponseBody;
+import com.pr.golf.golfapp.service.GolfCourseService;
 import com.pr.golf.golfapp.service.PlayerService;
 import com.pr.golf.golfapp.service.ScoreService;
 
@@ -25,11 +28,16 @@ public class ScoreCardController {
 
 	private ScoreService scoreService;
 
+	private GolfCourseService golfCourseService;
+	
 	private PlayerService playerService;
 
-	public ScoreCardController(@Autowired ScoreService scoreService, @Autowired PlayerService playerService) {
+	public ScoreCardController(@Autowired ScoreService scoreService, 
+								@Autowired PlayerService playerService,
+								@Autowired GolfCourseService golfCourseService) {
 		this.scoreService = scoreService;
 		this.playerService = playerService;
+		this.golfCourseService = golfCourseService;
 	}
 
 	@GetMapping("/{id}")
@@ -42,9 +50,10 @@ public class ScoreCardController {
     	
     	Competition competition = Competition.builder().id(1l).name("Sinkers Society").build();
     	
+    	/** 
     	List<Hole> holes = List.of(Hole.builder()
-    							.distanceFromWhite(560)
-    							.distanceFromYellow(549)
+    							.white(560)
+    							.yellow(549)
     							.id(1l)
     							.holeNumber(1)
     							.name("Everest")
@@ -52,21 +61,37 @@ public class ScoreCardController {
     							.par(5)
     							.build(), 
     							Hole.builder()
-    							.distanceFromWhite(325)
-    							.distanceFromYellow(312)
+    							.white(325)
+    							.yellow(312)
     							.id(2l)
     							.holeNumber(2)
     							.name("Long wash")
     							.stroke(15)
     							.par(4)
     							.build());
-    	
-    	ScoreCardResponseBody scoreCardReponsoBody = ScoreCardResponseBody.builder()
-    													.players(players)
-    													.holes(holes)
-    													.competition(competition)
-    													.build();
+    	**/
+    	GolfCourse golfCourse = golfCourseService.getGolfCourseByName("Chesunt");
+    	List<HoleDTO> holeDtos = golfCourse.getHoles().stream()
+    		    .map(hole -> HoleDTO.builder()
+    		        .id(hole.getId())
+    		        .courseId(golfCourse.getId())
+    		        .holeNumber(hole.getHoleNumber())
+    		        .par(hole.getPar())
+    		        .stroke(hole.getStroke())
+    		        .white(hole.getWhite())
+    		        .yellow(hole.getYellow())
+    		        .red(hole.getRed())
+    		        // set other fields as necessary
+    		        .build())
+    		    .collect(Collectors.toList());
 
-        return ResponseEntity.ok(scoreCardReponsoBody);
+    	    
+    	ScoreCardResponseBody scoreCardResponseBody = ScoreCardResponseBody.builder()
+    	    .players(players)
+    	    .holes(holeDtos)
+    	    .competition(competition)
+    	    .build();
+
+    	return ResponseEntity.ok(scoreCardResponseBody);
     }
 }

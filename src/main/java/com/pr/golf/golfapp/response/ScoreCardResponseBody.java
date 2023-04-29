@@ -2,6 +2,7 @@ package com.pr.golf.golfapp.response;
 
 import java.util.List;
 
+import com.pr.golf.golfapp.dto.HoleDTO;
 import com.pr.golf.golfapp.model.Competition;
 import com.pr.golf.golfapp.model.Event;
 import com.pr.golf.golfapp.model.Hole;
@@ -27,7 +28,7 @@ public class ScoreCardResponseBody {
 	
 	private Event eventId;
 	
-	private List<Hole> holes;
+	private List<HoleDTO> holes;
 	
 	private List<Player> players;
 	

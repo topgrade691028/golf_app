@@ -14,6 +14,7 @@ import com.pr.golf.golfapp.model.GolfCourse;
 @Repository
 public interface GolfCourseRepository extends JpaRepository<GolfCourse, Long>{
 
+	   
 	   GolfCourse findByName(String name);
 	   
 	   @Query(value = "SELECT * FROM golf_course WHERE LOWER(name) = LOWER(:name)", nativeQuery = true)
