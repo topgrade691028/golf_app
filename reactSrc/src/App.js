@@ -6,6 +6,7 @@ import Users from "./Players";
 import UserCreate from "./PlayerCreate";
 import UserUpdate from "./UserUpdate";
 import ScoreCard from "./ScoreCard";
+import EventLeaderBoard from "./EventLeaderBoard";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <Route exact path="/create" component={UserCreate} />
           <Route exact path="/update/:id" component={UserUpdate} />
           <Route exact path="/scorecard" component={ScoreCard} />
+          <Route exact path="/eventleaderboard" component={EventLeaderBoard} />
         </Switch>
       </div>
     </Router>
