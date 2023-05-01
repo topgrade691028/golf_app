@@ -34,22 +34,15 @@ create table golfapp.golf_course(
 );
 
 create table golfapp.COMPETITION(
-    id int auto_increment,
+    id bigint auto_increment,
     name varchar(40) not null, 
-    primary key(id)
-);
-
-create table golfapp.PLAYER(
-    id int auto_increment,
-    name varchar(40) not null, 
-    username varchar(40) not null,
-    handicap int,
+    competition_type varchar(20) null, 
     primary key(id)
 );
 
 create table golfapp.GOLF_LEADER_BOARD(
-    id int auto_increment,
-    competition_id int ,
+    id bigint auto_increment,
+    competition_id bigint ,
     player_id int,
     avg_score_per_round int,
     best_five_total_round int,
@@ -61,17 +54,34 @@ create table golfapp.GOLF_LEADER_BOARD(
         references competition(id)
 );
 
-create table golfapp.GOLF_EVENT(
-    id int auto_increment,
-    competition_id int ,
-    name varchar(40) not null,
-    venue varchar(40),
-    type varchar(20),
-    date date,
-    primary key(id),
-    foreign key(competition_id)
-          references competition(id)
+CREATE TABLE golf_event (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  competition_id bigint,
+  venue VARCHAR(255) DEFAULT NULL,
+  type VARCHAR(255) DEFAULT NULL,
+  date date, 
+  PRIMARY KEY (id),
+  foreign key(competition_id)
+  references competition(id)
 );
+
+CREATE TABLE player (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  userName VARCHAR(255) DEFAULT NULL,
+  handicap INT NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE event_player (
+  event_id BIGINT NOT NULL,
+  player_id BIGINT NOT NULL,
+  PRIMARY KEY (event_id, player_id),
+  CONSTRAINT fk_event_player_event FOREIGN KEY (event_id) REFERENCES event (id),
+  CONSTRAINT fk_event_player_player FOREIGN KEY (player_id) REFERENCES player (id)
+);
+
 
 create table golfapp.HOLE(
     id int auto_increment,
@@ -115,4 +125,22 @@ create table golfapp.EVENT_LEADER_BOARD(
     foreign key(event_id)
           references event(id)
 );
+
+INSERT INTO player (name, username, handicap) VALUES
+  ('Darragh Flynn', 'dflynn', 28),
+  ('Paul Ronane', 'pronane', 21);
+  
+INSERT INTO golf_event (competition_id, name, venue, type, date)
+VALUES (2, 'Chesunt', 'Chesunt', NULL, '2023-03-11'),
+       (2, 'luton hoo', 'luton hoo', NULL, '2023-04-01');
+       
+INSERT INTO event_player (event_id, player_id) VALUES (1, 1);
+INSERT INTO event_player (event_id, player_id) VALUES (1, 2);       
+       
+INSERT INTO score (competition_id, player_id, event_id, par, score, points, hole_id)
+VALUES 
+(NULL, 1, 1, NULL, 9, 0, 50),
+(NULL, 1, 1, NULL, 5, 2, 51),
+(NULL, 2, 1, NULL, 5, 3, 50),
+(NULL, 2, 1, NULL, 5, 2, 51);
 

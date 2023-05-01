@@ -35,8 +35,10 @@ public class ScoreController {
     @RequestMapping(
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ScoreRequestBody>> createScore(@RequestBody List<ScoreRequestBody> scoreRequestBody) throws URISyntaxException {
+    public ResponseEntity<List<ScoreRequestBody>> createOrUpdateScore(@RequestBody List<ScoreRequestBody> scoreRequestBody) throws URISyntaxException {
         System.out.print("Test");
+        scoreRequestBody.stream().forEach(score -> System.out.println(score));
+
         List<Score> savedScore = scoreService.saveAll(scoreRequestBody);
         
         //eventLeaderBoardService.
@@ -61,7 +63,7 @@ public class ScoreController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<EventLeaderBoard> getScoresForEvent(@PathVariable Long eventId) {
         return scoreService.findByEventId(eventId).orElseThrow(RuntimeException::new);
-    }
+    }	
     
     @RequestMapping(value = "/event",
             method = RequestMethod.GET,

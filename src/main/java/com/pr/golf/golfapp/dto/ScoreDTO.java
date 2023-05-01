@@ -42,7 +42,9 @@ public class ScoreDTO {
 
     private int points;
 
-    private int hole;
+    private long holeId;
+    
+    private int holeNumber;
 
     private int stroke;
 

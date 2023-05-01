@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,8 +14,11 @@ import lombok.Setter;
 @Builder
 @Setter
 @EqualsAndHashCode
+@ToString
 public class ScoreRequestBody {
 
+	private long id;
+	
 	private int score;
 	
 	private long playerId;

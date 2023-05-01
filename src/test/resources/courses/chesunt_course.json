@@ -16,6 +16,134 @@
             "red": 302,
             "par": 4,
             "stroke": 15
+        },
+        {
+            "holeNumber": 3,
+            "white": 211,
+            "yellow": 202,
+            "red": 190,
+            "par": 3,
+            "stroke": 9
+        },
+        {
+            "holeNumber": 4,
+            "white": 364,
+            "yellow": 356,
+            "red": 343,
+            "par": 4,
+            "stroke": 11
+        },
+        {
+            "holeNumber": 5,
+            "white": 457,
+            "yellow": 430,
+            "red": 364,
+            "par": 4,
+            "stroke": 1
+        },
+        {
+            "holeNumber": 6,
+            "white": 424,
+            "yellow": 411,
+            "red": 401,
+            "par": 4,
+            "stroke": 5
+        },
+        {
+            "holeNumber": 7,
+            "white": 181,
+            "yellow": 143,
+            "red": 133,
+            "par": 3,
+            "stroke": 13
+        },
+        {
+            "holeNumber": 8,
+            "white": 370,
+            "yellow": 367,
+            "red": 350,
+            "par": 4,
+            "stroke": 17
+        },
+        {
+            "holeNumber": 9,
+            "white": 424,
+            "yellow": 413,
+            "red": 404,
+            "par": 4,
+            "stroke": 3
+        },
+        {
+            "holeNumber": 10,
+            "white": 444,
+            "yellow": 411,
+            "red": 365,
+            "par": 4,
+            "stroke": 2
+        },
+        {
+            "holeNumber": 11,
+            "white": 183,
+            "yellow": 169,
+            "red": 157,
+            "par": 3,
+            "stroke": 12
+        },
+        {
+            "holeNumber": 12,
+            "white": 490,
+            "yellow": 473,
+            "red": 398,
+            "par": 5,
+            "stroke": 16
+        },
+        {
+            "holeNumber": 13,
+            "white": 329,
+            "yellow": 314,
+            "red": 303,
+            "par": 4,
+            "stroke": 14
+        },
+        {
+            "holeNumber": 14,
+            "white": 365,
+            "yellow": 351,
+            "red": 341,
+            "par": 4,
+            "stroke": 10
+        },
+        {
+            "holeNumber": 15,
+            "white": 394,
+            "yellow": 361,
+            "red": 284,
+            "par": 4,
+            "stroke": 8
+        },
+        {
+            "holeNumber": 16,
+            "white": 375,
+            "yellow": 367,
+            "red": 353,
+            "par": 4,
+            "stroke": 6
+        },
+        {
+            "holeNumber": 17,
+            "white": 136,
+            "yellow": 114,
+            "red": 95,
+            "par": 3,
+            "stroke": 18
+        },
+        {
+            "holeNumber": 18,
+            "white": 551,
+            "yellow": 495,
+            "red": 456,
+            "par": 5,
+            "stroke": 4
         }
     ]
 }

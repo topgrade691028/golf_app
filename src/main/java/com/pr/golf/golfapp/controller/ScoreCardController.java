@@ -1,6 +1,7 @@
 package com.pr.golf.golfapp.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -12,11 +13,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pr.golf.golfapp.dto.HoleDTO;
+import com.pr.golf.golfapp.dto.ScoreDTO;
+import com.pr.golf.golfapp.enums.CompetitionType;
+import com.pr.golf.golfapp.mapper.ScoreMapper;
 import com.pr.golf.golfapp.model.Competition;
 import com.pr.golf.golfapp.model.GolfCourse;
+import com.pr.golf.golfapp.model.GolfEvent;
 import com.pr.golf.golfapp.model.Player;
+import com.pr.golf.golfapp.model.Score;
 import com.pr.golf.golfapp.response.ScoreCardResponseBody;
 import com.pr.golf.golfapp.service.GolfCourseService;
+import com.pr.golf.golfapp.service.GolfEventService;
 import com.pr.golf.golfapp.service.PlayerService;
 import com.pr.golf.golfapp.service.ScoreService;
 
@@ -27,17 +34,25 @@ public class ScoreCardController {
 	private final static AtomicLong subIdCounter = new AtomicLong(System.nanoTime());
 
 	private ScoreService scoreService;
+	
+	private GolfEventService golfEventService;
 
 	private GolfCourseService golfCourseService;
+	
+	private ScoreMapper scoreMapper;
 	
 	private PlayerService playerService;
 
 	public ScoreCardController(@Autowired ScoreService scoreService, 
 								@Autowired PlayerService playerService,
-								@Autowired GolfCourseService golfCourseService) {
+								@Autowired GolfCourseService golfCourseService,
+								@Autowired ScoreMapper scoreMapper,
+								@Autowired GolfEventService golfEventService) {
 		this.scoreService = scoreService;
 		this.playerService = playerService;
 		this.golfCourseService = golfCourseService;
+		this.scoreMapper = scoreMapper;
+		this.golfEventService = golfEventService;
 	}
 
 	@GetMapping("/{id}")
@@ -48,7 +63,10 @@ public class ScoreCardController {
     									Player.builder().id(2l)
     											.name("Paul Ronane").handicap(21).build());
     	
-    	Competition competition = Competition.builder().id(1l).name("Sinkers Society").build();
+    	Competition competition = Competition.builder()
+    								.id(1l)
+    								.competitionType(CompetitionType.STABLEFORD)
+    								.name("Sinkers Society").build();
     	
     	/** 
     	List<Hole> holes = List.of(Hole.builder()
@@ -85,10 +103,20 @@ public class ScoreCardController {
     		        .build())
     		    .collect(Collectors.toList());
 
-    	    
+    	Optional<GolfEvent> golfEvent = golfEventService.getGolfEventById(1l);
+    	
+    	Optional<List<Score>> scores = scoreService.findScoresByEventId(1l);  
+    	
+    	List<ScoreDTO> scoreDtos = scoreMapper.toDto(scores.get());
+    	
     	ScoreCardResponseBody scoreCardResponseBody = ScoreCardResponseBody.builder()
     	    .players(players)
     	    .holes(holeDtos)
+    	    .golfEvent(GolfEvent.builder()
+    	    					.id(golfEvent.get().getId())
+    	    					.name(golfEvent.get().getName())
+    	    					.build())
+    	    .scoreDTOs(scoreDtos)
     	    .competition(competition)
     	    .build();
 

@@ -1,5 +1,7 @@
 package com.pr.golf.golfapp.model;
 
+import com.pr.golf.golfapp.dto.PlayerDTO;
+
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -17,7 +19,7 @@ public class EventLeaderBoard {
 	
 	private long eventId;
 	
-	private Player player;
+	private PlayerDTO player;
 
     private int hole;
 

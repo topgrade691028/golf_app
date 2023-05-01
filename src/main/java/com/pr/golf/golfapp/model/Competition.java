@@ -2,6 +2,10 @@ package com.pr.golf.golfapp.model;
 
 import java.util.List;
 
+import com.pr.golf.golfapp.converter.CompetitionTypeConverter;
+import com.pr.golf.golfapp.enums.CompetitionType;
+
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -32,6 +36,9 @@ public class Competition {
 
 	private String name;
 
+	@Convert(converter = CompetitionTypeConverter.class)
+	private CompetitionType competitionType;
+	
 	/**
 	 * @FIXME Set below throws a wobbly.
 	 */

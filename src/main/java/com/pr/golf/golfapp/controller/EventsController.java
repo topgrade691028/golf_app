@@ -17,15 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pr.golf.golfapp.model.Event;
 import com.pr.golf.golfapp.model.GolfEvent;
-import com.pr.golf.golfapp.repository.EventRepository;
+import com.pr.golf.golfapp.repository.GolfEventRepository;
 
 @RestController
 @RequestMapping("/events")
 public class EventsController {
 
-    private EventRepository eventRepository;
+    private GolfEventRepository eventRepository;
 
-	public EventsController(@Autowired EventRepository eventRepository ) {
+	public EventsController(@Autowired GolfEventRepository eventRepository ) {
 		this.eventRepository = eventRepository;
 	}
 

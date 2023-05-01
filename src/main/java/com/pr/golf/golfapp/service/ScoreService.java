@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pr.golf.golfapp.dto.PlayerDTO;
 import com.pr.golf.golfapp.model.EventLeaderBoard;
 import com.pr.golf.golfapp.model.GolfEvent;
 import com.pr.golf.golfapp.model.Hole;
@@ -30,6 +31,7 @@ public class ScoreService {
 		List<Score> scores = new ArrayList<Score>(scoreRequestBodyList.size());
 		scoreRequestBodyList.stream().forEach( score -> {
 			Score tmpScore = Score.builder()
+					            .id(score.getId())
 								.event(GolfEvent.builder().id(score.getEventId()).build())
 								.player(Player.builder().id(score.getPlayerId()).build())
 								.score(score.getScore())
@@ -41,6 +43,7 @@ public class ScoreService {
 								.build();
 			scores.add(tmpScore);
 		});
+		scores.stream().forEach(System.out::println);
 		return scoreRepository.saveAll(scores);
 	}
 
@@ -49,6 +52,12 @@ public class ScoreService {
 		return scoreRepository.findById(id);
 	}
 
+	public Optional<List<Score>> findScoresByEventId(Long eventId) {
+		Optional<List<Score>> scores = scoreRepository.findByEventId(eventId);
+
+		return scores;
+	}
+	
 	public Optional<List<EventLeaderBoard>> findByEventId(Long eventId) {
 		Optional<List<Score>> scores = scoreRepository.findByEventId(eventId);
 
@@ -77,7 +86,11 @@ public class ScoreService {
 	            
 	            EventLeaderBoard leaderboardEntry = EventLeaderBoard.builder()
 	                    .eventId(scores.get(0).getEvent().getId()) // assume all scores have the same event
-	                    .player(player)
+	                    .player(PlayerDTO.builder()
+	                    		.name(player.getName())
+	                    		.id(player.getId())
+	                    		.handicap(player.getHandicap())
+	                    		.build())
 	                    .totalScore(stats[0])
 	                    .totalPoints(stats[1])
 	                    .holesPlayed(scores.stream()

@@ -61,7 +61,6 @@ public class PlayerController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<Player> getPlayersForEvent(@PathVariable Long eventId) {
-    	throw new UnsupportedOperationException();
-        //return playerService.findByEventId(eventId).orElseThrow(RuntimeException::new);
+        return playerService.findPlayersByEventId(eventId).orElseThrow(RuntimeException::new);
     }
 }

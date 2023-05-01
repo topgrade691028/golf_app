@@ -29,5 +29,9 @@ public class PlayerService {
 	public Optional<Player> findById(Long id) {
 		return playerRepository.findById(id);
 	}
+	
+	public Optional<List<Player>> findPlayersByEventId(Long eventId) {
+		return Optional.of(playerRepository.findByGolfEvents_Id(eventId));
+	}
 
 }

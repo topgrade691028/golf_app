@@ -1,8 +1,10 @@
-package com.pr.golf.golfapp.model;
+package com.pr.golf.golfapp.dto;
+
 
 import java.util.Set;
 
-import jakarta.persistence.Entity;
+import com.pr.golf.golfapp.model.GolfEvent;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,18 +18,25 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
+/**
+ * | ________________________________________________
+ * | Player_Name | Par | Score | Points | Hole | Stroke | Handicap
+ * | Player 1    | 4   |  4    | 3      | 1    | 18     | 18
+ * | Player 2    | 4   |  4    | 3      | 1    | 18     | 22
+ * | Player 3    | 4   |  4    | 3      | 1    | 18     | 24
+ *
+ */
+
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Builder
 @Setter
 @EqualsAndHashCode
-@ToString(callSuper = true)
-public class Player {
+@ToString
+public class PlayerDTO {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String name;
@@ -36,8 +45,5 @@ public class Player {
     private String userName;
 
     private int handicap;
-    
-    @ManyToMany(mappedBy = "players")
-    private Set<GolfEvent> golfEvents;
     
 }

@@ -3,6 +3,7 @@ package com.pr.golf.golfapp.model;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -10,6 +11,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
@@ -41,11 +44,15 @@ public class GolfEvent extends Event {
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private Competition competition;
     
-    
-    
 	/**
 	 * @FIXME Set below throws a wobbly.
 	 */
     @OneToMany(mappedBy="event", fetch = FetchType.LAZY)
     private List<Score> scores;
+    
+    @ManyToMany
+    @JoinTable(name = "golf_event_player",
+               joinColumns = @JoinColumn(name = "event_id"),
+               inverseJoinColumns = @JoinColumn(name = "player_id"))
+    private Set<Player> players;
 }

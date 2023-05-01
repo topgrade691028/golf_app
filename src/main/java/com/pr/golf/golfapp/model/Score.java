@@ -17,6 +17,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * | ________________________________________________
@@ -34,6 +35,7 @@ import lombok.Setter;
 @Builder
 @Setter
 @EqualsAndHashCode
+@ToString
 public class Score {
 
 	@Id
