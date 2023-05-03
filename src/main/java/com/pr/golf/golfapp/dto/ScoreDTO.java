@@ -1,6 +1,8 @@
 package com.pr.golf.golfapp.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -50,7 +52,12 @@ public class ScoreDTO {
 
     private int handicap;
     
-    public int getPoints() {
+    /**
+     * @Fixme when more time this doesnt appear to be working
+     * @return
+     */
+    public int getPointsOld() {
+    	int tmpPoints;
     	/**
     	 * L = Gross Score
     	 * O = Par - Gross Score
@@ -77,13 +84,13 @@ public class ScoreDTO {
     	
     	//=IF(L<1,"",IF((2+O+N)>-1,(2+O+N),0))
     	if(score < 1) {
-    		points = 0;
+    		tmpPoints = 0;
     	} else if((2 +  0 + n) > -1) {
-    		points = 2 + o + n;
+    		tmpPoints = 2 + o + n;
     	} else {
-    		points = 0;
+    		tmpPoints = 0;
     	}
-    	return points;
+    	return tmpPoints;
     }
 
 }

@@ -120,6 +120,9 @@ public class ScoreCardController {
     	    .competition(competition)
     	    .build();
 
+    	scoreCardResponseBody.getScoreDTOs().stream().forEach(score -> {
+    		System.out.print(" " + score.getPoints());
+    	});
     	return ResponseEntity.ok(scoreCardResponseBody);
     }
 }

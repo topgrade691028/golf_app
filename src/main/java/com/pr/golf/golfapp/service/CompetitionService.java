@@ -1,11 +1,12 @@
 package com.pr.golf.golfapp.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pr.golf.golfapp.dto.CompetitionDTO;
+import com.pr.golf.golfapp.mapper.CompetitionMapper;
 import com.pr.golf.golfapp.model.Competition;
 import com.pr.golf.golfapp.model.GolfEvent;
 import com.pr.golf.golfapp.repository.CompetitionRepository;
@@ -14,17 +15,21 @@ import com.pr.golf.golfapp.repository.CompetitionRepository;
 public class CompetitionService {
 	
 	private CompetitionRepository competitionRepository;
+	
+	private CompetitionMapper competitionMapper;
 	    
-	public CompetitionService(@Autowired CompetitionRepository competitionRepository) {
+	public CompetitionService(@Autowired CompetitionRepository competitionRepository,
+								@Autowired CompetitionMapper competitionMapper) {
 		this.competitionRepository = competitionRepository;
+		this.competitionMapper = competitionMapper;
 	}
 	
 	public Competition addCompetition(Competition competition) {
 		return competitionRepository.save(competition);
 	}
 	
-	public List<Competition> getAllCompetitions() {
-		return competitionRepository.findAll();
+	public List<CompetitionDTO> getAllCompetitions() {
+		return competitionMapper.toDto(competitionRepository.findAll());
 	}
 
 	

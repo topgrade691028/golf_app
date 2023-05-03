@@ -20,6 +20,7 @@ public class ScoreMapper {
                 .holeId(score.getHole().getId())
                 .holeNumber(score.getHole().getHoleNumber())
                 .points(score.getPoints())
+                .par(score.getHole().getPar())
                 .playerId(score.getPlayer().getId())
                 .score(score.getScore())
                 .build())

@@ -3,7 +3,6 @@ package com.pr.golf.golfapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -60,7 +59,8 @@ public class Score {
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private Player player;
     
-    public int getPoints() {
+    public int getPointsOld() {
+    	int tmpPoints = 0;
     	/**
     	 * L = Gross Score
     	 * O = Par - Gross Score
@@ -87,13 +87,13 @@ public class Score {
     	
     	//=IF(L<1,"",IF((2+O+N)>-1,(2+O+N),0))
     	if(score < 1) {
-    		points = 0;
+    		tmpPoints = 0;
     	} else if((2 +  0 + n) > -1) {
-    		points = 2 + o + n;
+    		tmpPoints = 2 + o + n;
     	} else {
-    		points = 0;
+    		tmpPoints = 0;
     	}
-    	return points;
+    	return tmpPoints;
     }
 
 }

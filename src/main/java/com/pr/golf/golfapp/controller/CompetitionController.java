@@ -1,19 +1,23 @@
 package com.pr.golf.golfapp.controller;
 
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pr.golf.golfapp.dto.CompetitionDTO;
+import com.pr.golf.golfapp.enums.CompetitionType;
 import com.pr.golf.golfapp.model.Competition;
 import com.pr.golf.golfapp.model.GolfEvent;
 import com.pr.golf.golfapp.service.CompetitionService;
@@ -46,6 +50,17 @@ public class CompetitionController {
         return ResponseEntity.ok().body(competition);
     }
     
+    @GetMapping("/user/{userId}")
+    public List<CompetitionDTO> getCompetitions(@PathVariable("userId") Long userId) {
+      return competitionService.getAllCompetitions();
+    }
+    
+    @GetMapping("/competition-type")
+    public List<CompetitionType> getCompetitionTypes(){
+    	
+      return Arrays.asList(CompetitionType.values());
+    }
+
     @RequestMapping(
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
