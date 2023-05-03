@@ -1,0 +1,180 @@
+.competition-table {
+  border-collapse: collapse;
+  font-family: Tahoma, Geneva, sans-serif;
+}
+
+.competition-table td {
+  padding: 15px;
+}
+
+.competition-table thead td {
+  background-color: #54585d;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 13px;
+  border: 1px solid #54585d;
+}
+
+.competition-table tbody td {
+  color: #636363;
+  border: 1px solid #dddfe1;
+}
+
+.competition-table tbody tr {
+  background-color: #f9fafb;
+}
+
+.competition-table tbody tr:nth-child(even) {
+  background-color: #f2f7ff; /* very light blue */
+}
+
+.form-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px;
+}
+
+.form-group label {
+  margin-right: 10px;
+}
+
+.form-group input,
+.form-group select {
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #0077ff;
+  box-shadow: 0 0 3px #0077ff;
+}
+
+button[type="submit"] {
+  margin: 10px auto;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0077ff;
+  color: #fff;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #005eff;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.form-row input[type="text"] {
+  padding: 10px;
+  margin-right: 10px;
+  border: none;
+  background-color: #f5f5f5;
+}
+/*
+.input-text {
+  padding: 10px;
+  margin-right: 10px;
+  border: none;
+  background-color: #f5f5f5;
+}*/
+
+.form-row input[type="submit"] {
+  padding: 10px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+}
+
+.form-wrapper {
+  text-align: center;
+}
+.new-competition-form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+label {
+  width: 40%;
+  margin-right: 1rem;
+}
+/*
+input,
+select {
+  width: 60%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}*/
+
+.new-competition-input {
+  width: 60%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.new-competition-form .form-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px;
+}
+
+.new-competition-form .form-group label {
+  margin-right: 10px;
+}
+
+.new-competition-form .form-group input,
+.new-competition-form .form-group select {
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.new-competition-form .form-group input:focus,
+.new-competition-form .form-group select:focus {
+  outline: none;
+  border-color: #0077ff;
+  box-shadow: 0 0 3px #0077ff;
+}
+
+.new-competition-form button[type="submit"] {
+  margin: 10px auto;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0077ff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.new-competition-form button[type="submit"]:hover {
+  background-color: #005eff;
+}

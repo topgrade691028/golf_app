@@ -6,7 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 
-import "./style1.css";
+//import "./style1.css";
 import "./style2.css";
 
 import axios from "axios";
@@ -32,14 +32,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ScoreCard() {
-  const inputRef = useRef(null);
-
-  useEffect(() => {
-    if (inputRef.current) {
-      console.log("Input ID:", inputRef.current.id);
-    }
-  }, []);
-
   const classes = useStyles();
   const [holes, setHoles] = useState([]);
   const [scores, setScores] = useState([]);
@@ -53,12 +45,8 @@ export default function ScoreCard() {
   const [playerScoresFront9, setPlayerScoresFront9] = useState([[], [], []]); // scores for player A, B, and C for holes 1-9
   const [playerScoresBack9, setPlayerScoresBack9] = useState([[], [], []]); // scores for player A, B, and C for holes 10-18
 
-  const [playerPointsFront9Totals, setPlayerPointsFront9Totals] = useState([
-    0, 0, 0,
-  ]);
-  const [playerPointsBack9Totals, setPlayerPointsBack9Totals] = useState([
-    0, 0, 0,
-  ]);
+  const [playerPointsFront9, setPlayerPointsFront9] = useState([[], [], []]); // scores for player A, B, and C for holes 1-9
+  const [playerPointsBack9, setPlayerPointsBack9] = useState([[], [], []]); // scores for player A, B, and C for holes 10-18
 
   const [inputValues, setInputValues] = useState({});
   const [renderKey, setRenderKey] = useState(0);
@@ -75,7 +63,7 @@ export default function ScoreCard() {
   ]);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/scorecard/1").then((response) => {
+    axios.get("http://192.168.0.18:8080/scorecard/1").then((response) => {
       setCompetition(response.data.competition);
       setPlayers(response.data.players);
       setPlayerA(response.data.players[0].name);
@@ -87,14 +75,24 @@ export default function ScoreCard() {
       setScores(response.data.scoreDTOs);
       const newPlayerScoresFront9 = [[], [], []];
       const newPlayerScoresBack9 = [[], [], []];
+      const newPlayerPointsFront9 = [[], [], []];
+      const newPlayerPointsBack9 = [[], [], []];
+
+      console.log("scoreDTOs:", JSON.stringify(response.data.scoreDTOs));
 
       // initialize all sub-arrays in newPlayerScoresFront9
       for (let i = 0; i < newPlayerScoresFront9.length; i++) {
         for (let j = 0; j < 9; j++) {
           newPlayerScoresFront9[i][j] = 0;
+          newPlayerPointsFront9[i][j] = 0;
         }
       }
       console.log("players is " + JSON.stringify(response.data.players));
+
+      response.data.scoreDTOs.forEach((score) => {
+        console.log(score.points);
+      });
+
       response.data.scoreDTOs.forEach((score) => {
         const playerIndex = getPlayerIndex(
           score.playerId,
@@ -102,6 +100,8 @@ export default function ScoreCard() {
         );
         const holeIndex = getHoleIndex(score.holeNumber);
         const scoreValue = score.score || 0; // set score to 0 if it is undefined
+        const pointsValue = score.points || 0; // set score to 0 if it is undefined
+
         if (holeIndex <= 8) {
           if (!newPlayerScoresFront9[playerIndex]) {
             newPlayerScoresFront9[playerIndex] = [];
@@ -112,8 +112,10 @@ export default function ScoreCard() {
           }
 
           newPlayerScoresFront9[playerIndex][holeIndex] = scoreValue;
+          newPlayerPointsFront9[playerIndex][holeIndex] = pointsValue;
         } else {
           newPlayerScoresBack9[playerIndex][holeIndex - 9] = scoreValue;
+          newPlayerPointsBack9[playerIndex][holeIndex] = pointsValue;
         }
       });
 
@@ -121,33 +123,15 @@ export default function ScoreCard() {
       setPlayerScoresFront9(newPlayerScoresFront9);
       setPlayerScoresBack9(newPlayerScoresBack9);
 
-      //setPlayerScoresFront9Totals(calculateFront9Totals(newPlayerScoresFront9));
-      //setPlayerScoresBack9Totals(calculateBack9Totals(newPlayerScoresBack9));
-      let newPlayerPointsFront9 = [[], [], []];
-      let newPlayerPointsBack9 = [[], [], []];
+      console.log("playersPointsFront9", newPlayerPointsFront9);
+      console.log("playersPointsBack9", newPlayerPointsBack9);
 
-      // initialize all sub-arrays in newPlayerPointsFront9
-      for (let i = 0; i < newPlayerPointsFront9.length; i++) {
-        for (let j = 0; j < 9; j++) {
-          newPlayerPointsFront9[i][j] = 0;
-        }
-      }
+      setPlayerPointsFront9(newPlayerPointsFront9);
+      setPlayerPointsBack9(newPlayerPointsBack9);
 
-      setPlayerPointsFront9Totals(newPlayerPointsFront9);
-      setPlayerPointsBack9Totals(newPlayerPointsBack9);
+      //setPlayerScoresFront9(newPlayerScoresFront9);
 
-      newPlayerPointsFront9 = calculatePlayerPointsFront9Totals(
-        newPlayerScoresFront9
-      );
-      newPlayerPointsBack9 =
-        calculatePlayerPointsBack9Totals(newPlayerScoresBack9);
-
-      setPlayerPointsFront9Totals(newPlayerPointsFront9);
-      setPlayerPointsBack9Totals(newPlayerPointsBack9);
-
-      setPlayerScoresFront9(newPlayerScoresFront9);
-
-      calculatePlayerPointsFront9(newPlayerScoresFront9);
+      // calculatePlayerPointsFront9(newPlayerScoresFront9);
 
       setGolfEvent({
         ...event,
@@ -160,42 +144,6 @@ export default function ScoreCard() {
     console.log("Log this");
   }, []);
 
-  const calculatePlayerPointsFront9 = (playerScoresFront9) => {
-    const newPlayerPointsFront9 = [[], [], []];
-    alert("got here  ");
-
-    // initialize all sub-arrays in newPlayerPointsFront9
-    for (let i = 0; i < newPlayerPointsFront9.length; i++) {
-      for (let j = 0; j < 9; j++) {
-        newPlayerPointsFront9[i][j] = 0;
-      }
-    }
-
-    // loop through each player's scores for front 9 holes
-    for (let i = 0; i < playerScoresFront9.length; i++) {
-      for (let j = 0; j < 9; j++) {
-        // get the score for the current hole
-        const scoreValue = playerScoresFront9[i][j];
-
-        // find the player's ID based on their name
-        const playerId = players.find((player) => player.name === playerA)?.id; // change playerA to the current player name
-
-        // find the score object for the current player and hole
-        const score = scores.find(
-          (score) => score.playerId === playerId && score.holeNumber === j + 1
-        );
-
-        // get the points for the score, or 0 if points are undefined
-        const pointsValue = score?.points || 0;
-        console.log("pointsValue " + pointsValue);
-        // add the points to the player's front 9 total
-        newPlayerPointsFront9[i][j] = pointsValue;
-      }
-    }
-
-    setPlayerPointsFront9Totals(newPlayerPointsFront9);
-  };
-
   const handleChange = (
     event,
     index,
@@ -207,8 +155,10 @@ export default function ScoreCard() {
     playerId
   ) => {
     const { value } = event.target;
-    let inputValue = value.value;
+    let inputScore = value.value;
 
+    //alert(event.target.value);
+    inputScore = event.target.value;
     const playerIndex = getPlayerIndex(playerId, players);
     const holeIndex = getHoleIndex(holeNumber, players);
 
@@ -218,24 +168,40 @@ export default function ScoreCard() {
     const newPlayerScoresFront9 = [...playerScoresFront9];
     const newPlayerScoresBack9 = [...playerScoresBack9];
 
+    const newPlayerPointsFront9 = [...playerPointsFront9];
+    const newPlayerPointsBack9 = [...playerPointsBack9];
+
+    const points = calculatePoints(par, inputScore, handicap, stroke);
+
     if (holeIndex >= 9) {
       // if the hole is on the back 9, update the back 9 array instead
       newPlayerScoresBack9[playerIndex][holeIndex - 9] =
         parseInt(event.target.value) || 0;
+      newPlayerPointsBack9[playerIndex][holeIndex - 9] = points || 0;
     } else {
       newPlayerScoresFront9[playerIndex][holeIndex] =
         parseInt(event.target.value) || 0;
+      newPlayerPointsFront9[playerIndex][holeIndex] = points || 0;
+      console.log(
+        "updating newPlayerPointsFront9[playerIndex][holeIndex] = points " +
+          +newPlayerPointsFront9[playerIndex][holeIndex] +
+          " = " +
+          points
+      );
     }
 
     // update the state with the new score arrays
     setPlayerScoresFront9(newPlayerScoresFront9);
     setPlayerScoresBack9(newPlayerScoresBack9);
 
+    setPlayerPointsFront9(newPlayerPointsFront9);
+    setPlayerPointsBack9(newPlayerPointsBack9);
+
     const updatedScores = scores.map((score) => {
       if (score.playerId === playerId && score.holeId === holeId) {
         console.log("setting score players value");
-        if (inputValue) {
-          return { ...score, score: inputValue };
+        if (inputScore) {
+          return { ...score, score: inputScore, points: points };
         } else {
           return score;
         }
@@ -245,21 +211,21 @@ export default function ScoreCard() {
     });
     setScores(updatedScores);
 
-    const inputElementId = event.target.id;
+    let front9Total = newPlayerPointsFront9[playerIndex].reduce(
+      (acc, cur) => acc + cur,
+      0
+    );
+    let back9Total = newPlayerPointsBack9[playerIndex].reduce(
+      (acc, cur) => acc + cur,
+      0
+    );
 
-    const newPlayerPointsFront9 = [[], [], []];
-    const newPlayerPointsBack9 = [[], [], []];
+    // update the player points total for the current player
+    //newPlayerPointsFront9[playerIndex] = front9Total;
+    //newPlayerPointsBack9[playerIndex] = back9Total;
+    //setPlayerPointsFront9(newPlayerPointsFront9);
+    //setPlayerPointsFront9(newPlayerPointsBack9);
 
-    const points = calculatePoints(par, inputValue, handicap, stroke);
-    // initialize all sub-arrays in newPlayerPointsFront9
-    for (let i = 0; i < newPlayerPointsFront9.length; i++) {
-      for (let j = 0; j < 9; j++) {
-        newPlayerPointsFront9[i][j] = 0;
-      }
-    }
-
-    setPlayerPointsBack9Totals(newPlayerPointsFront9);
-    setPlayerPointsBack9Totals(newPlayerPointsBack9);
     return points;
   };
 
@@ -305,35 +271,13 @@ export default function ScoreCard() {
     scores.reduce((acc, cur) => acc + cur, 0)
   );
 
-  const calculateFront9Totals = () => {
-    const totals = [0, 0, 0]; // initialize totals to 0 for each player
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 9; j++) {
-        totals[i] += playerScoresFront9[i][j]; // add score for player i on hole j to their total
-      }
-    }
-    return totals;
-  };
+  const playerPointsFront9Totals = playerPointsFront9.map((scores) =>
+    scores.reduce((acc, cur) => acc + cur, 0)
+  );
 
-  const setPlayerScoreForHole = (playerId, holeNumber, score) => {
-    setPlayers((prevState) => {
-      const updatedPlayers = prevState.map((player) => {
-        if (player.id === playerId) {
-          return {
-            ...player,
-            scores: {
-              ...player.scores,
-              [holeNumber]: score,
-            },
-          };
-        } else {
-          return player;
-        }
-      });
-
-      return updatedPlayers;
-    });
-  };
+  const playerPointsBack9Totals = playerPointsBack9.map((scores) =>
+    scores.reduce((acc, cur) => acc + cur, 0)
+  );
 
   const [competition, setCompetition] = useState("");
   const [playerA, setPlayerA] = useState("");
@@ -343,28 +287,12 @@ export default function ScoreCard() {
   const [handicapPlayerB, setHandiCapPlayerB] = useState("");
   const [handicapPlayerC, setHandiCapPlayerC] = useState("");
 
-  function handleFormSubmit(event) {
-    event.preventDefault();
-    console.log("got here");
-
-    // replace these comments ChatGPT with the Post call to http://localhost:8080/scores
-    // with the array of Score objects.
-    // Score Object is as follows:
-    // id={players[0]?.id
-    // id={`${players[0].id || ""}-${item.holeNumber}`}
-    // id={item.par}
-    // id={item.stroke}
-    //
-    //
-    //
-  }
-
   /**
    * The handleSubmit3 function is an event handler that is called when the user submits a form. It first prevents the default form submission behavior using event.preventDefault(). Then, it declares an empty array playerValues to store the score data for all players.
 
 The function then loops through all the players using a for loop, and for each player, it maps over the data array to extract the score data for each hole. The inputId and inputValue variables are used to get the input value for each hole from the HTML DOM using document.getElementById(). The inputIdForHandicap variable is used to get the player's handicap value.
 
-The playerData object is created using the extracted data and is pushed into the playerValues array. Finally, the function calls the API to submit the score object to the server by making a POST request to the http://localhost:8080/scores endpoint with the playerValues array as the request body.
+The playerData object is created using the extracted data and is pushed into the playerValues array. Finally, the function calls the API to submit the score object to the server by making a POST request to the http://192.168.0.18:8080/scores endpoint with the playerValues array as the request body.
 
 If the API call is successful, the function logs a success message to the console. If there is an error, it logs an error message to the console.
    * 
@@ -420,7 +348,7 @@ If the API call is successful, the function logs a success message to the consol
     }
 
     // Call the API to submit the score object
-    fetch("http://localhost:8080/scores", {
+    fetch("http://192.168.0.18:8080/scores", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -480,50 +408,15 @@ If the API call is successful, the function logs a success message to the consol
     } else {
       points = 0;
     }
+    console.log(
+      "  par, score, handicap, stroke and points " + " " + par,
+      score,
+      handicap,
+      stroke,
+      points
+    );
     return points;
   }
-
-  // Function to calculate total points for each player for front 9
-  const calculatePlayerPointsFront9Totals = (playerIndex) => {
-    let total = 0;
-    for (let i = 0; i < 9; i++) {
-      //total += playerScoresFront9[playerIndex][i] - scores[i].points;
-      total += 1;
-    }
-    return total;
-  };
-
-  // Function to calculate total points for each player for back 9
-  const calculatePlayerPointsBack9Totals = (playerIndex) => {
-    let total = 0;
-    for (let i = 9; i < 18; i++) {
-      //total += playerScoresBack9[playerIndex][i - 9] - scores[i].points;
-      total += 1;
-    }
-    return total;
-  };
-
-  // Function to calculate total points for each player for all 18 holes
-  const calculatePlayerPointsTotals = () => {
-    const totals = [];
-    for (let i = 0; i < players.length; i++) {
-      let total = 0;
-      for (let j = 0; j < 18; j++) {
-        if (j < 9) {
-          total += playerScoresFront9[i][j] - scores[j].points + 2;
-        } else {
-          total += playerScoresBack9[i][j - 9] - scores[j].points + 2;
-        }
-      }
-      totals.push(total);
-    }
-    return totals;
-  };
-
-  // Call these functions to get the totals for each player
-  //const playerPointsFront9Totals = calculatePlayerPointsFront9Totals();
-  //const playerPointsBack9Totals = calculatePlayerPointsBack9Totals();
-  //const playerPointsTotals = calculatePlayerPointsTotals();
 
   return (
     <Container maxWidth="xs">
@@ -708,7 +601,6 @@ If the API call is successful, the function logs a success message to the consol
                         players[0].id
                       )
                     }
-                    ref={inputRef}
                   />
                 </div>
                 <div className="griditem">

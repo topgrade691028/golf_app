@@ -7,6 +7,7 @@ import UserCreate from "./PlayerCreate";
 import UserUpdate from "./UserUpdate";
 import ScoreCard from "./ScoreCard";
 import EventLeaderBoard from "./EventLeaderBoard";
+import CreateCompetition from "./CreateCompetition";
 
 export default function App() {
   return (
@@ -19,6 +20,11 @@ export default function App() {
           <Route exact path="/update/:id" component={UserUpdate} />
           <Route exact path="/scorecard" component={ScoreCard} />
           <Route exact path="/eventleaderboard" component={EventLeaderBoard} />
+          <Route
+            exact
+            path="/createcompetition"
+            component={CreateCompetition}
+          />
         </Switch>
       </div>
     </Router>
