@@ -1,14 +1,6 @@
 package com.pr.golf.golfapp.dto;
 
 
-import java.util.Set;
-
-import com.pr.golf.golfapp.model.GolfEvent;
-
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

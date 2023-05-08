@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -32,9 +33,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ScoreCard() {
+  const { id } = useParams();
   const classes = useStyles();
   const [holes, setHoles] = useState([]);
   const [scores, setScores] = useState([]);
+  const [bonusPointRules, setBonusPointRules] = useState([]);
   const [golfEvent, setGolfEvent] = useState({
     id: null,
     name: "",
@@ -47,6 +50,8 @@ export default function ScoreCard() {
 
   const [playerPointsFront9, setPlayerPointsFront9] = useState([[], [], []]); // scores for player A, B, and C for holes 1-9
   const [playerPointsBack9, setPlayerPointsBack9] = useState([[], [], []]); // scores for player A, B, and C for holes 10-18
+
+  const [bonusRuleHoleIndices, setBonusRuleHoleIndices] = useState([]);
 
   const [inputValues, setInputValues] = useState({});
   const [renderKey, setRenderKey] = useState(0);
@@ -63,22 +68,33 @@ export default function ScoreCard() {
   ]);
 
   useEffect(() => {
-    axios.get("http://192.168.0.18:8080/scorecard/1").then((response) => {
+    axios.get(`http://192.168.0.18:8080/scorecard/${id}`).then((response) => {
       setCompetition(response.data.competition);
       setPlayers(response.data.players);
       setPlayerA(response.data.players[0].name);
       setPlayerB(response.data.players[1].name);
+      alert("handicap is " + response.data.players[0].handicap);
       setHandiCapPlayerA(response.data.players[0].handicap);
       setHandiCapPlayerB(response.data.players[1].handicap);
+      setHandiCapPlayerC(response.data.players[2].handicap);
       //etHandiCapPlayerC(res.data.players[3].handicap);
       setHoles(response.data.holes);
       setScores(response.data.scoreDTOs);
+      setBonusPointRules(response.data.bonusPointRules);
       const newPlayerScoresFront9 = [[], [], []];
       const newPlayerScoresBack9 = [[], [], []];
       const newPlayerPointsFront9 = [[], [], []];
       const newPlayerPointsBack9 = [[], [], []];
 
       console.log("scoreDTOs:", JSON.stringify(response.data.scoreDTOs));
+
+      const indices = bonusPointRules.map((rule) => {
+        const index = holes.findIndex(
+          (hole) => hole.holeNumber === rule.holeNumber
+        );
+        return index >= 0 ? index : null;
+      });
+      setBonusRuleHoleIndices(indices);
 
       // initialize all sub-arrays in newPlayerScoresFront9
       for (let i = 0; i < newPlayerScoresFront9.length; i++) {
@@ -219,12 +235,6 @@ export default function ScoreCard() {
       (acc, cur) => acc + cur,
       0
     );
-
-    // update the player points total for the current player
-    //newPlayerPointsFront9[playerIndex] = front9Total;
-    //newPlayerPointsBack9[playerIndex] = back9Total;
-    //setPlayerPointsFront9(newPlayerPointsFront9);
-    //setPlayerPointsFront9(newPlayerPointsBack9);
 
     return points;
   };
@@ -418,6 +428,11 @@ If the API call is successful, the function logs a success message to the consol
     return points;
   }
 
+  const firstLetters = players.map((player) => {
+    const [firstName, lastName] = player.name.split(" ");
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`;
+  });
+
   return (
     <Container maxWidth="xs">
       <form onSubmit={handleSubmit3}>
@@ -460,7 +475,7 @@ If the API call is successful, the function logs a success message to the consol
               <input
                 type="text"
                 className="input"
-                value={players[0]?.handicap || ""}
+                defaultValue={players[0]?.handicap || ""}
               />
             </div>
             <div className="griditem col-2">
@@ -485,7 +500,7 @@ If the API call is successful, the function logs a success message to the consol
               <input
                 type="text"
                 className="input"
-                value={players[1]?.handicap || ""}
+                defaultValue={players[1]?.handicap || ""}
               />
             </div>
             <div className="griditem col-2">
@@ -550,9 +565,9 @@ If the API call is successful, the function logs a success message to the consol
             <div className="griditem">White yards</div>
             <div className="griditem yellow">Yellow yards</div>
             <div className="griditem">Stroke Index</div>
-            <div className="griditem">A</div>
-            <div className="griditem">B</div>
-            <div className="griditem">C</div>
+            <div className="griditem sticky-item">{firstLetters[0]}</div>
+            <div className="griditem sticky-item">{firstLetters[1]}</div>
+            <div className="griditem sticky-item">{firstLetters[2]}</div>
             <div className="griditem">W/L/H</div>
             <div className="griditem red">Red yards</div>
             <div className="griditem red">Par</div>
@@ -562,7 +577,11 @@ If the API call is successful, the function logs a success message to the consol
               <React.Fragment>
                 <div className="griditem"></div>
                 <div
-                  className="griditem"
+                  className={`griditem ${
+                    bonusRuleHoleIndices.includes(index)
+                      ? "bonus-rule-hole"
+                      : ""
+                  }`}
                   id={item.holeNumber}
                   name={item.holeNumber}
                 >
@@ -763,6 +782,25 @@ If the API call is successful, the function logs a success message to the consol
           <button type="submit">Submit</button>
         </div>
       </form>
+
+      <div>
+        {/* Other content */}
+        {bonusPointRules.map((rule, index) => (
+          <div
+            key={rule.id}
+            className={
+              bonusRuleHoleIndices[index] !== null ? "bonus-rule-hole" : ""
+            }
+          >
+            {bonusRuleHoleIndices[index] !== null && (
+              <span className="asterisk">*</span>
+            )}
+            <p>
+              Hole {rule.holeNumber}: {rule.name} ({rule.points} points)
+            </p>
+          </div>
+        ))}
+      </div>
     </Container>
   );
 }

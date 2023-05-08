@@ -51,10 +51,10 @@ create table golfapp.GOLF_LEADER_BOARD(
     total_score int,
     primary key(id),
     foreign key(competition_id)
-        references competition(id)
+        references golfapp.COMPETITION(id)
 );
 
-CREATE TABLE golf_event (
+CREATE TABLE golfapp.golf_event (
   id BIGINT NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   competition_id bigint,
@@ -63,10 +63,10 @@ CREATE TABLE golf_event (
   date date, 
   PRIMARY KEY (id),
   foreign key(competition_id)
-  references competition(id)
+  references golfapp.COMPETITION(id)
 );
 
-CREATE TABLE player (
+CREATE TABLE golfapp.player (
   id BIGINT NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   userName VARCHAR(255) DEFAULT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE player (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE event_player (
+CREATE TABLE golfapp.event_player (
   event_id BIGINT NOT NULL,
   player_id BIGINT NOT NULL,
   PRIMARY KEY (event_id, player_id),
@@ -95,12 +95,12 @@ create table golfapp.HOLE(
     red    int,
     primary key(id),
     foreign key(course_id)
-          references golf_course(id)
+          references golfapp.GOLF_COURSE(id)
 );
 
 create table golfapp.SCORE(
     id int auto_increment,
-    competition_id int ,
+    competition_id bigint ,
     player_id int,
     event_id int,
     par int,
@@ -109,8 +109,7 @@ create table golfapp.SCORE(
     hole_id int,
     stroke int,
     primary key(id),
-    foreign key(competition_id)
-          references competition(id)
+    CONSTRAINT fk_competition FOREIGN KEY (competition_id) REFERENCES golfapp.COMPETITION(id)
 );
 
 create table golfapp.EVENT_LEADER_BOARD(

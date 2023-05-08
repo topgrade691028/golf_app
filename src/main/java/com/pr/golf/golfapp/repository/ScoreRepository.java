@@ -13,11 +13,11 @@ import com.pr.golf.golfapp.model.Score;
 @Repository
 public interface ScoreRepository extends JpaRepository<Score, Long>{
 
-	@Query(value = "SELECT s.*  FROM SCORE s WHERE event_id = :eventId", 
+	@Query(value = "SELECT s.*  FROM score s WHERE event_id = :eventId", 
 			  nativeQuery = true)
     public Optional<List<Score>> findByEventId(@Param("eventId")Long eventId);
 
-	@Query(value = "SELECT s.*  FROM SCORE s WHERE event_id = :eventId "
+	@Query(value = "SELECT s.*  FROM score s WHERE event_id = :eventId "
 																+ " and player_id = :playerId ", 
 			  nativeQuery = true)
 	public Optional<List<Score>> findByEventIdAndPlayerId(@Param("eventId")Long eventId,

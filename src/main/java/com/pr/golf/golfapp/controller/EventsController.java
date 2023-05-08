@@ -35,7 +35,7 @@ public class EventsController {
     }
     
     @GetMapping("/competition/{id}")
-    public List<Event> getEventsByCompetitionId(@PathVariable Long competitionId) {
+    public List<GolfEvent> getEventsByCompetitionId(@PathVariable Long competitionId) {
         return eventRepository.findByCompetitionId(competitionId).orElseThrow(RuntimeException::new);
     }
 

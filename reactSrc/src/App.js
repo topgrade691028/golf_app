@@ -8,6 +8,7 @@ import UserUpdate from "./UserUpdate";
 import ScoreCard from "./ScoreCard";
 import EventLeaderBoard from "./EventLeaderBoard";
 import CreateCompetition from "./CreateCompetition";
+import CreateGolfEvent from "./CreateGolfEvent";
 
 export default function App() {
   return (
@@ -17,8 +18,9 @@ export default function App() {
         <Switch>
           <Route exact path="/" component={Users} />
           <Route exact path="/create" component={UserCreate} />
+          <Route exact path="/creategolfevent" component={CreateGolfEvent} />
           <Route exact path="/update/:id" component={UserUpdate} />
-          <Route exact path="/scorecard" component={ScoreCard} />
+          <Route exact path="/scorecard/:id" component={ScoreCard} />
           <Route exact path="/eventleaderboard" component={EventLeaderBoard} />
           <Route
             exact

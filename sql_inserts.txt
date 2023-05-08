@@ -1,0 +1,32 @@
+INSERT INTO hole (course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES
+(12, 'Hole 1', 1, 4, 9, 380, 341, 327),
+(12, 'Hole 2', 2, 3, 3, 200, 185, 157),
+(12, 'Hole 3', 3, 5, 7, 475, 464, 426),
+(12, 'Hole 4', 4, 5, 17, 350, 334, 455),
+(12, 'Hole 5', 5, 4, 13, 189, 169, 293),
+(12, 'Hole 6', 6, 3, 5, 495, 485, 148),
+(12, 'Hole 7', 7, 4, 1, 372, 307, 337),
+(12, 'Hole 8', 8, 4, 15, 432, 410, 322),
+(12, 'Hole 9', 9, 3, 11, 145, 128, 135),
+(12, 'Hole 10', 10, 4, 8, 465, 443, 291),
+(12, 'Hole 11', 11, 5, 4, 393, 370, 451),
+(12, 'Hole 12', 12, 4, 10, 517, 469, 325),
+(12, 'Hole 13', 13, 3, 14, 474, 462, 158),
+(12, 'Hole 14', 14, 5, 18, 330, 304, 462),
+(12, 'Hole 15', 15, 4, 2, 208, 162, 282),
+(12, 'Hole 16', 16, 4, 6, 373, 351, 397),
+(12, 'Hole 17', 17, 3, 16, 340, 332, 119),
+(12, 'Hole 18', 18, 5, 12, 213, 175, 424);
+
+
+
+insert into golf_event (name, competition_id,venue,type,date) values('Essendon',2,'Essendon', 'STABLEFORD', '2023-05-01');
+
+insert into player (name, username,handicap) values ('Mike Creaton', 'mcreaton', 24), ('John Kerins', 'jkerins',24);
+insert into player (name, username,handicap) values ('Vinnie Guilfoyle', 'vguilfoyle', 19), ('Tom Hanlon', 'thanlon',22);
+insert into player (name, username,handicap) values ('Joe Sink', 'jsink', 24), ('John Kelly', 'jkelly',28);
+ insert into player (name, username,handicap) values ('Sam Walsh', 'swalsh', 14);
+
+
+INSERT INTO golf_event_player (event_id, player_id) VALUES (3,3), (3,8), (3,2);
