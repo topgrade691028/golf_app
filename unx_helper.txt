@@ -1,0 +1,76 @@
+scp /path/to/my-app.jar user@192.0.2.1:/path/on/server/
+scp my-app.jar root@82.180.154.143:/usr/local/
+scp -o "SendEnv PATH" my-app.jar root@82.180.154.143:/usr/local/
+D:\golf-app\build\libs>scp -o "SendEnv PATH" my-app.jar root@82.180.154.143:/usr/local/
+ssh root@82.180.154.143 "echo 'export PATH=\$PATH:/usr/bin' >> ~/.bashrc"
+
+export PATH=$PATH:/usr/bin
+
+
+
+gradlew bootJar
+
+/firewall enable ports
+sudo ufw allow 8080/tcp
+sudo ufw allow 3000/tcp
+sudo firewall-cmd --zone=public --add-port=8080/tcp --permanent
+sudo firewall-cmd --zone=public --add-port=3000/tcp --permanent
+sudo firewall-cmd --reload
+sudo yum install firewalld
+sudo systemctl enable firewalld
+sudo systemctl start firewalld
+
+
+sudo apt update
+sudo apt install ufw
+sudo ufw enable
+
+This command loads the environment variables for all users on the system. Once this is done, try running your SCP command again
+source /etc/profile
+
+scp -o "SendEnv PATH" my-app.jar root@82.180.154.143:/usr/local/ /usr/bin/scp
+
+
+
+*******************************************************************************
+
+Welcome to LiteSpeed One-Click CyberPanel Server.
+To keep this server secure, the firewalld is enabled.
+CyberPanel One-Click Quickstart guide:
+* https://docs.litespeedtech.com/cloud/images/cyberpanel/
+
+In a web browser, you can view:
+* CyberPanel: https://82.180.154.143:8090
+* phpMyAdmin: https://82.180.154.143:8090/dataBases/phpMyAdmin
+* Rainloop:   https://82.180.154.143:8090/rainloop
+
+On the server:
+* You can get the CyberPanel admin password with the following command:
+  sudo cat .litespeed_password
+* You can get the Mysql cyberpanel user password with the following command:
+  sudo cat .db_password
+
+System Status:
+  Load : 0.02, 0.04, 0.05
+  CPU  : 0.419713%
+  RAM  : 173/2048MB (8.45%)
+  Disk : 7/40GB (21%)
+
+Your CyberPanel is up to date
+********************************************************************************
+
+[root@golfapp local]# source /etc/profile
+
+####NPM BUILD STUFF####
+npm run custom-build
+copy bundle.js from dist.jar
+
+npm start
+
+Deploying react app:
+1. Run npm build or npm custom-build.  First one creates everything under /build folder the other under /dist.
+2. Copy contents of either /build/static to src/main/resources/static or dist to src/main/resources/static
+3. Run gradlew bootRun --args='--spring.profiles.active=local'
+4. run on linux server --> nohup java -Dspring.profiles.active=test -jar myapp.jar &
+
+java -jar my-app.jar --spring.profiles.active=local

@@ -78,7 +78,7 @@ CREATE TABLE golfapp.event_player (
   event_id BIGINT NOT NULL,
   player_id BIGINT NOT NULL,
   PRIMARY KEY (event_id, player_id),
-  CONSTRAINT fk_event_player_event FOREIGN KEY (event_id) REFERENCES event (id),
+  CONSTRAINT fk_event_player_event FOREIGN KEY (event_id) REFERENCES golf_event (id),
   CONSTRAINT fk_event_player_player FOREIGN KEY (player_id) REFERENCES player (id)
 );
 

@@ -1,1 +1,5 @@
 mysql -h localhost -u pronane -ppassword golfapp
+
+DingB@t12345
+
+java -jar build/libs/my-app.jar

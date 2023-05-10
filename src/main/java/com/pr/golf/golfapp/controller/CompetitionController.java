@@ -1,6 +1,5 @@
 package com.pr.golf.golfapp.controller;
 
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
