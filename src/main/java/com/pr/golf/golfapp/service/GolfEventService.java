@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 
 import com.pr.golf.golfapp.dto.GolfEventDTO;
 import com.pr.golf.golfapp.dto.PlayerDTO;
@@ -16,6 +15,7 @@ import com.pr.golf.golfapp.mapper.PlayerMapper;
 import com.pr.golf.golfapp.model.GolfEvent;
 import com.pr.golf.golfapp.model.GolfEventPlayer;
 import com.pr.golf.golfapp.model.GolfEventPlayerId;
+import com.pr.golf.golfapp.model.Player;
 import com.pr.golf.golfapp.repository.GolfEventPlayerRepository;
 import com.pr.golf.golfapp.repository.GolfEventRepository;
 
@@ -94,15 +94,10 @@ public class GolfEventService {
 	    	    .collect(Collectors.toList());
 
 	    //golfEventPlayerRepository.saveAll(golfEventPlayers);
-	    saveGolfEventPlayer(golfEventPlayers);
+	    
 		return newEventDTO;
 	}
 
-    @org.springframework.transaction.annotation.Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void saveGolfEventPlayer(List<GolfEventPlayer> golfEventPlayer) {
-        //golfEventPlayerRepository.saveAll(golfEventPlayer);
-    }
-	
 	public void removePlayerFromEvent(Long eventId, Long playerId) {
 		golfEventPlayerRepository.deleteByEventIdAndPlayerId(eventId, playerId);
 	}

@@ -6,7 +6,6 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -42,8 +41,8 @@ public class GolfEvent extends Event {
     @Transient
     private Map<Long, List<Score>> playerScoresMap;
     
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name= "competition_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name= "competition_id", updatable = false)
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private Competition competition;
     
