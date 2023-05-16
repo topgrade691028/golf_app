@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebSecurity implements WebMvcConfigurer {
  
     public void addCorsMappings(CorsRegistry reg) {
-        reg.addMapping("/**").allowedOrigins("*");
+        reg.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST","PUT", "DELETE");
     }
 	
     @Override

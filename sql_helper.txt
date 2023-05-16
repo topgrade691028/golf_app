@@ -3,3 +3,37 @@ mysql -h localhost -u pronane -ppassword golfapp
 DingB@t12345
 
 java -jar build/libs/my-app.jar
+
+1. Drop ALL Constraints in the schema:
+SELECT CONCAT('ALTER TABLE ', TABLE_NAME, ' DROP FOREIGN KEY ', CONSTRAINT_NAME, ';') AS drop_statement
+FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+WHERE CONSTRAINT_TYPE = 'FOREIGN KEY'
+  AND CONSTRAINT_SCHEMA = 'golfapp';
+
+----------------------------------------------------------------------------------+
+| drop_statement                                                                   |
++----------------------------------------------------------------------------------+
+| ALTER TABLE competition_player DROP FOREIGN KEY fk_competition_player_player;    |
+| ALTER TABLE golf_event_player DROP FOREIGN KEY fk_event_player_event;            |
+| ALTER TABLE golf_event_player DROP FOREIGN KEY fk_event_player_player;           |
+| ALTER TABLE golf_leader_board DROP FOREIGN KEY fk_golf_leader_board_competition; |
+| ALTER TABLE hole DROP FOREIGN KEY hole_ibfk_1;                                   |
+| ALTER TABLE score DROP FOREIGN KEY score_ibfk_1;                                 |
++----------------------------------------------------------------------------------+
+
+Step 3 Update Table columns:
+ALTER TABLE competition_player MODIFY COLUMN player_id BIGINT NOT NULL;
+ALTER TABLE golf_event_player MODIFY COLUMN event_id BIGINT NOT NULL;
+ALTER TABLE golf_event_player MODIFY COLUMN player_id BIGINT NOT NULL;
+ALTER TABLE golf_leader_board MODIFY COLUMN competition_id BIGINT NOT NULL;
+ALTER TABLE hole MODIFY COLUMN id BIGINT NOT NULL;
+ALTER TABLE score MODIFY COLUMN competition_id BIGINT NOT NULL;
+
+
+Step 4: Add Constraints back:
+ALTER TABLE competition_player ADD CONSTRAINT fk_competition_player_player FOREIGN KEY (player_id) REFERENCES player (id);
+ALTER TABLE golf_event_player ADD CONSTRAINT fk_event_player_event FOREIGN KEY (event_id) REFERENCES golf_event (id);
+ALTER TABLE golf_event_player ADD CONSTRAINT fk_event_player_player FOREIGN KEY (player_id) REFERENCES player (id);
+ALTER TABLE golf_leader_board ADD CONSTRAINT fk_golf_leader_board_competition FOREIGN KEY (competition_id) REFERENCES competition (id);
+ALTER TABLE hole ADD CONSTRAINT hole_ibfk_1 FOREIGN KEY (id) REFERENCES competition (id);
+ALTER TABLE score ADD CONSTRAINT score_ibfk_1 FOREIGN KEY (competition_id) REFERENCES competition (id);

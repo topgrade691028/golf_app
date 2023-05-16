@@ -6,7 +6,7 @@ function Leaderboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/scores/event/1");
+        const response = await fetch("http://192.168.0.18:8080/scores/event/1");
         const data = await response.json();
         if (Array.isArray(data)) {
           setEventLeaderboard(data);

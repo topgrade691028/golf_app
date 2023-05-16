@@ -1,4 +1,7 @@
- spring:
+spring:
+  main:
+    logging:
+      config: classpath:logback-spring.yml
   datasource:
     url: jdbc:mariadb://localhost:3306/golfapp
     username: pronane
@@ -6,6 +9,10 @@
     driverClassName: org.mariadb.jdbc.Driver
   jpa:
     properties:
-     hibernate:
-      dialect: org.hibernate.dialect.MariaDB103Dialect
-      enable_lazy_load_no_trans: true
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDB103Dialect
+        enable_lazy_load_no_trans: true
+  logging:
+    level:
+      org.springframework.jdbc.core: DEBUG
+      org.hibernate.SQL: DEBUG

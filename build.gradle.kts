@@ -22,6 +22,9 @@ dependencies {
 	implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
 
 	implementation("net.sourceforge.tess4j:tess4j:4.5.1")
+	
+	implementation("ch.qos.logback:logback-classic:1.4.6")
+	
 
 	compileOnly("org.projectlombok:lombok:1.18.26")
 	annotationProcessor("org.projectlombok:lombok:1.18.26")

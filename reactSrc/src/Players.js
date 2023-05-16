@@ -43,7 +43,7 @@ export default function UserList() {
   }, []);
 
   const UsersGet = () => {
-    fetch("http://localhost:8080/players/eventId/1", {
+    fetch("http://192.168.0.18:8080/players/eventId/1", {
       method: "GET",
       headers: {
         Accept: "application/json",

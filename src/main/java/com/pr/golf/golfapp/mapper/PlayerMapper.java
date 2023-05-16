@@ -20,11 +20,18 @@ public class PlayerMapper {
                 .build())
             .collect(Collectors.toList());
 
-
-       /* GolfCourse course = golfCourseRepository.findById(dto.getCourseId())
-                .orElseThrow(() -> new IllegalArgumentException("Course with ID " + dto.getCourseId() + " not found"));
-        entity.setGolfCourse(course);
-		*/
         return playerDTOs;
+    }
+    
+    public List<Player> toEntity(List<PlayerDTO> playerDTO) {
+        List<Player> playerEntitys = playerDTO.stream()
+            .map(player -> Player.builder()
+            	.id(player.getId())
+                .handicap(player.getHandicap())
+                .name(player.getName())
+                .build())
+            .collect(Collectors.toList());
+
+        return playerEntitys;
     }
 }

@@ -19,6 +19,7 @@ import lombok.ToString;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@jakarta.persistence.Table(name="player")
 @Getter
 @Builder
 @Setter

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pr.golf.golfapp.dto.BonusPointRule;
+import com.pr.golf.golfapp.dto.GolfEventDTO;
 import com.pr.golf.golfapp.dto.HoleDTO;
 import com.pr.golf.golfapp.dto.PlayerDTO;
 import com.pr.golf.golfapp.dto.ScoreDTO;
@@ -88,7 +89,7 @@ public class ScoreCardController {
 						.build())
 				.collect(Collectors.toList());
 
-		Optional<GolfEvent> golfEvent = golfEventService.getGolfEventById(id);
+		Optional<GolfEventDTO> golfEvent = golfEventService.getGolfEventById(id);
 
 		Optional<List<Score>> scores = scoreService.findScoresByEventId(id);
 
@@ -99,7 +100,7 @@ public class ScoreCardController {
 		ScoreCardResponseBody scoreCardResponseBody = ScoreCardResponseBody.builder()
 				.holes(holeDtos)
 				.players(playerDtos)
-				.golfEvent(GolfEvent.builder().id(golfEvent.get().getId()).name(golfEvent.get().getName()).build())
+				.golfEventDTO(golfEvent.get())
 				.scoreDTOs(scoreDtos).competition(competition)
 				.bonusPointRules(List.of(
 						BonusPointRule.builder().comeptitionId(competition.getId()).name("Closest to the pin").points(5)

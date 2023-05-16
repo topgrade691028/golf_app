@@ -1,0 +1,25 @@
+# Logback configuration
+logging:
+  level:
+    root: INFO
+    org.springframework.jdbc.core: DEBUG
+    org.hibernate.SQL: DEBUG
+
+# Console Appender
+appender:
+  console:
+    type: ch.qos.logback.core.ConsoleAppender
+    encoder:
+      pattern: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+# Logger Configuration
+logger:
+  console:
+    level: INFO
+    appender: console
+
+# Root Logger Configuration
+root:
+  level: INFO
+  appender:
+    - console

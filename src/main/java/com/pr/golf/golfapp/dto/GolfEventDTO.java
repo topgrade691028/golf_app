@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import com.pr.golf.golfapp.enums.Type;
+import com.pr.golf.golfapp.enums.GolfEventType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,8 +24,9 @@ public class GolfEventDTO {
 	private Long id;
 	private String name;
 	private String venue;
-	private Type type;
+	private GolfEventType type;
+	private CompetitionDTO competition;
 	private Date date;
 	private List<ScoreDTO> scores;
-	private Set<PlayerDTO> players;
+	private List<PlayerDTO> players;
 }

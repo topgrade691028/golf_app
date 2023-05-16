@@ -73,7 +73,7 @@ export default function ScoreCard() {
       setPlayers(response.data.players);
       setPlayerA(response.data.players[0].name);
       setPlayerB(response.data.players[1].name);
-      alert("handicap is " + response.data.players[0].handicap);
+
       setHandiCapPlayerA(response.data.players[0].handicap);
       setHandiCapPlayerB(response.data.players[1].handicap);
       setHandiCapPlayerC(response.data.players[2].handicap);
@@ -88,13 +88,20 @@ export default function ScoreCard() {
 
       console.log("scoreDTOs:", JSON.stringify(response.data.scoreDTOs));
 
-      const indices = bonusPointRules.map((rule) => {
-        const index = holes.findIndex(
-          (hole) => hole.holeNumber === rule.holeNumber
-        );
-        return index >= 0 ? index : null;
-      });
+      const indices = response.data.bonusPointRules
+        .map((rule) => {
+          const index = holes.findIndex(
+            (hole) => hole.holeNumber === rule.holeNumber
+          );
+          return index >= 0 ? index : null;
+        })
+        .filter((index) => index !== null); // Filter out any null values
+
+      setBonusPointRules(response.data.bonusPointRules);
       setBonusRuleHoleIndices(indices);
+
+      console.log("bonusPointRules", response.data.bonusPointRules);
+      console.log("bonusPointRulesIndices", indices); // Add this line
 
       // initialize all sub-arrays in newPlayerScoresFront9
       for (let i = 0; i < newPlayerScoresFront9.length; i++) {
@@ -160,6 +167,10 @@ export default function ScoreCard() {
     console.log("Log this");
   }, []);
 
+  useEffect(() => {
+    console.log("bonusPointRules in updated useEffect", bonusPointRules);
+  }, [bonusPointRules]);
+
   const handleChange = (
     event,
     index,
@@ -173,7 +184,6 @@ export default function ScoreCard() {
     const { value } = event.target;
     let inputScore = value.value;
 
-    //alert(event.target.value);
     inputScore = event.target.value;
     const playerIndex = getPlayerIndex(playerId, players);
     const holeIndex = getHoleIndex(holeNumber, players);

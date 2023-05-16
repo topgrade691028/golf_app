@@ -20,9 +20,9 @@
     private Long competitionId;
 
 drop table golfapp.golf_course;
-drop table golfapp.GOLF_EVENT;
-drop table golfapp.COMPETITION;
-drop table golfapp.PLAYER;
+drop table golfapp.golf_event;
+drop table golfapp.competition;
+drop table golfapp.player;
 drop table golfapp.GOLF_LEADER_BOARD;
 drop table golfapp.score;
 
@@ -33,16 +33,16 @@ create table golfapp.golf_course(
     primary key(id)
 );
 
-create table golfapp.COMPETITION(
-    id bigint auto_increment,
+create table golfapp.competition(
+    id BIGINT auto_increment,
     name varchar(40) not null, 
     competition_type varchar(20) null, 
     primary key(id)
 );
 
-create table golfapp.GOLF_LEADER_BOARD(
-    id bigint auto_increment,
-    competition_id bigint ,
+create table golfapp.golf_leader_board(
+    id BIGINT auto_increment,
+    competition_id BIGINT ,
     player_id int,
     avg_score_per_round int,
     best_five_total_round int,
@@ -57,7 +57,7 @@ create table golfapp.GOLF_LEADER_BOARD(
 CREATE TABLE golfapp.golf_event (
   id BIGINT NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
-  competition_id bigint,
+  competition_id BIGINT,
   venue VARCHAR(255) DEFAULT NULL,
   type VARCHAR(255) DEFAULT NULL,
   date date, 
@@ -74,7 +74,15 @@ CREATE TABLE golfapp.player (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE golfapp.event_player (
+CREATE TABLE golfapp.competition_player (
+  competition_id BIGINT NOT NULL,
+  player_id BIGINT NOT NULL,
+  PRIMARY KEY (competition_id, player_id),
+  CONSTRAINT fk_competition_player_competition FOREIGN KEY (competition_id) REFERENCES competition (id),
+  CONSTRAINT fk_competition_player_player FOREIGN KEY (player_id) REFERENCES player (id)
+);
+
+CREATE TABLE golfapp.golf_event_player (
   event_id BIGINT NOT NULL,
   player_id BIGINT NOT NULL,
   PRIMARY KEY (event_id, player_id),
@@ -84,7 +92,7 @@ CREATE TABLE golfapp.event_player (
 
 
 create table golfapp.HOLE(
-    id int auto_increment,
+    id BIGINT auto_increment,
     course_id int,
     name varchar(20),
     hole_number int,
@@ -99,8 +107,8 @@ create table golfapp.HOLE(
 );
 
 create table golfapp.SCORE(
-    id int auto_increment,
-    competition_id bigint ,
+    id BIGINT auto_increment,
+    competition_id BIGINT ,
     player_id int,
     event_id int,
     par int,
@@ -142,4 +150,9 @@ VALUES
 (NULL, 1, 1, NULL, 5, 2, 51),
 (NULL, 2, 1, NULL, 5, 3, 50),
 (NULL, 2, 1, NULL, 5, 2, 51);
+
+INSERT INTO golfapp.competition_player (competition_id, player_id) VALUES ((SELECT id FROM golfapp.competition WHERE name = 'pauls test'), 1);
+INSERT INTO golfapp.competition_player (competition_id, player_id) VALUES ((SELECT id FROM golfapp.competition WHERE name = 'pauls test'), 2);
+INSERT INTO golfapp.competition_player (competition_id, player_id) VALUES ((SELECT id FROM golfapp.competition WHERE name = 'pauls test'), 3);
+
 

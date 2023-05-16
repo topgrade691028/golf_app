@@ -16,17 +16,23 @@ export default function App() {
       <div>
         <Navbar />
         <Switch>
-          <Route exact path="/" component={Users} />
-          <Route exact path="/create" component={UserCreate} />
-          <Route exact path="/creategolfevent" component={CreateGolfEvent} />
-          <Route exact path="/update/:id" component={UserUpdate} />
-          <Route exact path="/scorecard/:id" component={ScoreCard} />
-          <Route exact path="/eventleaderboard" component={EventLeaderBoard} />
-          <Route
-            exact
-            path="/createcompetition"
-            component={CreateCompetition}
-          />
+          <Switch>
+            <Route exact path="/" component={Users} />
+            <Route exact path="/create" component={UserCreate} />
+            <Route exact path="/creategolfevent" component={CreateGolfEvent} />
+            <Route exact path="/scorecardview/:id" component={ScoreCard} />
+            <Route exact path="/update/:id" component={UserUpdate} />
+            <Route
+              exact
+              path="/eventleaderboard"
+              component={EventLeaderBoard}
+            />
+            <Route
+              exact
+              path="/createcompetition"
+              component={CreateCompetition}
+            />
+          </Switch>
         </Switch>
       </div>
     </Router>

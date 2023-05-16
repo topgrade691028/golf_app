@@ -3,7 +3,6 @@ package com.pr.golf.golfapp.model;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -15,6 +14,9 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,6 +25,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Entity
+@Table(name="golf_event")
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true)
@@ -39,7 +42,7 @@ public class GolfEvent extends Event {
     @Transient
     private Map<Long, List<Score>> playerScoresMap;
     
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name= "competition_id")
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     private Competition competition;
@@ -50,9 +53,18 @@ public class GolfEvent extends Event {
     @OneToMany(mappedBy="event", fetch = FetchType.LAZY)
     private List<Score> scores;
     
-    @ManyToMany
+    @ManyToMany(fetch=FetchType.LAZY)
     @JoinTable(name = "golf_event_player",
                joinColumns = @JoinColumn(name = "event_id"),
                inverseJoinColumns = @JoinColumn(name = "player_id"))
-    private Set<Player> players;
+    private List<Player> players;
+    
+    @PrePersist
+    @PreUpdate
+    private void validate() {
+        if (this.getName() == null || this.getName().isEmpty()) {
+            throw new IllegalArgumentException("GolfEvent name cannot be null or empty");
+        }
+        System.out.print("Getname is " + getName());
+    }
 }

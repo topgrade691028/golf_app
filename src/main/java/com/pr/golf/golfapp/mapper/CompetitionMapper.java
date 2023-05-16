@@ -8,12 +8,14 @@ import org.springframework.stereotype.Component;
 
 import com.pr.golf.golfapp.dto.CompetitionDTO;
 import com.pr.golf.golfapp.model.Competition;
+import com.pr.golf.golfapp.service.GolfEventService;
 
 @Component
 public class CompetitionMapper {
 	
 	@Autowired
 	private GolfEventMapper golfEventMapper;
+	
 	
 	public CompetitionMapper(@Autowired GolfEventMapper golfEventMapper) {
 		this.golfEventMapper = golfEventMapper;
@@ -35,4 +37,18 @@ public class CompetitionMapper {
 
         return competitionDTOs;
     }
+
+	public Competition toEntity(CompetitionDTO competitionDTO) {
+    	Competition competition = Competition.builder()
+                				.id(competitionDTO.getId())
+                				.competitionType(competitionDTO.getCompetitionType())
+                				.events(golfEventMapper.toEntity(competitionDTO.getEvents()))
+                				.name(competitionDTO.getName())
+                	            .build();
+
+                				
+
+
+        return competition;
+	}
 }

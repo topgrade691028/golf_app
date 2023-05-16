@@ -9,14 +9,21 @@ import jakarta.persistence.Converter;
 @Converter(autoApply = true)
 public class CompetitionTypeConverter implements AttributeConverter<CompetitionType, String> {
 
-    @Override
-    public String convertToDatabaseColumn(CompetitionType attribute) {
-        return attribute.name();
-    }
+	@Override
+	public String convertToDatabaseColumn(CompetitionType attribute) {
+	    if (attribute == null) {
+	        return null;
+	    }
+	    return attribute.name();
+	}
 
-    @Override
-    public CompetitionType convertToEntityAttribute(String dbData) {
-        return CompetitionType.valueOf(dbData);
-    }
+	@Override
+	public CompetitionType convertToEntityAttribute(String dbData) {
+	    if (dbData == null) {
+	        return null;
+	    }
+	    return CompetitionType.valueOf(dbData);
+	}
+
 
 }

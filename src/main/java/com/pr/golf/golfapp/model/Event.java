@@ -1,7 +1,8 @@
 package com.pr.golf.golfapp.model;
 
-import com.pr.golf.golfapp.enums.Type;
+import com.pr.golf.golfapp.enums.GolfEventType;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,10 +25,11 @@ public class Event {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+	@Column(name="name")
     private String name;
 
     public String venue;
 
-    public Type type;
+    public GolfEventType type;
 
 }
