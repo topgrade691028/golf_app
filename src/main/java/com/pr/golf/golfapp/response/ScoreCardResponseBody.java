@@ -26,6 +26,8 @@ import lombok.ToString;
 @ToString
 public class ScoreCardResponseBody {
 	
+	private long scoreCardId;
+	
 	private Competition competition;
 	
 	private GolfEventDTO golfEventDTO;

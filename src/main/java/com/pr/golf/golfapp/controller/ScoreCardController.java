@@ -10,21 +10,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pr.golf.golfapp.dto.BonusPointRule;
 import com.pr.golf.golfapp.dto.GolfEventDTO;
 import com.pr.golf.golfapp.dto.HoleDTO;
 import com.pr.golf.golfapp.dto.PlayerDTO;
+import com.pr.golf.golfapp.dto.ScoreCardDTO;
 import com.pr.golf.golfapp.dto.ScoreDTO;
 import com.pr.golf.golfapp.enums.CompetitionType;
 import com.pr.golf.golfapp.mapper.PlayerMapper;
 import com.pr.golf.golfapp.mapper.ScoreMapper;
 import com.pr.golf.golfapp.model.Competition;
 import com.pr.golf.golfapp.model.GolfCourse;
-import com.pr.golf.golfapp.model.GolfEvent;
 import com.pr.golf.golfapp.model.Player;
 import com.pr.golf.golfapp.model.Score;
+import com.pr.golf.golfapp.model.ScoreCard;
 import com.pr.golf.golfapp.response.ScoreCardResponseBody;
 import com.pr.golf.golfapp.service.GolfCourseService;
 import com.pr.golf.golfapp.service.GolfEventService;
@@ -60,6 +62,17 @@ public class ScoreCardController {
 		this.playerMapper = playerMapper;
 	}
 
+	 @GetMapping("/retrievescorecards")
+	    public List<ScoreCardDTO> getScoreCards(@RequestParam(required = false) String eventId,
+	            								@RequestParam(required = false) String scoreCardId,
+	            								@RequestParam(required = false) String scoreCardTitle) {
+	        //return scoreCardService.getScoreCards(eventId, scoreCardId, scoreCardTitle);
+		 	return List.of(ScoreCardDTO.builder()
+		 						.id(3l)
+		 						.title("Darragh")
+		 						.build());
+	    }
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<ScoreCardResponseBody> getScoreCard(@PathVariable Long id) {
 		System.out.println("Got here in ScoreCardControler");
