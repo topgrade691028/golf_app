@@ -155,4 +155,46 @@ INSERT INTO golfapp.competition_player (competition_id, player_id) VALUES ((SELE
 INSERT INTO golfapp.competition_player (competition_id, player_id) VALUES ((SELECT id FROM golfapp.competition WHERE name = 'pauls test'), 2);
 INSERT INTO golfapp.competition_player (competition_id, player_id) VALUES ((SELECT id FROM golfapp.competition WHERE name = 'pauls test'), 3);
 
+INSERT INTO golf_course (name, address) VALUES ('Kilsworth Springs', NULL);
+
+
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (1, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'Quarryside', 1, 4, 12, 355, 349, 332);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (2, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'Bill Atkin’s Way', 2, 3, 6, 167, 141, 124);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (3, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'Fordsway', 3, 5, 18, 504, 494, 478);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (4, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'The Cut', 4, 4, 2, 428, 414, 388);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (5, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'Nick Melvin''s Way', 5, 4, 14, 374, 358, 335);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (6, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'Devil''s Toenail', 6, 3, 4, 149, 140, 127);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (7, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'Hobby''s Retreat', 7, 4, 8, 368, 358, 32);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (8, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'The Furrow', 8, 5, 16, 496, 483, 459);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (9, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'The Dell', 9, 4, 10, 391, 377, 353);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (10, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'Old Bottles', 10, 5, 9, 532, 516, 483);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (11, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'Red Shank', 11, 3, 15, 162, 146, 124);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (12, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'Roger''s Place', 12, 4, 3, 417, 412, 348);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (13, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'Lakeside', 13, 4, 1, 367, 360, 335);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (14, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'Bridleway', 14, 4, 17, 345, 335, 308);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (15, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'The Summit', 15, 5, 13, 469, 458, 390);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (16, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'Poppy Bank', 16, 4, 7, 396, 384, 358);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (17, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'Up or Down', 17, 4, 5, 388, 379, 368);
+INSERT INTO hole (id, course_id, name, hole_number, par, stroke, white, yellow, red)
+VALUES (18, (SELECT id FROM golf_course WHERE name = 'Kilsworth springs'), 'The Old Fort', 18, 3, 11, 201, 174, 155);
+
+
+
 
