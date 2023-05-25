@@ -9,6 +9,12 @@ import ScoreCard from "./ScoreCard";
 import EventLeaderBoard from "./EventLeaderBoard";
 import CreateCompetition from "./CreateCompetition";
 import CreateGolfEvent from "./CreateGolfEvent";
+import ViewGolfEvent from "./ViewGolfEvent";
+import ViewCompetition from "./ViewCompetition";
+import ViewCompetitionEvents from "./ViewCompetitionEvents";
+import ViewScoreCards from "./ViewScoreCards";
+import RegisterPlayers from "./RegisterPlayers";
+import { apiUrl } from "./config";
 
 export default function App() {
   return (
@@ -17,20 +23,83 @@ export default function App() {
         <Navbar />
         <Switch>
           <Switch>
-            <Route exact path="/" component={Users} />
-            <Route exact path="/create" component={UserCreate} />
-            <Route exact path="/creategolfevent" component={CreateGolfEvent} />
-            <Route exact path="/scorecardview/:id" component={ScoreCard} />
-            <Route exact path="/update/:id" component={UserUpdate} />
+            <Route
+              exact
+              path="/"
+              component={(props) => <Users {...props} apiUrl={apiUrl} />}
+            />
+            <Route
+              exact
+              path="/create"
+              component={(props) => <UserCreate {...props} apiUrl={apiUrl} />}
+            />
+            <Route
+              exact
+              path="/creategolfevent/:competitionId?"
+              component={(props) => (
+                <CreateGolfEvent
+                  {...props}
+                  apiUrl={apiUrl}
+                  competitionId={props.match.params.competitionId}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/viewGolfEvent"
+              component={(props) => (
+                <ViewGolfEvent {...props} apiUrl={apiUrl} />
+              )}
+            />
+            <Route
+              exact
+              path="/registerplayers"
+              component={(props) => (
+                <RegisterPlayers {...props} apiUrl={apiUrl} />
+              )}
+            />
+            <Route
+              exact
+              path="/scorecardview/:id"
+              render={(props) => <ScoreCard {...props} apiUrl={apiUrl} />}
+            />
+            <Route
+              exact
+              path="/ViewScoreCards"
+              render={(props) => <ViewScoreCards {...props} apiUrl={apiUrl} />}
+            />
+            <Route
+              exact
+              path="/update/:id"
+              component={(props) => <UserUpdate {...props} apiUrl={apiUrl} />}
+            />
             <Route
               exact
               path="/eventleaderboard"
-              component={EventLeaderBoard}
+              component={(props) => (
+                <EventLeaderBoard {...props} apiUrl={apiUrl} />
+              )}
             />
             <Route
               exact
               path="/createcompetition"
-              component={CreateCompetition}
+              component={(props) => (
+                <CreateCompetition {...props} apiUrl={apiUrl} />
+              )}
+            />
+            <Route
+              exact
+              path="/viewcompetition"
+              component={(props) => (
+                <ViewCompetition {...props} apiUrl={apiUrl} />
+              )}
+            />
+            <Route
+              exact
+              path="/viewcompetitionevents"
+              component={(props) => (
+                <ViewCompetitionEvents {...props} apiUrl={apiUrl} />
+              )}
             />
           </Switch>
         </Switch>

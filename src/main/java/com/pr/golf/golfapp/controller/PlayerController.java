@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pr.golf.golfapp.dto.PlayerDTO;
 import com.pr.golf.golfapp.model.Player;
 import com.pr.golf.golfapp.service.PlayerService;
 
@@ -62,5 +63,12 @@ public class PlayerController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<Player> getPlayersForEvent(@PathVariable Long eventId) {
         return playerService.findPlayersByEventId(eventId).orElseThrow(RuntimeException::new);
+    }
+
+    @RequestMapping(value = "/getallplayers",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Collection<PlayerDTO> getAllPlayers() {
+        return playerService.getAllPlayers().orElseThrow(RuntimeException::new);
     }
 }

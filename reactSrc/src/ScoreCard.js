@@ -32,7 +32,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ScoreCard() {
+export default function ScoreCard(props) {
+  const apiUrl = props.apiUrl;
+  console.log("apiUrl is now", apiUrl);
+
+  // rest of the component code
   const { id } = useParams();
   const classes = useStyles();
   const [holes, setHoles] = useState([]);
@@ -68,19 +72,22 @@ export default function ScoreCard() {
   ]);
 
   useEffect(() => {
-    axios.get(`http://192.168.0.18:8080/scorecard/${id}`).then((response) => {
+    alert("apiUrl is " + apiUrl);
+    axios.get(`${apiUrl}/scorecard/${id}`).then((response) => {
       setCompetition(response.data.competition);
-      setPlayers(response.data.players);
-      setPlayerA(response.data.players[0].name);
-      setPlayerB(response.data.players[1].name);
+      setPlayers(response?.data?.players);
+      setPlayerA(response?.data?.players?.[0]?.name);
+      setPlayerB(response?.data?.players?.[1]?.name);
 
-      setHandiCapPlayerA(response.data.players[0].handicap);
-      setHandiCapPlayerB(response.data.players[1].handicap);
-      setHandiCapPlayerC(response.data.players[2].handicap);
-      //etHandiCapPlayerC(res.data.players[3].handicap);
-      setHoles(response.data.holes);
-      setScores(response.data.scoreDTOs);
-      setBonusPointRules(response.data.bonusPointRules);
+      setHandiCapPlayerA(response?.data?.players?.[0]?.handicap);
+      setHandiCapPlayerB(response?.data?.players?.[1]?.handicap);
+      setHandiCapPlayerC(response?.data?.players?.[2]?.handicap);
+      setHandiCapPlayerD(response?.data?.players?.[3]?.handicap);
+      // setHandiCapPlayerC(res?.data?.players?.[3]?.handicap);
+      setHoles(response?.data?.holes);
+      setScores(response?.data?.scoreDTOs);
+      setBonusPointRules(response?.data?.bonusPointRules);
+
       const newPlayerScoresFront9 = [[], [], []];
       const newPlayerScoresBack9 = [[], [], []];
       const newPlayerPointsFront9 = [[], [], []];
@@ -306,13 +313,14 @@ export default function ScoreCard() {
   const [handicapPlayerA, setHandiCapPlayerA] = useState("");
   const [handicapPlayerB, setHandiCapPlayerB] = useState("");
   const [handicapPlayerC, setHandiCapPlayerC] = useState("");
+  const [handicapPlayerD, setHandiCapPlayerD] = useState("");
 
   /**
    * The handleSubmit3 function is an event handler that is called when the user submits a form. It first prevents the default form submission behavior using event.preventDefault(). Then, it declares an empty array playerValues to store the score data for all players.
 
 The function then loops through all the players using a for loop, and for each player, it maps over the data array to extract the score data for each hole. The inputId and inputValue variables are used to get the input value for each hole from the HTML DOM using document.getElementById(). The inputIdForHandicap variable is used to get the player's handicap value.
 
-The playerData object is created using the extracted data and is pushed into the playerValues array. Finally, the function calls the API to submit the score object to the server by making a POST request to the http://192.168.0.18:8080/scores endpoint with the playerValues array as the request body.
+The playerData object is created using the extracted data and is pushed into the playerValues array. Finally, the function calls the API to submit the score object to the server by making a POST request to the ${apiUrl}/scores endpoint with the playerValues array as the request body.
 
 If the API call is successful, the function logs a success message to the console. If there is an error, it logs an error message to the console.
    * 
@@ -368,7 +376,7 @@ If the API call is successful, the function logs a success message to the consol
     }
 
     // Call the API to submit the score object
-    fetch("http://192.168.0.18:8080/scores", {
+    fetch("${apiUrl}/scores", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -616,7 +624,11 @@ If the API call is successful, the function logs a success message to the consol
                     label="playerAScore"
                     data-hole-number={item.holeNumber}
                     data-id={item.id}
-                    defaultValue={getPlayerScoreForHole(players[0].id, item.id)}
+                    defaultValue={
+                      players[0]?.id && item?.id
+                        ? getPlayerScoreForHole(players[0].id, item.id)
+                        : ""
+                    }
                     id={players[0]?.id && `${players[0].id}-${item.holeNumber}`}
                     onChange={(event) =>
                       handleChange(
@@ -637,7 +649,11 @@ If the API call is successful, the function logs a success message to the consol
                     type="text"
                     className="input"
                     label="playerBScore"
-                    defaultValue={getPlayerScoreForHole(players[1].id, item.id)}
+                    defaultValue={
+                      players[0]?.id && item?.id
+                        ? getPlayerScoreForHole(players[1].id, item.id)
+                        : ""
+                    }
                     id={players[1]?.id && `${players[1].id}-${item.holeNumber}`}
                     onChange={(event) =>
                       handleChange(
@@ -658,6 +674,11 @@ If the API call is successful, the function logs a success message to the consol
                     type="text"
                     className="input"
                     label="playerCScore"
+                    defaultValue={
+                      players[2]?.id && item?.id
+                        ? getPlayerScoreForHole(players[2].id, item.id)
+                        : ""
+                    }
                     //defaultValue={getPlayerScoreForHole(players[2].id, item.id)}
                     id={players[2]?.id && `${players[2].id}-${item.holeNumber}`}
                     onChange={(event) =>
@@ -675,7 +696,31 @@ If the API call is successful, the function logs a success message to the consol
                   />
                 </div>
                 <div className="griditem">
-                  <input type="text" className="input" />
+                  <input
+                    type="text"
+                    className="input"
+                    label="playerDScore"
+                    data-hole-number={item.holeNumber}
+                    data-id={item.id}
+                    defaultValue={
+                      players[3]?.id && item?.id
+                        ? getPlayerScoreForHole(players[3].id, item.id)
+                        : ""
+                    }
+                    id={players[0]?.id && `${players[3].id}-${item.holeNumber}`}
+                    onChange={(event) =>
+                      handleChange(
+                        event,
+                        index,
+                        item.par,
+                        item.stroke,
+                        handicapPlayerD,
+                        item.holeNumber,
+                        item.id,
+                        players[3].id
+                      )
+                    }
+                  />
                 </div>
                 <div className="griditem red">
                   <input type="text" className="input" />

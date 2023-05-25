@@ -22,5 +22,4 @@ public interface GolfEventRepository extends JpaRepository<GolfEvent, Long> {
 	@Query(value = "SELECT * FROM golf_event WHERE CASE WHEN :searchType = 'name' THEN name LIKE CONCAT('%', :searchText, '%') WHEN :searchType = 'competitionId' THEN competition_id = CAST(:searchText AS UNSIGNED) ELSE FALSE END", nativeQuery = true)
 	List<GolfEvent> searchGolfEvents(@Param("searchText") String searchText, @Param("searchType") String searchType);
 
-
 }

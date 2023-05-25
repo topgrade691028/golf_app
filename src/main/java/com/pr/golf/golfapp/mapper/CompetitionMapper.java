@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import com.pr.golf.golfapp.dto.CompetitionDTO;
 import com.pr.golf.golfapp.model.Competition;
-import com.pr.golf.golfapp.service.GolfEventService;
 
 @Component
 public class CompetitionMapper {

@@ -185,6 +185,30 @@ export default function App() {
               </Link>
               <Link
                 className={classes.navlink}
+                to="/viewGolfevent"
+                onClick={() => setOpen(false)}
+              >
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon>
+                    <PersonAddIcon style={{ color: "#fff" }} />
+                  </ListItemIcon>
+                  <ListItemText primary="View Golf Event" />
+                </ListItem>
+              </Link>
+              <Link
+                className={classes.navlink}
+                to="/viewScoreCards"
+                onClick={() => setOpen(false)}
+              >
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon>
+                    <PersonAddIcon style={{ color: "#fff" }} />
+                  </ListItemIcon>
+                  <ListItemText primary="View Score Cards" />
+                </ListItem>
+              </Link>
+              <Link
+                className={classes.navlink}
                 to="/eventleaderboard"
                 onClick={() => setOpen(false)}
               >
@@ -244,6 +268,18 @@ export default function App() {
                     <VisibilityIcon style={{ color: "#fff" }} />
                   </ListItemIcon>
                   <ListItemText primary="View Competition" />
+                </ListItem>
+              </Link>
+              <Link
+                className={classes.navlink}
+                to="/registerplayers"
+                onClick={() => setOpen(false)}
+              >
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon>
+                    <VisibilityIcon style={{ color: "#fff" }} />
+                  </ListItemIcon>
+                  <ListItemText primary="Register Players" />
                 </ListItem>
               </Link>
               <Link

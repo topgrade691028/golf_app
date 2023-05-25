@@ -4,5 +4,8 @@ import "./index.css";
 import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+const apiUrl = process.env.API_URL || "http://localhost:8080";
+
+ReactDOM.render(<App apiUrl={apiUrl} />, document.getElementById("root"));
+//ReactDOM.render(<App />, document.getElementById("root"));
 registerServiceWorker();

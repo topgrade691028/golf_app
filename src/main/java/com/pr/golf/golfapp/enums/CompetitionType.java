@@ -5,24 +5,22 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 public enum CompetitionType {
     STABLEFORD("Stableford"),
     SCRAMBLE("Scramble"),
-    MATCHPLAY("Match Play"),
-    STROKEPLAY("Stroke Play");
+    MATCHPLAY("MatchPlay"),
+    STROKEPLAY("StrokePlay");
 
-    private final String type;
+    private String displayName;
 
-    CompetitionType(String competitionType) {
-        this.type = competitionType;
-    }
-
-    public String getCompetitionType() {
-        return type;
+    CompetitionType(String displayName) {
+        this.displayName = displayName;
     }
 
     @JsonCreator
     public static CompetitionType fromString(String value) {
-        for (CompetitionType type : CompetitionType.values()) {
-            if (type.type.equalsIgnoreCase(value)) {
-                return type;
+        if (value != null) {
+            for (CompetitionType type : CompetitionType.values()) {
+                if (type.displayName.equalsIgnoreCase(value)) {
+                    return type;
+                }
             }
         }
         throw new IllegalArgumentException("Invalid competition type: " + value);

@@ -1,7 +1,5 @@
 package com.pr.golf.golfapp.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,11 +11,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScoreCardDTO {
+public class CompetitionPlayerDTO {
 	
 	private Long id;
-	private String title;
-	private Long eventId;
-	private List<PlayerDTO> players;
+	private Long playerId;
+	private Long competitionId;
 
 }

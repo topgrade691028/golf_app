@@ -42,7 +42,7 @@ export default function UserCreate() {
       avatar: avatar,
     };
 
-    fetch("http://localhost:8080/players", {
+    fetch("${apiUrl}/players", {
       method: "POST",
       headers: {
         Accept: "application/json",

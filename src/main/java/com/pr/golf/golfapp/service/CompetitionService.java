@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pr.golf.golfapp.dto.CompetitionDTO;
+import com.pr.golf.golfapp.dto.CompetitionPlayerDTO;
 import com.pr.golf.golfapp.dto.PlayerDTO;
 import com.pr.golf.golfapp.mapper.CompetitionMapper;
 import com.pr.golf.golfapp.mapper.PlayerMapper;
@@ -14,6 +15,8 @@ import com.pr.golf.golfapp.model.Competition;
 import com.pr.golf.golfapp.model.GolfEvent;
 import com.pr.golf.golfapp.repository.CompetitionPlayerRepository;
 import com.pr.golf.golfapp.repository.CompetitionRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class CompetitionService {
@@ -93,4 +96,12 @@ public class CompetitionService {
 		return players;
 		//return playerMapper.toDto(competitionPlayerRepository.getRegisteredPlayersForCompetition(competitionId));
 	}
+	
+	
+    @Transactional
+	public void registerPlayerForCompetition(CompetitionPlayerDTO competitionPlayer) {
+		competitionPlayerRepository.registerPlayerForCompetition(
+											competitionPlayer.getCompetitionId(), competitionPlayer.getPlayerId());
+	}
+
 }

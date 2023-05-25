@@ -39,4 +39,6 @@ public class ScoreCardResponseBody {
 	private List<ScoreDTO> scoreDTOs;
 	
 	private List<BonusPointRule> bonusPointRules;
+	
+	 private int groupNumber;
 }

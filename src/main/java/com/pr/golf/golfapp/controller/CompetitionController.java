@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pr.golf.golfapp.dto.CompetitionDTO;
+import com.pr.golf.golfapp.dto.CompetitionPlayerDTO;
 import com.pr.golf.golfapp.dto.PlayerDTO;
 import com.pr.golf.golfapp.enums.CompetitionType;
 import com.pr.golf.golfapp.model.Competition;
@@ -55,6 +56,11 @@ public class CompetitionController {
     public List<CompetitionDTO> getCompetitions(@PathVariable("userId") Long userId) {
       return competitionService.getAllCompetitions();
     }
+
+    @GetMapping("/retrieveregisteredplayersforcompetition/{competitionId}")
+    public List<PlayerDTO> getAllRegisteredPlayersForCompetition(@PathVariable("competitionId") Long competitionId) {
+      return competitionService.getPlayersRegisteredForCompetition(competitionId);
+    }
     
     @GetMapping("/competition-type")
     public List<CompetitionType> getCompetitionTypes(){
@@ -78,13 +84,14 @@ public class CompetitionController {
     }
     
     
-    @RequestMapping(value="/registeredplayersforcompetition/{competitionId}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PlayerDTO>> getPlayersRegisteredForCompetition(@PathVariable Long competitionId) throws URISyntaxException {
-        System.out.print("Retrieve Players Registered for Competition " + competitionId);
-        List<PlayerDTO> playersRegisteredForCompetition = competitionService.getPlayersRegisteredForCompetition(competitionId);
-        return ResponseEntity.ok().body(playersRegisteredForCompetition);
+    @RequestMapping(value="/registerplayer",
+            method = RequestMethod.POST, // Change the request method to 'POST'
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)	
+    public ResponseEntity<CompetitionPlayerDTO> registeredPlayerForCompetition(@RequestBody CompetitionPlayerDTO competitionPlayerDTO) throws URISyntaxException {
+        System.out.print("Retrieve Players Registered for Competition " + competitionPlayerDTO);
+        competitionService.registerPlayerForCompetition(competitionPlayerDTO);
+        return ResponseEntity.ok().body(competitionPlayerDTO);
     }
     
     

@@ -61,6 +61,7 @@ CREATE TABLE golfapp.golf_event (
   venue VARCHAR(255) DEFAULT NULL,
   type VARCHAR(255) DEFAULT NULL,
   date date, 
+  golf_course_id BIGINT,
   PRIMARY KEY (id),
   foreign key(competition_id)
   references golfapp.COMPETITION(id)
@@ -91,7 +92,7 @@ CREATE TABLE golfapp.golf_event_player (
 );
 
 
-create table golfapp.HOLE(
+create table golfapp.hole(
     id BIGINT auto_increment,
     course_id int,
     name varchar(20),
@@ -106,7 +107,7 @@ create table golfapp.HOLE(
           references golfapp.GOLF_COURSE(id)
 );
 
-create table golfapp.SCORE(
+create table golfapp.score(
     id BIGINT auto_increment,
     competition_id BIGINT ,
     player_id int,
@@ -132,6 +133,16 @@ create table golfapp.EVENT_LEADER_BOARD(
     foreign key(event_id)
           references event(id)
 );
+
+CREATE TABLE player_grouping(
+  grouping_id BIGINT PRIMARY KEY auto_increment,
+  event_id BIGINT,
+  group_number INT,
+  player_id BIGINT,
+  FOREIGN KEY (event_id) REFERENCES golf_event(id),
+  FOREIGN KEY (player_id) REFERENCES player(id)
+);
+
 
 INSERT INTO player (name, username, handicap) VALUES
   ('Darragh Flynn', 'dflynn', 28),

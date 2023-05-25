@@ -10,14 +10,18 @@ import org.springframework.stereotype.Service;
 
 import com.pr.golf.golfapp.dto.GolfEventDTO;
 import com.pr.golf.golfapp.dto.PlayerDTO;
+import com.pr.golf.golfapp.dto.PlayerGroupDTO;
+import com.pr.golf.golfapp.dto.PlayerGroupingDTO;
 import com.pr.golf.golfapp.mapper.GolfEventMapper;
+import com.pr.golf.golfapp.mapper.PlayerGroupingMapper;
 import com.pr.golf.golfapp.mapper.PlayerMapper;
 import com.pr.golf.golfapp.model.GolfEvent;
 import com.pr.golf.golfapp.model.GolfEventPlayer;
 import com.pr.golf.golfapp.model.GolfEventPlayerId;
-import com.pr.golf.golfapp.model.Player;
+import com.pr.golf.golfapp.model.PlayerGrouping;
 import com.pr.golf.golfapp.repository.GolfEventPlayerRepository;
 import com.pr.golf.golfapp.repository.GolfEventRepository;
+import com.pr.golf.golfapp.repository.PlayerGroupingRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -29,18 +33,29 @@ public class GolfEventService {
 
 	private GolfEventPlayerRepository golfEventPlayerRepository;
 	
+	private PlayerGroupingRepository playerGroupingRepository;
+	
 	private GolfEventMapper golfEventMapper;
 
 	private PlayerMapper playerMapper;
+
+	
+	private PlayerGroupingMapper playerGroupingMapper;
+
+	
 	
     public GolfEventService(@Autowired GolfEventRepository golfEventRepository,
     						@Autowired GolfEventPlayerRepository golfEventPlayerRepository,
     						@Autowired GolfEventMapper golfEventMapper,
-    						@Autowired PlayerMapper playerMapper) {
+    						@Autowired PlayerMapper playerMapper,
+    						@Autowired PlayerGroupingMapper playerGroupingMapper,
+    						@Autowired PlayerGroupingRepository playerGroupingRepository) {
     	this.golfEventRepository = golfEventRepository;
     	this.golfEventMapper = golfEventMapper;
     	this.golfEventPlayerRepository = golfEventPlayerRepository;
     	this.playerMapper = playerMapper;
+    	this.playerGroupingMapper = playerGroupingMapper;
+    	this.playerGroupingRepository = playerGroupingRepository;
     }
     
     public Optional<GolfEventDTO> getGolfEventById(long eventId) {
@@ -104,6 +119,44 @@ public class GolfEventService {
 
 	public List<PlayerDTO> getPlayersRegisteredForEvent(Long eventId) {
 		return playerMapper.toDto(golfEventPlayerRepository.findPlayersRegisteredForEventByEventId(eventId));
+	}
+
+	public List<PlayerGroupingDTO> getPlayerDTOGroupsForEvent(Long eventId) {
+		// TODO Auto-generated method stub
+		return playerGroupingMapper.toDto(playerGroupingRepository.getPlayerGroupingsByEventId(eventId));
+	}
+	
+	public List<PlayerGrouping> getPlayerGroupsForEvent(Long eventId) {
+		// TODO Auto-generated method stub
+		return playerGroupingRepository.getPlayerGroupingsByEventId(eventId);
+	}
+	/*
+	public List<PlayerGrouping> getPlayerDTOGroupsForEvent(Long eventId) {
+	    List<Object[]> groupingsData = golfEventRepository.getPlayerGroupingsByEventId(eventId);
+	    List<PlayerGrouping> groupings = new ArrayList<>();
+	    for (Object[] data : groupingsData) {
+	        Long groupingId = (Long) data[0];
+	        Integer groupNumber = (Integer) data[2];
+
+	        PlayerGrouping grouping = PlayerGrouping.builder()
+	        					.groupingId(groupingId)
+	        					.eventId(eventId)
+	        					.groupNumber(groupNumber)
+	        					.build();
+	      groupings.add(grouping);
+	    }
+	    return groupings;
+	}
+	*/
+
+	public void deleteGroupsByEventId(Long eventId) {
+		// TODO Auto-generated method stub
+		golfEventPlayerRepository.deleteByEventId(eventId);
+	}
+
+	public void saveAllPlayerGroups(List<PlayerGroupDTO> playerGroups,Long eventId) {
+		// TODO Auto-generated method stub
+		playerGroupingRepository.saveAllPlayerGroupings(playerGroups,eventId);
 	}
 	
 	

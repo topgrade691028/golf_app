@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.pr.golf.golfapp.model.CompetitionPlayer;
-import com.pr.golf.golfapp.model.Player;
 
 @Repository
 public interface CompetitionPlayerRepository extends JpaRepository<CompetitionPlayer, Long> {
@@ -24,5 +23,10 @@ public interface CompetitionPlayerRepository extends JpaRepository<CompetitionPl
             "JOIN player p ON cp.player_id = p.id " +
             "WHERE cp.competition_id = :competitionId", nativeQuery = true)
     List<Object[]> getRegisteredPlayersForCompetition(@Param("competitionId") Long competitionId);
+    
+    @Modifying
+    @Query(value = "INSERT INTO competition_player (competition_id, player_id) VALUES (:competitionId, :playerId)", nativeQuery = true)
+    void registerPlayerForCompetition(@Param("competitionId") Long competitionId, @Param("playerId") Long playerId);
+
 
 }

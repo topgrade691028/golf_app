@@ -1,0 +1,131 @@
+.view-golf-event-container {
+  margin: 20px;
+}
+
+.view-golf-event-container form {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.view-golf-event-container input[type="text"] {
+  width: 100%;
+  padding: 5px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.view-golf-event-container label {
+  margin-right: 10px;
+}
+
+.view-golf-event-container button {
+  padding: 5px 10px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.view-golf-event-container button:hover {
+  background-color: #3e8e41;
+}
+
+.view-golf-event-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.view-golf-event-container th,
+.view-golf-event-container td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.view-golf-event-container th {
+  background-color: #f2f2f2;
+}
+
+.view-golf-event-container tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.view-golf-event-container tr:hover {
+  background-color: #ddd;
+}
+
+.view-golf-event-container .edit-btn,
+.view-golf-event-container .delete-btn {
+  padding: 5px 10px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.view-golf-event-container .edit-btn:hover,
+.view-golf-event-container .delete-btn:hover {
+  background-color: #3e8e41;
+}
+
+.view-golf-event-container .modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.view-golf-event-container .modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.view-golf-event-container .close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.view-golf-event-container .close:hover,
+.view-golf-event-container .close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.golf-event-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.golf-event-col {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 50%;
+}
+
+.golf-event-col:last-child {
+  align-items: flex-end;
+}
+
+.edit-btn,
+.delete-btn {
+  margin-left: 10px;
+}

@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pr.golf.golfapp.mapper.GolfCourseMapper;
 import com.pr.golf.golfapp.model.GolfCourse;
 import com.pr.golf.golfapp.model.Hole;
 import com.pr.golf.golfapp.repository.GolfCourseRepository;
@@ -18,9 +19,14 @@ public class GolfCourseService {
     private final GolfCourseRepository golfCourseRepository;
     private final HoleRepository holeRepository;
 
-    public GolfCourseService(@Autowired GolfCourseRepository golfCourseRepository,@Autowired HoleRepository holeRepository) {
+    private final GolfCourseMapper golfCourseMapper;
+    
+    public GolfCourseService(@Autowired GolfCourseRepository golfCourseRepository,
+    							@Autowired HoleRepository holeRepository,
+    							@Autowired GolfCourseMapper golfCourseMapper) {
         this.golfCourseRepository = golfCourseRepository;
         this.holeRepository = holeRepository;
+        this.golfCourseMapper = golfCourseMapper;
     }
     
     public GolfCourse getGolfCourseByName(String name) {
@@ -98,6 +104,10 @@ public class GolfCourseService {
                 holeRepository.save(hole);
             }
         }
+    }
+    
+    public List<GolfCourse> findAllGolfCourses() {
+    	return  golfCourseRepository.findAll();
     }
 }
 

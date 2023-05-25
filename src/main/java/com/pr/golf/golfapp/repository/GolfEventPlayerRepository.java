@@ -14,14 +14,16 @@ import com.pr.golf.golfapp.model.Player;
 @Repository
 public interface GolfEventPlayerRepository extends JpaRepository<GolfEventPlayer, Long> {
 
-	 @Query(value = "SELECT p.id, p.name, p.handicap " +
-             "FROM golf_event_player gep " +
-             "JOIN player p ON gep.player_id = p.id " +
-             "WHERE gep.event_id = :eventId", nativeQuery = true)
-	 List<Player> findPlayersRegisteredForEventByEventId(@Param("eventId") Long eventId);
+	@Query(value = "SELECT p.id, p.name, p.handicap " + "FROM golf_event_player gep "
+			+ "JOIN player p ON gep.player_id = p.id " + "WHERE gep.event_id = :eventId", nativeQuery = true)
+	List<Player> findPlayersRegisteredForEventByEventId(@Param("eventId") Long eventId);
 
-	
 	@Modifying
-    @Query(value = "DELETE FROM golf_event_player WHERE event_id = :eventId AND player_id = :playerId", nativeQuery = true)
-    void deleteByEventIdAndPlayerId(@Param("eventId") Long eventId, @Param("playerId") Long playerId);
+	@Query(value = "DELETE FROM golf_event_player WHERE event_id = :eventId AND player_id = :playerId", nativeQuery = true)
+	void deleteByEventIdAndPlayerId(@Param("eventId") Long eventId, @Param("playerId") Long playerId);
+
+	@Modifying
+	@Query(value = "DELETE FROM golf_event_player WHERE event_id = :eventId", nativeQuery = true)
+	void deleteByEventId(@Param("eventId") Long eventId);
+
 }

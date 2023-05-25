@@ -14,6 +14,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Avatar from "@material-ui/core/Avatar";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import { Link } from "react-router-dom";
+import { apiUrl } from "./config";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,8 +35,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function UserList() {
+export default function UserList(props) {
   const classes = useStyles();
+  const { apiUrl } = props;
 
   const [users, setUsers] = useState([]);
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function UserList() {
   }, []);
 
   const UsersGet = () => {
-    fetch("http://192.168.0.18:8080/players/eventId/1", {
+    fetch(`${apiUrl}/players/eventId/1`, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -119,32 +121,7 @@ export default function UserList() {
                   <TableCell align="center">Action</TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
-                {users.map((user) => (
-                  <TableRow key={user.ID}>
-                    <TableCell align="right">{user.id}</TableCell>
-                    <TableCell align="center">
-                      <Box display="flex" justifyContent="center">
-                        <Avatar src={user.avatar} />
-                      </Box>
-                    </TableCell>
-                    <TableCell align="left">{user.fname}</TableCell>
-                    <TableCell align="left">{user.lname}</TableCell>
-                    <TableCell align="left">{user.username}</TableCell>
-                    <TableCell align="center">
-                      <ButtonGroup
-                        color="primary"
-                        aria-label="outlined primary button group"
-                      >
-                        <Button onClick={() => UpdateUser(user.id)}>
-                          Edit
-                        </Button>
-                        <Button onClick={() => UserDelete(user.id)}>Del</Button>
-                      </ButtonGroup>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+              <TableBody></TableBody>
             </Table>
           </TableContainer>
         </Paper>

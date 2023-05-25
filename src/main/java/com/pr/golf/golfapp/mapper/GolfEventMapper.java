@@ -1,5 +1,6 @@
 package com.pr.golf.golfapp.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import com.pr.golf.golfapp.dto.GolfEventDTO;
 import com.pr.golf.golfapp.enums.GolfEventType;
 import com.pr.golf.golfapp.model.Competition;
 import com.pr.golf.golfapp.model.GolfEvent;
+import com.pr.golf.golfapp.model.Player;
 
 @Component
 public class GolfEventMapper {
@@ -26,7 +28,7 @@ public class GolfEventMapper {
 				.map(golfEvent -> GolfEventDTO.builder().id(golfEvent.getId()).name(golfEvent.getName())
 						.venue(golfEvent.getVenue())
 						.competition(CompetitionDTO.builder()
-								.id(golfEvent.getCompetition().getId())
+								.id(golfEvent.getCompetition() != null ? golfEvent.getCompetition().getId() : null)
 								.name(golfEvent.getCompetition().getName())
 								.build())
 						.players(playerMapper.toDto(golfEvent.getPlayers()))
@@ -38,18 +40,29 @@ public class GolfEventMapper {
 
 	public List<GolfEvent> toEntity(List<GolfEventDTO> events) {
 		// TODO Auto-generated method stub
-		List<GolfEvent> golfEvents = events.stream()
-				.map(golfEventDTO -> GolfEvent.builder().id(golfEventDTO.getId()).name(golfEventDTO.getName())
-						.venue(golfEventDTO.getVenue())
-						.date(golfEventDTO.getDate())
-						.type(golfEventDTO.getType())
-						.name(golfEventDTO.getName())
-						.players(playerMapper.toEntity(golfEventDTO.getPlayers()))
-						.date(golfEventDTO.getDate())
-						.competition(Competition.builder()
-										.id(golfEventDTO.getCompetition().getId()).build())
-						.build())
-				.collect(Collectors.toList());
+		List<GolfEvent> golfEvents = new ArrayList<>();
+		if (events != null) {
+		    golfEvents = events.stream()
+		        .map(golfEventDTO -> {
+		            GolfEvent.GolfEventBuilder builder = GolfEvent.builder()
+		                .id(golfEventDTO.getId())
+		                .name(golfEventDTO.getName())
+		                .venue(golfEventDTO.getVenue())
+		                .date(golfEventDTO.getDate())
+		                .type(golfEventDTO.getType())
+		                .players(playerMapper.toEntity(golfEventDTO.getPlayers()))
+		                .date(golfEventDTO.getDate());
+
+		            if (golfEventDTO.getCompetition() != null) {
+		                builder.competition(Competition.builder()
+		                    .id(golfEventDTO.getCompetition().getId())
+		                    .build());
+		            }
+
+		            return builder.build();
+		        })
+		        .collect(Collectors.toList());
+		}
 
 		return golfEvents;
 	}

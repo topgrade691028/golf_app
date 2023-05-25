@@ -22,5 +22,7 @@ public interface GolfCourseRepository extends JpaRepository<GolfCourse, Long>{
 
 	   @Query(value = "SELECT * FROM golf_course WHERE LOWER(name) IN (:names)", nativeQuery = true)
 	   List<GolfCourse> findByNamesIgnoreCase(@Param("names") Collection<String> names);
+	   
+
 
 }

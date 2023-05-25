@@ -1,6 +1,9 @@
 package com.pr.golf.golfapp.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -25,8 +28,8 @@ import com.pr.golf.golfapp.mapper.ScoreMapper;
 import com.pr.golf.golfapp.model.Competition;
 import com.pr.golf.golfapp.model.GolfCourse;
 import com.pr.golf.golfapp.model.Player;
+import com.pr.golf.golfapp.model.PlayerGrouping;
 import com.pr.golf.golfapp.model.Score;
-import com.pr.golf.golfapp.model.ScoreCard;
 import com.pr.golf.golfapp.response.ScoreCardResponseBody;
 import com.pr.golf.golfapp.service.GolfCourseService;
 import com.pr.golf.golfapp.service.GolfEventService;
@@ -62,17 +65,34 @@ public class ScoreCardController {
 		this.playerMapper = playerMapper;
 	}
 
-	 @GetMapping("/retrievescorecards")
-	    public List<ScoreCardDTO> getScoreCards(@RequestParam(required = false) String eventId,
-	            								@RequestParam(required = false) String scoreCardId,
-	            								@RequestParam(required = false) String scoreCardTitle) {
-	        //return scoreCardService.getScoreCards(eventId, scoreCardId, scoreCardTitle);
-		 	return List.of(ScoreCardDTO.builder()
-		 						.id(3l)
-		 						.title("Darragh")
-		 						.build());
-	    }
-	
+	@GetMapping("/retrievescorecards")
+	public List<ScoreCardDTO> getScoreCards(@RequestParam(required = false) Long eventId,
+			@RequestParam(required = false) Long groupingId, @RequestParam(required = false) String groupingTitle) {
+
+		List<ScoreCardDTO> scoreCards = new ArrayList<>();
+		Map<Integer, ScoreCardDTO> scoreCardMap = new HashMap(); // Map to store ScoreCardDTO by group number
+
+		List<PlayerGrouping> groupings = golfEventService.getPlayerGroupsForEvent(eventId);
+
+		for (PlayerGrouping grouping : groupings) {
+			int groupNumber = grouping.getGroupNumber();
+
+			// Retrieve or create ScoreCardDTO for the group number
+			ScoreCardDTO scoreCardDTO = scoreCardMap.get(groupNumber);
+			if (scoreCardDTO == null) {
+				scoreCardDTO = ScoreCardDTO.builder().id(grouping.getGroupingId()).eventId(eventId)
+						.title(String.valueOf(groupNumber)).players(new ArrayList<>()).build();
+
+				scoreCardMap.put(groupNumber, scoreCardDTO);
+			}
+			Player player = grouping.getPlayer();
+			PlayerDTO playerDto = playerMapper.toDto(player);
+			scoreCardDTO.getPlayers().add(playerDto);
+		}
+		scoreCards.addAll(scoreCardMap.values());
+		return scoreCards;
+	}
+
 	@GetMapping("/{id}")
 	public ResponseEntity<ScoreCardResponseBody> getScoreCard(@PathVariable Long id) {
 		System.out.println("Got here in ScoreCardControler");
@@ -110,11 +130,8 @@ public class ScoreCardController {
 
 		List<PlayerDTO> playerDtos = playerMapper.toDto(players.get());
 
-		ScoreCardResponseBody scoreCardResponseBody = ScoreCardResponseBody.builder()
-				.holes(holeDtos)
-				.players(playerDtos)
-				.golfEventDTO(golfEvent.get())
-				.scoreDTOs(scoreDtos).competition(competition)
+		ScoreCardResponseBody scoreCardResponseBody = ScoreCardResponseBody.builder().holes(holeDtos)
+				.players(playerDtos).golfEventDTO(golfEvent.get()).scoreDTOs(scoreDtos).competition(competition)
 				.bonusPointRules(List.of(
 						BonusPointRule.builder().comeptitionId(competition.getId()).name("Closest to the pin").points(5)
 								.holeNumber(7).build(),

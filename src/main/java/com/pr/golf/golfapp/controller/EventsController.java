@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pr.golf.golfapp.dto.GolfEventDTO;
+import com.pr.golf.golfapp.dto.GroupPairingsRequest;
 import com.pr.golf.golfapp.dto.PlayerDTO;
+import com.pr.golf.golfapp.dto.PlayerGroupingDTO;
 import com.pr.golf.golfapp.enums.GolfEventType;
-import com.pr.golf.golfapp.model.GolfEvent;
 import com.pr.golf.golfapp.service.GolfEventService;
 
 @RestController
@@ -49,6 +51,12 @@ public class EventsController {
     	System.out.print("Getting Players Registerd for event " + eventId);
     	return golfEventService.getPlayersRegisteredForEvent(eventId);
     }
+
+    @GetMapping("/getplayergroups/{eventId}")
+    public List<PlayerGroupingDTO> getPlayerGroupsForEvent(@PathVariable("eventId") Long eventId) {
+    	System.out.print("Getting Player Groupings for event " + eventId);
+    	return golfEventService.getPlayerDTOGroupsForEvent(eventId);
+    }
     
     @GetMapping("/searchEvent/{name}")
     public GolfEventDTO getEventsByName(@PathVariable String name) {
@@ -72,6 +80,7 @@ public class EventsController {
     	golfEventService.removePlayerFromEvent(eventId, playerId);
         return ResponseEntity.noContent().build();
     }
+  
     @GetMapping("/types")
     public List<GolfEventType> getCompetitionTypes(){
     	
@@ -84,6 +93,24 @@ public class EventsController {
         return ResponseEntity.created(new URI("/events/" + savedEvent.getId())).body(savedEvent);
     }
 
+    @PostMapping("/savegroupsforevent")
+    public ResponseEntity<String> saveGroupsForEvent(@RequestBody GroupPairingsRequest request) {
+        try {
+          Long eventId = request.getEventId();
+
+          // Delete existing group pairings for the event
+          golfEventService.deleteGroupsByEventId(eventId);
+
+          // Insert new group pairings
+          golfEventService.saveAllPlayerGroups(request.getPlayerGroups(), eventId);
+
+          return ResponseEntity.ok("Groups saved successfully");
+        } catch (Exception e) {
+          e.printStackTrace();
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving groups");
+        }
+      }
+    
     @PutMapping("/updateEvent/{id}")
     public ResponseEntity updateEvent(@PathVariable Long id, @RequestBody GolfEventDTO event) {
         GolfEventDTO currentEvent = golfEventService.findById(id).orElseThrow(RuntimeException::new);
@@ -100,4 +127,5 @@ public class EventsController {
 
         return ResponseEntity.ok(event);
     }
+
 }
