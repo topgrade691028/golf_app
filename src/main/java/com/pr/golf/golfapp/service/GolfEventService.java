@@ -1,5 +1,6 @@
 package com.pr.golf.golfapp.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -118,7 +119,25 @@ public class GolfEventService {
 	}
 
 	public List<PlayerDTO> getPlayersRegisteredForEvent(Long eventId) {
-		return playerMapper.toDto(golfEventPlayerRepository.findPlayersRegisteredForEventByEventId(eventId));
+		
+		List<Object[]> results = golfEventPlayerRepository.findPlayersRegisteredForEventByEventId(eventId);
+		List<PlayerDTO> playerDTOs = new ArrayList<>(results.size());
+
+		for (Object[] result : results) {
+		    Long playerId = (Long) result[0];
+		    String playerName = (String) result[1];
+		    Integer handicap = (Integer) result[2];
+
+		    PlayerDTO playerDto = PlayerDTO.builder()
+		    						.id(playerId)
+		    						.name(playerName)
+		    						.handicap(handicap)
+		    						.build();
+
+		    playerDTOs.add(playerDto);
+		}
+
+		return playerDTOs;
 	}
 
 	public List<PlayerGroupingDTO> getPlayerDTOGroupsForEvent(Long eventId) {
@@ -126,10 +145,21 @@ public class GolfEventService {
 		return playerGroupingMapper.toDto(playerGroupingRepository.getPlayerGroupingsByEventId(eventId));
 	}
 	
+	public List<PlayerGrouping> getPlayerGroupingsBySearchCriteria(String searchCriteria, String searchText) {
+		// TODO Auto-generated method stub
+		return playerGroupingRepository.getPlayerGroupingsBySearchCriteria(searchCriteria, searchText);
+	}
+	
 	public List<PlayerGrouping> getPlayerGroupsForEvent(Long eventId) {
 		// TODO Auto-generated method stub
 		return playerGroupingRepository.getPlayerGroupingsByEventId(eventId);
 	}
+	
+	public List<PlayerGrouping> getPlayersGroupByEventAndGroupNumber(Long eventId, int groupNumber) {
+		// TODO Auto-generated method stub
+		return playerGroupingRepository.getPlayersGroupByEventAndGroupNumber(eventId, groupNumber);
+	}
+	
 	/*
 	public List<PlayerGrouping> getPlayerDTOGroupsForEvent(Long eventId) {
 	    List<Object[]> groupingsData = golfEventRepository.getPlayerGroupingsByEventId(eventId);

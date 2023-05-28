@@ -16,7 +16,21 @@ public interface PlayerGroupingRepository extends JpaRepository<PlayerGrouping, 
 
 	@Query(value="SELECT * FROM player_grouping WHERE event_id = :eventId", nativeQuery = true)
 	List<PlayerGrouping> getPlayerGroupingsByEventId(@Param("eventId") Long eventId);
+	
+	@Query(value = "SELECT * FROM player_grouping pg " +
+	        "JOIN golf_event ge ON ge.id = pg.event_id " +
+	        "WHERE " +
+	        "(:searchCriteria = 'eventId' AND ge.id = :searchText) " +
+	        "OR (:searchCriteria = 'eventName' AND ge.name = :searchText) " +
+	        "OR (:searchCriteria = 'groupingTitle' AND pg.group_number = :searchText)",
+	        nativeQuery = true)
+	List<PlayerGrouping> getPlayerGroupingsBySearchCriteria(
+	        @Param("searchCriteria") String searchCriteria,
+	        @Param("searchText") String searchText);
 
+	@Query(value="SELECT * FROM player_grouping WHERE event_id = :eventId and group_number = :groupNumber", nativeQuery = true)
+	List<PlayerGrouping> getPlayersGroupByEventAndGroupNumber(@Param("eventId") Long eventId, @Param("groupNumber") int groupNumber);
+	
 	@Modifying
 	@Query(value = "INSERT INTO player_grouping (event_id, group_number, player_id) VALUES (:eventId, :groupNumber, :playerId)", nativeQuery = true)
 	void savePlayerGrouping(@Param("eventId") Long eventId, @Param("groupNumber") int groupNumber,

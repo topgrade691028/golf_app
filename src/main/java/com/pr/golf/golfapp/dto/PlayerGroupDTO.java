@@ -2,6 +2,7 @@ package com.pr.golf.golfapp.dto;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,5 +34,10 @@ public class PlayerGroupDTO {
     private List<Long> playerIds;
 
     // Constructors, getters, and setters
+    public void setPlayers(List<PlayerDTO> players) {
+        playerIds = players.stream()
+                .map(PlayerDTO::getId)
+                .collect(Collectors.toList());
+    }
 }
 

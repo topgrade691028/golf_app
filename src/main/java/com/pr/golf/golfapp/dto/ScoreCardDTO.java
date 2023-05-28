@@ -16,7 +16,7 @@ import lombok.Setter;
 public class ScoreCardDTO {
 	
 	private Long id;
-	private String title;
+	private String groupNumber;
 	private Long eventId;
 	private List<PlayerDTO> players;
 

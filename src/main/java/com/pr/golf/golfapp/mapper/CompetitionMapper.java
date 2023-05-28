@@ -1,7 +1,7 @@
 package com.pr.golf.golfapp.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,21 +20,24 @@ public class CompetitionMapper {
 		this.golfEventMapper = golfEventMapper;
 	}
 
-    public List<CompetitionDTO> toDto(List<Competition> entity) {
+    public CompetitionDTO toDto(Competition entity) {
 
-    	List<CompetitionDTO> competitionDTOs = entity.stream()
-                .map(competition -> CompetitionDTO.builder()
-                				.id(competition.getId())
-                				.competitionType(competition.getCompetitionType())
-                				.events(golfEventMapper.toDto(competition.getEvents()))
-                				.name(competition.getName())
-                				 .build())
-                	            .collect(Collectors.toList());
+    	CompetitionDTO competitionDTO =  CompetitionDTO.builder()
+                				.id(entity.getId())
+                				.competitionType(entity.getCompetitionType())
+                				.events(golfEventMapper.toDto(entity.getEvents()))
+                				.name(entity.getName())
+                				.build();
 
-                				
-
-
-        return competitionDTOs;
+        return competitionDTO;
+    }
+	
+    public List<CompetitionDTO> toDto(List<Competition> entities) {
+    	List<CompetitionDTO> competitionDTOs = new ArrayList<CompetitionDTO>(entities.size());
+    	for(Competition competition : entities) {
+    		competitionDTOs.add(toDto(competition));
+    	}
+        return competitionDTOs; 
     }
 
 	public Competition toEntity(CompetitionDTO competitionDTO) {

@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import createGolfEventStyles from "./create_golf_event.css";
 
-export default function CreateGolfEvent() {
+export default function CreateGolfEvent({ apiUrl, competitionId }) {
+  //const location = useLocation();
+
+  //alert("competitionName: " + competitionName);
   const [players, setPlayers] = useState([]);
   const [golfCourses, setGolfCourses] = useState([]);
   const [eventCourse, setEventCourse] = useState(""); // define eventCourse state here
@@ -13,6 +17,8 @@ export default function CreateGolfEvent() {
   const [eventName, setEventName] = useState("");
   const [eventVenue, setEventVenue] = useState("");
   const [eventDate, setEventDate] = useState("");
+  const [eventType, setEventType] = useState("");
+  const [eventTypes, setEventTypes] = useState([]);
 
   useEffect(() => {
     fetch("/api/players")
@@ -23,6 +29,14 @@ export default function CreateGolfEvent() {
     fetch("/api/golfcourses")
       .then((response) => response.json())
       .then((data) => setGolfCourses(data))
+      .catch((error) => console.error(error));
+
+    fetch(`${apiUrl}/events/types`)
+      .then((response) => response.json())
+      .then((data) => {
+        setEventTypes(data);
+        console.log("response.json is " + data);
+      })
       .catch((error) => console.error(error));
   }, []);
 
@@ -66,15 +80,31 @@ export default function CreateGolfEvent() {
     setEventDate(event.target.value);
   };
 
+  const handleEventTypeChange = (event) => {
+    setEventType(event.target.value);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const form = event.target;
-    const formData = new FormData(form);
 
-    fetch("/api/golfevents", {
+    const data = {
+      competition: { id: competitionId },
+      name: form.eventName.value,
+      venue: form.eventVenue.value,
+      date: form.eventDate.value,
+      type: form.eventType.value,
+      // Add other form data properties here
+    };
+
+    console.log("data from form is " + JSON.stringify(data));
+    fetch(`${apiUrl}/events`, {
       method: "POST",
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
     })
       .then((response) => {
         if (response.ok) {
@@ -120,6 +150,22 @@ export default function CreateGolfEvent() {
             value={eventDate}
             onChange={handleEventDateChange}
           />
+        </div>
+        <div>
+          <label htmlFor="eventType">Event Type:</label>
+          <select
+            id="eventType"
+            name="eventType"
+            value={eventType}
+            onChange={handleEventTypeChange}
+          >
+            <option value="">--Select Event Type--</option>
+            {eventTypes.map((eventType) => (
+              <option key={eventType} value={eventType}>
+                {eventType}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor="eventCourse">Event Course:</label>

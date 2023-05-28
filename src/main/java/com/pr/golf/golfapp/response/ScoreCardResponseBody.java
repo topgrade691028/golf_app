@@ -3,11 +3,11 @@ package com.pr.golf.golfapp.response;
 import java.util.List;
 
 import com.pr.golf.golfapp.dto.BonusPointRule;
+import com.pr.golf.golfapp.dto.CompetitionDTO;
 import com.pr.golf.golfapp.dto.GolfEventDTO;
 import com.pr.golf.golfapp.dto.HoleDTO;
 import com.pr.golf.golfapp.dto.PlayerDTO;
 import com.pr.golf.golfapp.dto.ScoreDTO;
-import com.pr.golf.golfapp.model.Competition;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +28,7 @@ public class ScoreCardResponseBody {
 	
 	private long scoreCardId;
 	
-	private Competition competition;
+	private CompetitionDTO competition;
 	
 	private GolfEventDTO golfEventDTO;
 	
