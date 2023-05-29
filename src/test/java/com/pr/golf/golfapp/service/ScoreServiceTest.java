@@ -24,11 +24,11 @@ public class ScoreServiceTest {
 	public void testScoreCreation() throws InterruptedException, URISyntaxException {
 
 		List<ScoreDTO> scores = (List<ScoreDTO>) JsonFileReader.getListFromFile(ScoreDTO.class, "src\\test\\resources\\scores\\chesunt_scores.json");
-		System.out.println(scores);
-		System.out.println("Points for Player 1 for Hole 1 is " + scores.get(0).getPoints());
-		System.out.println("Points for Player 2 for Hole 1 is " + scores.get(1).getPoints());
-		System.out.println("Points for Player 1 for Hole 2 is " + scores.get(2).getPoints());
-		System.out.println("Points for Player 2 for Hole 2 is " + scores.get(3).getPoints());
+		log.info(scores);
+		log.info("Points for Player 1 for Hole 1 is " + scores.get(0).getPoints());
+		log.info("Points for Player 2 for Hole 1 is " + scores.get(1).getPoints());
+		log.info("Points for Player 1 for Hole 2 is " + scores.get(2).getPoints());
+		log.info("Points for Player 2 for Hole 2 is " + scores.get(3).getPoints());
 		
 		
 	}

@@ -32,7 +32,7 @@ public class GolfLeaderBoardHelper {
 	                .expectHeader().valueEquals("Content-Type", "application/json")
 	                .expectAll(jsonBodySpec -> {
 	                	/** jsonBodySpec.expectBody().jsonPath("competitionId").isEqualTo(1l);
-	                    System.out.println(jsonBodySpec.expectBody().returnResult());
+	                    log.info(jsonBodySpec.expectBody().returnResult());
 						 @FIXME
 						 * }, responseSpec -> {
 						 * responseSpec.expectBody(GolfLeaderBoard.class).value(leaderBoard -> {
@@ -43,7 +43,7 @@ public class GolfLeaderBoardHelper {
 	                    responseSpec.expectBodyList(GolfLeaderBoard.class)
 	                    .consumeWith(result -> {
 	                    	List<GolfLeaderBoard> golfLeaderBoard = result.getResponseBody();
-	                        System.out.println(golfLeaderBoard);
+	                        log.info(golfLeaderBoard);
 	                      });
 	                    
 	                }).expectBodyList(GolfLeaderBoard.class).returnResult().getResponseBody();

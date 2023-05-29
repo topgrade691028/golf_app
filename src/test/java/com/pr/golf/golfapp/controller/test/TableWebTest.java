@@ -48,8 +48,8 @@ public class TableWebTest {
                     });
                 }).returnResult(EventLeaderBoard.class).getResponseBody();
 
-        System.out.println("Got here");
-        System.out.println(returnedTable.blockFirst().getTableId());
+        log.info("Got here");
+        log.info(returnedTable.blockFirst().getTableId());
 
         Assertions.assertTrue(returnedTable.blockFirst().getTableId() == (1l));
 

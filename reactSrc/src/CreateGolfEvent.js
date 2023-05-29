@@ -1,205 +1,275 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import Container from "@material-ui/core/Container";
+import { MenuItem } from "@material-ui/core";
 
-import createGolfEventStyles from "./create_golf_event.css";
+import { apiUrl } from "./config";
+import axios from "axios";
+import EntityCreationConfirmationModal from "./EntityCreationConfirmationModal";
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  form: {
+    width: "100%",
+    marginTop: theme.spacing(3),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
 
 export default function CreateGolfEvent({ apiUrl, competitionId }) {
-  //const location = useLocation();
-
-  //alert("competitionName: " + competitionName);
-  const [players, setPlayers] = useState([]);
-  const [golfCourses, setGolfCourses] = useState([]);
-  const [eventCourse, setEventCourse] = useState(""); // define eventCourse state here
-  const [selectedGolfCourse, setSelectedGolfCourse] = useState(null);
-  const [newGolfCourseName, setNewGolfCourseName] = useState("");
-  const [newGolfCourseAddress, setNewGolfCourseAddress] = useState("");
-  const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const classes = useStyles();
+  const [selectedCompetition, setSelectedCompetition] = useState("");
   const [eventName, setEventName] = useState("");
   const [eventVenue, setEventVenue] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventType, setEventType] = useState("");
+  const [eventCourse, setEventCourse] = useState("");
+  const [players, setPlayers] = useState([]);
   const [eventTypes, setEventTypes] = useState([]);
+  const [competitions, setCompetitions] = useState([]);
+  const [golfCourses, setGolfCourses] = useState([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    fetch("/api/players")
-      .then((response) => response.json())
-      .then((data) => setPlayers(data))
-      .catch((error) => console.error(error));
+    let isMounted = true;
 
-    fetch("/api/golfcourses")
-      .then((response) => response.json())
-      .then((data) => setGolfCourses(data))
-      .catch((error) => console.error(error));
-
-    fetch(`${apiUrl}/events/types`)
-      .then((response) => response.json())
-      .then((data) => {
-        setEventTypes(data);
-        console.log("response.json is " + data);
-      })
-      .catch((error) => console.error(error));
-  }, []);
-
-  const handleCheckboxChange = (event) => {
-    const playerId = Number(event.target.value);
-    if (event.target.checked) {
-      setSelectedPlayers([...selectedPlayers, playerId]);
-    } else {
-      setSelectedPlayers(selectedPlayers.filter((id) => id !== playerId));
+    async function getEventTypes() {
+      const response = await fetch(`${apiUrl}/events/types`);
+      const data = await response.json();
+      setEventTypes(data);
     }
-  };
 
-  const handleGolfCourseSelect = (event) => {
-    const selectedCourseId = Number(event.target.value);
-    setSelectedGolfCourse(
-      golfCourses.find((course) => course.id === selectedCourseId)
-    );
-  };
+    async function getGolfCourses() {
+      const response = await fetch(`${apiUrl}/events/courses`);
+      const data = await response.json();
+      setGolfCourses(data);
+    }
 
-  const handleNewGolfCourseNameChange = (event) => {
-    setNewGolfCourseName(event.target.value);
-  };
-
-  const handleNewGolfCourseAddressChange = (event) => {
-    setNewGolfCourseAddress(event.target.value);
-  };
-
-  const handleEventNameChange = (event) => {
-    setEventName(event.target.value);
-  };
-
-  const handleEventVenueChange = (event) => {
-    setEventVenue(event.target.value);
-  };
-
-  const handleEventCourseChange = (event) => {
-    setEventVenue(event.target.value);
-  };
-
-  const handleEventDateChange = (event) => {
-    setEventDate(event.target.value);
-  };
-
-  const handleEventTypeChange = (event) => {
-    setEventType(event.target.value);
-  };
+    if (competitionId == null) {
+      // Fetch all competitions
+      axios
+        .get(`${apiUrl}/competitions`)
+        .then((response) => {
+          if (isMounted) {
+            console.log("response.data", response.data);
+            setCompetitions(response.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching competitions:", error);
+        });
+    } else {
+      // Fetch competition by ID
+      axios
+        .get(`${apiUrl}/competition/${competitionId}`)
+        .then((response) => {
+          if (isMounted) {
+            console.log("response.data", response.data);
+            setCompetitions([response.data]); // Set the competition as an array
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching competition:", error);
+        });
+    }
+    getEventTypes();
+    getGolfCourses();
+    return () => {
+      isMounted = false;
+    };
+  }, [apiUrl, competitionId]);
 
   const handleSubmit = (event) => {
+    // Handle form submission
     event.preventDefault();
-
-    const form = event.target;
-
     const data = {
-      competition: { id: competitionId },
-      name: form.eventName.value,
-      venue: form.eventVenue.value,
-      date: form.eventDate.value,
-      type: form.eventType.value,
-      // Add other form data properties here
+      competition: { id: selectedCompetition },
+      name: eventName,
+      venue: eventVenue,
+      date: eventDate,
+      type: eventType,
+      golfCourse: eventCourse ? { id: eventCourse } : null,
+      players: players
+        .filter((player) => player.checked)
+        .map((player) => player.id),
     };
 
-    console.log("data from form is " + JSON.stringify(data));
-    fetch(`${apiUrl}/events`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
+    axios
+      .post(`${apiUrl}/events/create`, data)
       .then((response) => {
-        if (response.ok) {
-          alert("Golf event created successfully!");
-          form.reset();
-        } else {
-          alert("Error creating golf event.");
-        }
+        console.error("GolfEvent created successfully", data);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error("Error creating competition:", error);
+      }); // Send the payload to the create event endpoint
+    // ...
+    setIsModalOpen(true);
+
+    // Reset the form fields
+    setSelectedCompetition("");
+    setEventName("");
+    setEventVenue("");
+    setEventDate("");
+    setEventType("");
+    setEventCourse("");
+    setPlayers([]);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
-    <div className="create-golf-event create-golf-event-container">
-      <h1>Create Golf Event</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="eventName">Event Name:</label>
-          <input
-            type="text"
-            id="eventName"
-            name="eventName"
-            value={eventName}
-            onChange={handleEventNameChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="eventVenue">Event Venue:</label>
-          <input
-            type="text"
-            id="eventVenue"
-            name="eventVenue"
-            value={eventVenue}
-            onChange={handleEventVenueChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="eventDate">Event Date:</label>
-          <input
-            type="date"
-            id="eventDate"
-            name="eventDate"
-            value={eventDate}
-            onChange={handleEventDateChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="eventType">Event Type:</label>
-          <select
-            id="eventType"
-            name="eventType"
-            value={eventType}
-            onChange={handleEventTypeChange}
-          >
-            <option value="">--Select Event Type--</option>
-            {eventTypes.map((eventType) => (
-              <option key={eventType} value={eventType}>
-                {eventType}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="eventCourse">Event Course:</label>
-          <select
-            id="eventCourse"
-            name="eventCourse"
-            value={eventCourse}
-            onChange={handleEventCourseChange}
-          >
-            <option value="">--Select Course--</option>
-            {golfCourses.map((course) => (
-              <option key={course.id} value={course.id}>
-                {course.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <h2>Select Players:</h2>
-          {players.map((player) => (
-            <div key={player.id}>
-              <input
-                type="checkbox"
-                id={`player${player.id}`}
-                name={`player${player.id}`}
-                value={player.id}
-                onChange={handlePlayerChange}
+    <Container style={{ paddingTop: "2rem" }} maxWidth="xs">
+      <div className={classes.paper}>
+        <Typography component="h1" variant="h5">
+          Create Golf Event
+        </Typography>
+        <form className={classes.form} onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                select
+                fullWidth
+                required
+                label="Select Competition"
+                value={selectedCompetition}
+                onChange={(event) => setSelectedCompetition(event.target.value)}
+                variant="outlined"
+              >
+                <MenuItem value="" disabled>
+                  Select Competition
+                </MenuItem>
+                {Array.isArray(competitions) &&
+                  competitions.map((competition) => (
+                    <MenuItem key={competition.id} value={competition.id}>
+                      {competition.name}
+                    </MenuItem>
+                  ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                required
+                label="Event Name"
+                value={eventName}
+                onChange={(event) => setEventName(event.target.value)}
+                variant="outlined"
               />
-              <label htmlFor={`player${player.id}`}>{player.name}</label>
-            </div>
-          ))}
-        </div>
-        <button type="submit">Create Event</button>
-      </form>
-    </div>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                required
+                label="Event Venue"
+                value={eventVenue}
+                onChange={(event) => setEventVenue(event.target.value)}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                required
+                type="date"
+                label="Event Date"
+                value={eventDate}
+                onChange={(event) => setEventDate(event.target.value)}
+                variant="outlined"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                select
+                fullWidth
+                required
+                label="Event Type"
+                value={eventType}
+                onChange={(event) => setEventType(event.target.value)}
+                variant="outlined"
+              >
+                <MenuItem value="">--Select Event Type--</MenuItem>
+                {eventTypes.map((eventType) => (
+                  <MenuItem key={eventType} value={eventType}>
+                    {eventType}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                select
+                fullWidth
+                label="Event Course"
+                value={eventCourse}
+                onChange={(event) => setEventCourse(event.target.value)}
+                variant="outlined"
+              >
+                <MenuItem value="">--Select Course--</MenuItem>
+                {golfCourses?.map((course) => (
+                  <MenuItem key={course.id} value={course.id}>
+                    {course.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <div>
+                <h2>Select Players:</h2>
+                {Array.isArray(players) &&
+                  players.map((player) => (
+                    <div key={player?.id}>
+                      <input
+                        type="checkbox"
+                        id={`player${player?.id}`}
+                        name={`player${player?.id}`}
+                        value={player?.id}
+                        checked={player?.checked || false}
+                        onChange={handlePlayerChange}
+                      />
+                      <label htmlFor={`player${player?.id}`}>
+                        {player?.name}
+                      </label>
+                    </div>
+                  ))}
+              </div>
+            </Grid>
+          </Grid>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onChange={handleSubmit}
+          >
+            Create Event
+          </Button>
+        </form>
+      </div>
+      <EntityCreationConfirmationModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        competitionId={competitionId}
+        message={`Successfully created ${eventName} Event for competition id ${competitionId}`}
+      />
+      ;
+    </Container>
   );
 }

@@ -1,80 +1,74 @@
 import React, { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
+  MenuItem,
+  ButtonGroup,
+} from "@material-ui/core";
 import axios from "axios";
-//import createCompetitionStyles from "./CreateCompetition.module.css";
-import createCompetitionStyles from "./CreateCompetition.css";
+import { apiUrl } from "./config";
+import { useHistory } from "react-router-dom";
 
-export default function CreateCompetition(props) {
-  const apiUrl = props.apiUrl;
-  console.log("apiUrl is now", apiUrl);
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  form: {
+    width: "100%",
+    marginTop: theme.spacing(3),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  table: {
+    marginTop: theme.spacing(3),
+  },
+}));
+
+export default function CompetitionPage() {
   const [name, setName] = useState("");
-  const [competitionType, setCompetitionType] = useState("");
-  const [userId, setUserId] = useState("");
-  const [competitions, setCompetitions] = useState([]);
-  const [newCompetition, setNewCompetition] = useState({});
+  const [competitionType, setCompetitionType] = useState(undefined); // Initialize as undefined
   const [competitionTypes, setCompetitionTypes] = useState([]);
+  const [competitions, setCompetitions] = useState([]);
+  const classes = useStyles();
+  const history = useHistory();
 
   useEffect(() => {
-    const fetchCompetitions = async () => {
-      const response = await axios.get(
-        //`http://localhost:8080/competition/competitions/${userId}`
-        `${apiUrl}/competition/user/1`
-      );
-      setCompetitions(response.data);
-    };
-    fetchCompetitions();
-
-    fetch("${apiUrl}/competition/competition-type")
-      .then((res) => res.json())
-      .then((data) => setCompetitionTypes(data));
-  }, [userId, newCompetition]);
-
-  const handleNameChange = (e, competitionId) => {
-    const newName = e.target.value;
-    const newCompetitions = competitions.map((competition) => {
-      if (competition.id === competitionId) {
-        return { ...competition, name: newName };
-      } else {
-        return competition;
-      }
-    });
-    setCompetitions(newCompetitions);
-  };
-
-  const handleUpdate = (competitionId) => {
-    const competition = competitions.find((c) => c.id === competitionId);
-    fetch(`${apiUrl}/competition/update/${competition.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(competition),
-    });
-  };
-
-  const handleDelete = (competitionId) => {
-    const newCompetitions = competitions.filter(
-      (competition) => competition.id !== competitionId
-    );
-    setCompetitions(newCompetitions);
-    fetch(`${apiUrl}/competition/delete/${competitionId}`, {
-      method: "DELETE",
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
-  };
-
-  const handleEdit = (competitionId) => {
-    setCompetitions((prevCompetitions) => {
-      // Find the competition being edited and set its isEditable property to true
-      return prevCompetitions.map((competition) => {
-        if (competition.id === competitionId) {
-          return { ...competition, isEditable: true };
-        }
-        return competition;
+    // Fetch competition types
+    axios
+      .get(`${apiUrl}/competition/competition-type`)
+      .then((response) => {
+        console.log("response.data " + response.data);
+        setCompetitionTypes(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching competition types:", error);
       });
-    });
-  };
+
+    // Fetch existing competitions
+    axios
+      .get(`${apiUrl}/competition/user/1`)
+      .then((response) => {
+        setCompetitions(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching competitions:", error);
+      });
+  }, []);
 
   const handleCompetitionTypeChange = (e) => {
     setCompetitionType(e.target.value);
@@ -84,113 +78,260 @@ export default function CreateCompetition(props) {
     setName(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const competition = {
-      name,
-      competitionType, // Move this line here
+  const handleCreateCompetition = () => {
+    const newCompetition = {
+      name: name,
+      competitionType: competitionType,
     };
-    try {
-      const response = await axios.post(
-        `${apiUrl}/competition/createcompetition`,
-        competition
-      );
-      setNewCompetition(response.data);
-    } catch (error) {
-      console.log("Error creating competition:", error);
-    } finally {
-    } // Reset events after submitting the form
+
+    axios
+      .post(`${apiUrl}/competition/create`, newCompetition)
+      .then((response) => {
+        setCompetitions([...competitions, response.data]);
+        setName("");
+        setCompetitionType(undefined);
+      })
+      .catch((error) => {
+        console.error("Error creating competition:", error);
+      });
+  };
+
+  const handleEdit = (competitionId) => {
+    setCompetitions((prevCompetitions) =>
+      prevCompetitions.map((competition) => {
+        if (competition.id === competitionId) {
+          return { ...competition, isEditable: true };
+        }
+        return competition;
+      })
+    );
+  };
+
+  const handleNameChange = (e, competitionId) => {
+    const newName = e.target.value;
+    setCompetitions((prevCompetitions) =>
+      prevCompetitions.map((competition) => {
+        if (competition.id === competitionId) {
+          return { ...competition, name: newName };
+        }
+        return competition;
+      })
+    );
+  };
+
+  const handleTypeChange = (e, competitionId) => {
+    const newType = e.target.value;
+    setCompetitions((prevCompetitions) =>
+      prevCompetitions.map((competition) => {
+        if (competition.id === competitionId) {
+          return { ...competition, competitionType: newType };
+        }
+        return competition;
+      })
+    );
+  };
+
+  const handleUpdate = (competitionId) => {
+    const updatedCompetition = competitions.find(
+      (competition) => competition.id === competitionId
+    );
+
+    axios
+      .put(`${apiUrl}/competition/update/${competitionId}`, updatedCompetition)
+      .then(() => {
+        setCompetitions((prevCompetitions) =>
+          prevCompetitions.map((competition) => {
+            if (competition.id === competitionId) {
+              return { ...competition, isEditable: false };
+            }
+            return competition;
+          })
+        );
+      })
+      .catch((error) => {
+        console.error("Error updating competition:", error);
+      });
+  };
+
+  const handleDelete = (competitionId) => {
+    axios
+      .delete(`${apiUrl}/competition/delete/${competitionId}`)
+      .then(() => {
+        setCompetitions((prevCompetitions) =>
+          prevCompetitions.filter(
+            (competition) => competition.id !== competitionId
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error deleting competition:", error);
+      });
+  };
+
+  const handleViewEvents = (competitionId) => {
+    const selectedCompetition = competitions.find(
+      (competition) => competition.id === competitionId
+    );
+    if (selectedCompetition) {
+      history.push("/viewcompetitionevents", {
+        competitionId: selectedCompetition.id,
+        competitionName: selectedCompetition.name,
+      });
+    }
   };
 
   return (
-    <div className="formWrapper">
-      <form onSubmit={handleSubmit} class="new-competition-form">
-        <h2>Create a new competition</h2>
-        <div className="form-group">
-          <label htmlFor="name">Competition name:</label>
-          <input
-            className="new-competition-input"
-            type="text"
-            id="name"
-            defaultValue={name}
-            onChange={handleNewCompetitionNameChange}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="competitionType">Competition type:</label>
-          <select
-            className="new-competition-input"
-            id="competitionType"
-            value={competitionType}
-            onChange={handleCompetitionTypeChange}
+    <Container component="main" maxWidth="md">
+      <div className={classes.paper}>
+        <Typography component="h1" variant="h5">
+          Create Competition
+        </Typography>
+        <form className={classes.form} noValidate>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="name"
+                label="Competition Name"
+                name="name"
+                value={name}
+                onChange={handleNewCompetitionNameChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                select
+                variant="outlined"
+                required
+                fullWidth
+                id="competitionType"
+                label="Competition Type"
+                name="competitionType"
+                value={competitionType || ""} // Render empty string if undefined
+                onChange={handleCompetitionTypeChange}
+              >
+                {competitionTypes.map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+          </Grid>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={handleCreateCompetition}
           >
-            <option value="">Select a competition type</option>
-            <option value="StrokePlay">Stroke Play</option>
-            <option value="MatchPlay">Match Play</option>
-            <option value="Stableford">Stableford</option>
-            <option value="Scramble">Scramble</option>
-          </select>
-        </div>
-        <button type="submit">Create Competition</button>
-      </form>
-      {competitions.length > 0 && (
-        <table className="competition-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Events</th>
-              <th>Update</th>
-              <th>Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-            {competitions.map((competition) => (
-              <tr key={competition.id}>
-                <td>
-                  <input
-                    type="text"
-                    value={competition.name}
-                    onChange={(e) => handleNameChange(e, competition.id)}
-                    disabled={!competition.isEditable}
-                  />
-                </td>
-                <td>
-                  <select
-                    value={competition.competitionType}
-                    onChange={(e) => handleTypeChange(e, competition.id)}
-                    disabled={!competition.isEditable}
-                  >
-                    {competitionTypes &&
-                      competitionTypes.map((type) => (
-                        <option key={type.id} value={type.name}>
-                          {type.name}
-                        </option>
-                      ))}
-                  </select>
-                </td>
-                <td>{competition.events.length}</td>
-                <td>
-                  {competition.isEditable ? (
-                    <button onClick={() => handleUpdate(competition.id)}>
-                      Save
-                    </button>
-                  ) : (
-                    <button onClick={() => handleEdit(competition.id)}>
-                      Edit
-                    </button>
-                  )}
-                </td>
-                <td>
-                  <button onClick={() => handleDelete(competition.id)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+            Create
+          </Button>
+        </form>
+
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="competitions table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Type</TableCell>
+                <TableCell>Action</TableCell>
+                <TableCell>Events</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {competitions.map((competition) => (
+                <TableRow key={competition.id}>
+                  <TableCell>
+                    {competition.isEditable ? (
+                      <TextField
+                        value={competition.name}
+                        onChange={(e) => handleNameChange(e, competition.id)}
+                      />
+                    ) : (
+                      competition.name
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {competition.isEditable ? (
+                      <TextField
+                        select
+                        value={competition.competitionType}
+                        onChange={(e) => handleTypeChange(e, competition.id)}
+                      >
+                        {competitionTypes.map((type) => (
+                          <MenuItem key={type} value={type}>
+                            {type}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    ) : (
+                      competition.competitionType
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {competition.isEditable ? (
+                      <ButtonGroup>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => handleUpdate(competition.id)}
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => {
+                            handleUpdate(competition.id);
+                            setCompetitions((prevCompetitions) =>
+                              prevCompetitions.map((comp) => {
+                                if (comp.id === competition.id) {
+                                  return { ...comp, isEditable: false };
+                                }
+                                return comp;
+                              })
+                            );
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </ButtonGroup>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleEdit(competition.id)}
+                      >
+                        Edit
+                      </Button>
+                    )}
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleDelete(competition.id)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    {" "}
+                    {/* New column */}
+                    <Button
+                      color="primary"
+                      onClick={() => handleViewEvents(competition.id)}
+                    >
+                      View Events
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+    </Container>
   );
 }

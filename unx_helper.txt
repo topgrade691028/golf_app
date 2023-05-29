@@ -71,6 +71,7 @@ Deploying react app:
 1. Run npm build or npm custom-build.  First one creates everything under /build folder the other under /dist.
 2. Copy contents of either /build/static to src/main/resources/static or dist to src/main/resources/static
 3. Run gradlew bootRun --args='--spring.profiles.active=local'
-4. run on linux server --> nohup java -Dspring.profiles.active=test -jar myapp.jar &
+4. scp D:\golf-app\build\libs\my-app.jar root@82.180.154.143:/usr/local/
+5. run on linux server --> nohup java -Dspring.profiles.active=test -jar myapp.jar &
 
 java -jar my-app.jar --spring.profiles.active=local

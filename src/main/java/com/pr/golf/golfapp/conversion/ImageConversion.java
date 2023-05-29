@@ -15,7 +15,7 @@ public class ImageConversion {
         tesseract.setHocr(true);
         String result = tesseract.doOCR(image);
 
-        System.out.println(result);
+        //log.info(result);
 
         //Assertions.assertTrue(result.contains("Der ,.schnelle” braune Fuchs springt"));
         //Assertions.assertTrue(result.contains("salta sopra il cane pigro. El zorro"));

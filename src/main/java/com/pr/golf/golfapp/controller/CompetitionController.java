@@ -19,13 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pr.golf.golfapp.dto.CompetitionDTO;
 import com.pr.golf.golfapp.dto.CompetitionPlayerDTO;
-import com.pr.golf.golfapp.dto.GolfEventDTO;
 import com.pr.golf.golfapp.dto.PlayerDTO;
 import com.pr.golf.golfapp.enums.CompetitionType;
 import com.pr.golf.golfapp.model.Competition;
 import com.pr.golf.golfapp.model.GolfEvent;
 import com.pr.golf.golfapp.service.CompetitionService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/competition")
 public class CompetitionController {
@@ -66,8 +68,14 @@ public class CompetitionController {
     
     @GetMapping("/competition-type")
     public List<CompetitionType> getCompetitionTypes(){
-    	
+    	log.info("Retrieve competition types");
       return Arrays.asList(CompetitionType.values());
+    }
+
+    @GetMapping("/retrieveAll")
+    public List<CompetitionDTO> getAllCompetition(){
+    	log.info("Retrieve All Competitions");
+      return competitionService.getAllCompetitions();
     }
     
     @GetMapping("/search") 

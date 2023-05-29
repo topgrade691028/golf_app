@@ -12,7 +12,9 @@ import com.pr.golf.golfapp.dto.ScoreDTO;
 import com.pr.golf.golfapp.model.Score;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @UtilityClass
 public class JsonFileReader {
 	
@@ -36,7 +38,7 @@ public class JsonFileReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(listOfValues);
+		log.info(listOfValues.toString());
 		return listOfValues;
 	}
 

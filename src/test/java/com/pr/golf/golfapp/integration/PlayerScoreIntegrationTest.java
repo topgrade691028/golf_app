@@ -134,8 +134,8 @@ public class PlayerScoreIntegrationTest {
 		Flux<EventLeaderBoard> leaderBoardAfterHole1 = ScoreHelper
 				.addScore(Lists.newArrayList(player1Score1, player2Score1, player3Score1), scoreController, port);
 
-		System.out.println("Got here");
-		System.out.println(leaderBoardAfterHole1.blockFirst().getCompetitionId());
+		log.info("Got here");
+		log.info(leaderBoardAfterHole1.blockFirst().getCompetitionId());
 
 		Assertions.assertTrue(leaderBoardAfterHole1.blockFirst().getCompetitionId() == 1l);
 

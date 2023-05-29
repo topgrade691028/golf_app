@@ -9,10 +9,8 @@ import org.springframework.stereotype.Component;
 
 import com.pr.golf.golfapp.dto.CompetitionDTO;
 import com.pr.golf.golfapp.dto.GolfEventDTO;
-import com.pr.golf.golfapp.enums.GolfEventType;
 import com.pr.golf.golfapp.model.Competition;
 import com.pr.golf.golfapp.model.GolfEvent;
-import com.pr.golf.golfapp.model.Player;
 
 @Component
 public class GolfEventMapper {
@@ -30,6 +28,7 @@ public class GolfEventMapper {
 						.competition(CompetitionDTO.builder()
 								.id(golfEvent.getCompetition() != null ? golfEvent.getCompetition().getId() : null)
 								.name(golfEvent.getCompetition().getName())
+								.competitionType(golfEvent.getCompetition().getCompetitionType())
 								.build())
 						.players(playerMapper.toDto(golfEvent.getPlayers()))
 						.build())

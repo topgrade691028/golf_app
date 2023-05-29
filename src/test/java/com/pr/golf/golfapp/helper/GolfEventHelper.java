@@ -37,7 +37,7 @@ public class GolfEventHelper {
 	                    responseSpec.expectBodyList(GolfEvent.class)
 	                    .consumeWith(result -> {
 	                        List<GolfEvent> responseBody = result.getResponseBody();
-	                        System.out.println(responseBody);
+	                        log.info(responseBody);
 	                      });
 	                    
 	                }).expectBodyList(Event.class).returnResult().getResponseBody();

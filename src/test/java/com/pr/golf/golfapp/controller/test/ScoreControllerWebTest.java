@@ -46,8 +46,8 @@ public class ScoreControllerWebTest {
                     });
                 }).returnResult(Score.class).getResponseBody();
 
-        System.out.println("Got here");
-        System.out.println(returnedScore.blockFirst().getId());
+        log.info("Got here");
+        log.info(returnedScore.blockFirst().getId());
 
         Assertions.assertTrue(returnedScore.blockFirst().getId() == (1l));
 

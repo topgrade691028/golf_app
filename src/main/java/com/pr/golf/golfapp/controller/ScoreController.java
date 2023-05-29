@@ -21,6 +21,9 @@ import com.pr.golf.golfapp.model.Score;
 import com.pr.golf.golfapp.request.ScoreRequestBody;
 import com.pr.golf.golfapp.service.ScoreService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/scores")
 public class ScoreController {
@@ -37,7 +40,7 @@ public class ScoreController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ScoreRequestBody>> createOrUpdateScore(@RequestBody List<ScoreRequestBody> scoreRequestBody) throws URISyntaxException {
         System.out.print("Test");
-        scoreRequestBody.stream().forEach(score -> System.out.println(score));
+        scoreRequestBody.stream().forEach(score -> log.info(score.toString()));
 
         List<Score> savedScore = scoreService.saveAll(scoreRequestBody);
         

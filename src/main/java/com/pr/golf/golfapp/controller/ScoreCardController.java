@@ -36,6 +36,9 @@ import com.pr.golf.golfapp.service.GolfEventService;
 import com.pr.golf.golfapp.service.PlayerService;
 import com.pr.golf.golfapp.service.ScoreService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/scorecard")
 public class ScoreCardController {
@@ -121,7 +124,7 @@ public class ScoreCardController {
 	@GetMapping("/{eventId}/{groupNumber}")
 	public ResponseEntity<ScoreCardResponseBody> getScoreCard(@PathVariable Long eventId,
 			@PathVariable int groupNumber) {
-		System.out.println("Got here in ScoreCardControler");
+		log.info("Got here in ScoreCardControler");
 		/*
 		 * List<Player> players = List.of(Player.builder().id(1l)
 		 * .name("Darragh Flynn").handicap(28).build(), Player.builder().id(2l)
@@ -156,13 +159,7 @@ public class ScoreCardController {
 
 		CompetitionDTO competitionDTO = golfEvent.get().getCompetition();
 
-		List<PlayerDTO> playerDtos = playerMapper.toDto(playersInGroup.stream().map(PlayerGrouping::getPlayer) // Extract
-																												// the
-																												// Player
-																												// object
-																												// from
-																												// each
-																												// PlayerGrouping
+		List<PlayerDTO> playerDtos = playerMapper.toDto(playersInGroup.stream().map(PlayerGrouping::getPlayer)
 				.collect(Collectors.toList()));
 
 		ScoreCardResponseBody scoreCardResponseBody = ScoreCardResponseBody.builder().holes(holeDtos)

@@ -36,7 +36,7 @@ public class PlayerHelper {
 	                    responseSpec.expectBodyList(Player.class)
 	                    .consumeWith(result -> {
 	                        List<Player> responseBody = result.getResponseBody();
-	                        System.out.println(responseBody);
+	                        log.info(responseBody);
 	                      });
 	                    
 	                }).expectBodyList(Player.class).returnResult().getResponseBody();

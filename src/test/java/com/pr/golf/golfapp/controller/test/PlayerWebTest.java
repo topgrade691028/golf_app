@@ -50,8 +50,8 @@ public class PlayerWebTest {
                     });
                 }).returnResult(Player.class).getResponseBody();
 
-        System.out.println("Got here");
-        System.out.println(returnedPlayer.blockFirst().getName());
+        log.info("Got here");
+        log.info(returnedPlayer.blockFirst().getName());
 
         Assertions.assertTrue(returnedPlayer.blockFirst().getName().equals("Player 1"));
 

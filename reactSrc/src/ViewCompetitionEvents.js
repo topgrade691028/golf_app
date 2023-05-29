@@ -3,8 +3,6 @@ import { useLocation } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import Container from "@material-ui/core/Container";
-import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -22,15 +20,14 @@ import "./ViewGolfEvent.css";
 import GolfEventModalComponent from "./GolfEventModal";
 import GroupPairingsModal from "./GroupPairingsModal";
 
+import { Container, Paper, TextField } from "@material-ui/core";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   container: {
     marginTop: theme.spacing(2),
@@ -38,6 +35,20 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
+    marginBottom: theme.spacing(2),
+    width: "100%",
+  },
+  searchContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: theme.spacing(2),
+  },
+  searchInput: {
+    marginRight: theme.spacing(2),
+  },
+  createButton: {
+    alignSelf: "flex-end",
+    marginBottom: theme.spacing(2),
   },
 }));
 
@@ -45,16 +56,12 @@ const ViewCompetitionEvents = ({ apiUrl }) => {
   const location = useLocation();
   const competitionId = location?.state?.competitionId;
   const competitionName = location?.state?.competitionName;
-
-  alert("competitionId: " + competitionId);
-  alert("competitionName: " + competitionName);
+  const [searchQuery, setSearchQuery] = useState("");
   const classes = useStyles();
 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [pairingsModalIsOpen, setPairingsModalIsOpen] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [searchType, setSearchType] = useState("competitionId");
   const [golfEvents, setGolfEvents] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showViewPairingsModal, setViewPairingsModal] = useState(false);
@@ -109,39 +116,56 @@ const ViewCompetitionEvents = ({ apiUrl }) => {
       <div className={classes.root}>
         <Container className={classes.container} maxWidth="lg">
           <Paper className={classes.paper}>
-            <Box display="flex">
-              <Box flexGrow={1}>
-                <Typography
-                  component="h2"
-                  variant="h6"
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              marginBottom={2}
+            >
+              <Typography component="h2" variant="h6" color="primary">
+                Retrieve Events For A Competition
+              </Typography>
+              <Link to={`/creategolfevent/${competitionId}`}>
+                <Button
+                  className={classes.createButton}
+                  variant="contained"
                   color="primary"
-                  gutterBottom
                 >
-                  Events
-                </Typography>
-              </Box>
-              <Box>
-                <Link to={`/creategolfevent/${competitionId}`}>
-                  <Button variant="contained" color="primary">
-                    CREATE
-                  </Button>
-                </Link>
-              </Box>
+                  CREATE
+                </Button>
+              </Link>
             </Box>
-            <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="right">ID</TableCell>
-                    <TableCell align="left">name</TableCell>
-                    <TableCell align="left">venue</TableCell>
-                    <TableCell align="left">type</TableCell>
-                    <TableCell align="left">date</TableCell>
-                    <TableCell align="center">Action</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {golfEvents.map((event) => (
+            <div className={classes.searchContainer}>
+              <TextField
+                className={classes.searchInput}
+                label="Search by event name"
+                variant="outlined"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Button variant="contained" color="primary">
+                Search
+              </Button>
+            </div>
+          </Paper>
+          <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="right">ID</TableCell>
+                  <TableCell align="left">Name</TableCell>
+                  <TableCell align="left">Venue</TableCell>
+                  <TableCell align="left">Type</TableCell>
+                  <TableCell align="left">Date</TableCell>
+                  <TableCell align="center">Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {golfEvents
+                  .filter((event) =>
+                    event.name.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                  .map((event) => (
                     <TableRow key={event.id}>
                       <TableCell align="right">{event.id}</TableCell>
                       <TableCell align="left">{event.name}</TableCell>
@@ -170,10 +194,9 @@ const ViewCompetitionEvents = ({ apiUrl }) => {
                       </TableCell>
                     </TableRow>
                   ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </Container>
         {showEditModal && (
           <GolfEventModalComponent
