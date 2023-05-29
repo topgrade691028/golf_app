@@ -5,6 +5,7 @@ import java.util.List;
 import com.pr.golf.golfapp.converter.CompetitionTypeConverter;
 import com.pr.golf.golfapp.enums.CompetitionType;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,7 +43,7 @@ public class Competition {
 	/**
 	 * @FIXME Set below throws a wobbly.
 	 */
-    @OneToMany(mappedBy="competition", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="competition", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<GolfEvent> events;
 
 }

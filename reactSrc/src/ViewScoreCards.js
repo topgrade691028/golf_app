@@ -59,10 +59,14 @@ const ViewScoreCards = ({ history }) => {
   const [searchText, setSearchText] = useState("");
   const [searchCriteria, setSearchCriteria] = useState("eventId"); // Default search criteria is eventId
 
-  const handleEdit = (scoreCard) => {
+  const handleView = (scoreCard) => {
     // Handle edit functionality
-    history.push(`/scorecardview/${scoreCard.id}`);
-    history.push(`/scorecardview/${scoreCard.groupNumber}`);
+    console.log(JSON.stringify(" score card is " + scoreCard));
+    alert("scorecard eventId is " + scoreCard.eventId);
+    alert("scorecard groupNumber is " + scoreCard.groupNumber);
+    history.push(
+      `/scorecardview/${scoreCard.eventId}/${scoreCard.groupNumber}`
+    );
   };
 
   useEffect(() => {
@@ -72,15 +76,28 @@ const ViewScoreCards = ({ history }) => {
 
   const fetchScoreCards = async () => {
     try {
-      const response = await ScoreCardService.getScoreCards(
-        searchCriteria,
-        searchText
-        //groupingId,
-        //groupingTitle
-      );
+      const params = {
+        eventId: null,
+        eventName: null,
+        scoreCardId: null,
+        scoreCardTitle: null,
+      };
+
+      // Map search criteria to the corresponding query parameter
+      if (searchCriteria === "eventId") {
+        params.eventId = searchText;
+      } else if (searchCriteria === "eventName") {
+        params.eventName = searchText;
+      } else if (searchCriteria === "scoreCardId") {
+        params.scoreCardId = searchText;
+      } else if (searchCriteria === "scoreCardTitle") {
+        params.scoreCardTitle = searchText;
+      }
+
+      const response = await ScoreCardService.getScoreCards(params);
 
       const scoreCardsData = response;
-      console.log("Scorecards is " + JSON.stringify(scoreCardsData));
+      console.log("Scorecards are " + JSON.stringify(scoreCardsData));
       setScoreCards(scoreCardsData);
     } catch (error) {
       console.error("Error fetching score cards:", error);
@@ -121,7 +138,7 @@ const ViewScoreCards = ({ history }) => {
             <option value="eventId">Event ID</option>
             <option value="eventName">Event Name</option>
             <option value="scoreCardId">Score Card ID</option>
-            <option value="scoreCardTitle">Score Card Title</option>
+            <option value="scoreCardTitle">Score Card Group Number</option>
           </select>
           <Button variant="contained" onClick={handleSearch}>
             Search
@@ -133,9 +150,8 @@ const ViewScoreCards = ({ history }) => {
             <TableHead>
               <TableRow>
                 <TableCell align="right">ID</TableCell>
-                <TableCell align="left">Title</TableCell>
-                <TableCell align="right">Group Number</TableCell>{" "}
-                {/* Add this line */}
+                <TableCell align="left">Group Number</TableCell>
+                <TableCell align="center">Players</TableCell>
                 <TableCell align="center">Action</TableCell>
               </TableRow>
             </TableHead>
@@ -144,7 +160,7 @@ const ViewScoreCards = ({ history }) => {
                 scoreCards.map((scoreCard) => (
                   <TableRow key={scoreCard.id}>
                     <TableCell align="right">{scoreCard.id}</TableCell>
-                    <TableCell align="left">{scoreCard.title}</TableCell>
+                    <TableCell align="left">{scoreCard.groupNumber}</TableCell>
                     <TableCell align="center">
                       {scoreCard.players.map((player) => (
                         <span key={player.id}>
@@ -158,7 +174,7 @@ const ViewScoreCards = ({ history }) => {
                         color="primary"
                         aria-label="outlined primary button group"
                       >
-                        <Button onClick={() => handleEdit(scoreCard)}>
+                        <Button onClick={() => handleView(scoreCard)}>
                           View
                         </Button>
                         <Button onClick={() => handleDelete(scoreCard)}>

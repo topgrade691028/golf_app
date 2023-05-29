@@ -104,4 +104,9 @@ public class CompetitionService {
 											competitionPlayer.getCompetitionId(), competitionPlayer.getPlayerId());
 	}
 
+	public void updateCompetition(Competition updatedCompetition) {
+		// TODO Auto-generated method stub
+		competitionRepository.save(updatedCompetition);
+	}
+
 }

@@ -105,7 +105,7 @@ public class ScoreCardController {
 			// Retrieve or create ScoreCardDTO for the group number
 			ScoreCardDTO scoreCardDTO = scoreCardMap.get(groupNumber);
 			if (scoreCardDTO == null) {
-				scoreCardDTO = ScoreCardDTO.builder().id(grouping.getGroupingId()).eventId(eventId)
+				scoreCardDTO = ScoreCardDTO.builder().id(grouping.getGroupingId()).eventId(grouping.getEvent().getId())
 						.groupNumber(String.valueOf(groupNumber)).players(new ArrayList<>()).build();
 
 				scoreCardMap.put(groupNumber, scoreCardDTO);

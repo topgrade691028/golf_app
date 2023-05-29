@@ -7,6 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 
+import { apiUrl } from "./config";
 //import "./style1.css";
 import "./style2.css";
 
@@ -33,6 +34,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ScoreCard(props) {
+  const { eventId, groupNumber } = props.match.params;
+  console.log("Here is the id: " + eventId);
+  console.log("Here is the groupNumber: " + groupNumber);
   const apiUrl = props.apiUrl;
   console.log("apiUrl is now", apiUrl);
 
@@ -72,105 +76,107 @@ export default function ScoreCard(props) {
   ]);
 
   useEffect(() => {
-    alert("apiUrl is " + apiUrl);
-    axios.get(`${apiUrl}/scorecard/${id}`).then((response) => {
-      setCompetition(response.data.competition);
-      setPlayers(response?.data?.players);
-      setPlayerA(response?.data?.players?.[0]?.name);
-      setPlayerB(response?.data?.players?.[1]?.name);
+    console.log("apiUrl is " + apiUrl);
+    axios
+      .get(`${apiUrl}/scorecard/${eventId}/${groupNumber}`)
+      .then((response) => {
+        setCompetition(response.data.competition);
+        setPlayers(response?.data?.players);
+        setPlayerA(response?.data?.players?.[0]?.name);
+        setPlayerB(response?.data?.players?.[1]?.name);
 
-      setHandiCapPlayerA(response?.data?.players?.[0]?.handicap);
-      setHandiCapPlayerB(response?.data?.players?.[1]?.handicap);
-      setHandiCapPlayerC(response?.data?.players?.[2]?.handicap);
-      setHandiCapPlayerD(response?.data?.players?.[3]?.handicap);
-      // setHandiCapPlayerC(res?.data?.players?.[3]?.handicap);
-      setHoles(response?.data?.holes);
-      setScores(response?.data?.scoreDTOs);
-      setBonusPointRules(response?.data?.bonusPointRules);
+        setHandiCapPlayerA(response?.data?.players?.[0]?.handicap);
+        setHandiCapPlayerB(response?.data?.players?.[1]?.handicap);
+        setHandiCapPlayerC(response?.data?.players?.[2]?.handicap);
+        setHandiCapPlayerD(response?.data?.players?.[3]?.handicap);
+        // setHandiCapPlayerC(res?.data?.players?.[3]?.handicap);
+        setHoles(response?.data?.holes);
+        setScores(response?.data?.scoreDTOs);
+        setBonusPointRules(response?.data?.bonusPointRules);
 
-      const newPlayerScoresFront9 = [[], [], []];
-      const newPlayerScoresBack9 = [[], [], []];
-      const newPlayerPointsFront9 = [[], [], []];
-      const newPlayerPointsBack9 = [[], [], []];
+        const newPlayerScoresFront9 = [[], [], []];
+        const newPlayerScoresBack9 = [[], [], []];
+        const newPlayerPointsFront9 = [[], [], []];
+        const newPlayerPointsBack9 = [[], [], []];
 
-      console.log("scoreDTOs:", JSON.stringify(response.data.scoreDTOs));
+        console.log("scoreDTOs:", JSON.stringify(response.data.scoreDTOs));
 
-      const indices = response.data.bonusPointRules
-        .map((rule) => {
-          const index = holes.findIndex(
-            (hole) => hole.holeNumber === rule.holeNumber
+        const indices = response.data.bonusPointRules
+          .map((rule) => {
+            const index = holes.findIndex(
+              (hole) => hole.holeNumber === rule.holeNumber
+            );
+            return index >= 0 ? index : null;
+          })
+          .filter((index) => index !== null); // Filter out any null values
+
+        setBonusPointRules(response.data.bonusPointRules);
+        setBonusRuleHoleIndices(indices);
+
+        console.log("bonusPointRules", response.data.bonusPointRules);
+        console.log("bonusPointRulesIndices", indices); // Add this line
+
+        // initialize all sub-arrays in newPlayerScoresFront9
+        for (let i = 0; i < newPlayerScoresFront9.length; i++) {
+          for (let j = 0; j < 9; j++) {
+            newPlayerScoresFront9[i][j] = 0;
+            newPlayerPointsFront9[i][j] = 0;
+          }
+        }
+        console.log("players is " + JSON.stringify(response.data.players));
+
+        response.data.scoreDTOs.forEach((score) => {
+          console.log(score.points);
+        });
+
+        response.data.scoreDTOs.forEach((score) => {
+          const playerIndex = getPlayerIndex(
+            score.playerId,
+            response.data.players
           );
-          return index >= 0 ? index : null;
-        })
-        .filter((index) => index !== null); // Filter out any null values
+          const holeIndex = getHoleIndex(score.holeNumber);
+          const scoreValue = score.score || 0; // set score to 0 if it is undefined
+          const pointsValue = score.points || 0; // set score to 0 if it is undefined
 
-      setBonusPointRules(response.data.bonusPointRules);
-      setBonusRuleHoleIndices(indices);
+          if (holeIndex <= 8) {
+            if (!newPlayerScoresFront9[playerIndex]) {
+              newPlayerScoresFront9[playerIndex] = [];
+            }
 
-      console.log("bonusPointRules", response.data.bonusPointRules);
-      console.log("bonusPointRulesIndices", indices); // Add this line
+            if (!newPlayerScoresFront9[playerIndex][holeIndex]) {
+              newPlayerScoresFront9[playerIndex][holeIndex] = 0;
+            }
 
-      // initialize all sub-arrays in newPlayerScoresFront9
-      for (let i = 0; i < newPlayerScoresFront9.length; i++) {
-        for (let j = 0; j < 9; j++) {
-          newPlayerScoresFront9[i][j] = 0;
-          newPlayerPointsFront9[i][j] = 0;
-        }
-      }
-      console.log("players is " + JSON.stringify(response.data.players));
-
-      response.data.scoreDTOs.forEach((score) => {
-        console.log(score.points);
-      });
-
-      response.data.scoreDTOs.forEach((score) => {
-        const playerIndex = getPlayerIndex(
-          score.playerId,
-          response.data.players
-        );
-        const holeIndex = getHoleIndex(score.holeNumber);
-        const scoreValue = score.score || 0; // set score to 0 if it is undefined
-        const pointsValue = score.points || 0; // set score to 0 if it is undefined
-
-        if (holeIndex <= 8) {
-          if (!newPlayerScoresFront9[playerIndex]) {
-            newPlayerScoresFront9[playerIndex] = [];
+            newPlayerScoresFront9[playerIndex][holeIndex] = scoreValue;
+            newPlayerPointsFront9[playerIndex][holeIndex] = pointsValue;
+          } else {
+            newPlayerScoresBack9[playerIndex][holeIndex - 9] = scoreValue;
+            newPlayerPointsBack9[playerIndex][holeIndex] = pointsValue;
           }
+        });
 
-          if (!newPlayerScoresFront9[playerIndex][holeIndex]) {
-            newPlayerScoresFront9[playerIndex][holeIndex] = 0;
-          }
+        console.log("newPlayerScoresFront9", newPlayerScoresFront9);
+        setPlayerScoresFront9(newPlayerScoresFront9);
+        setPlayerScoresBack9(newPlayerScoresBack9);
 
-          newPlayerScoresFront9[playerIndex][holeIndex] = scoreValue;
-          newPlayerPointsFront9[playerIndex][holeIndex] = pointsValue;
-        } else {
-          newPlayerScoresBack9[playerIndex][holeIndex - 9] = scoreValue;
-          newPlayerPointsBack9[playerIndex][holeIndex] = pointsValue;
-        }
+        console.log("playersPointsFront9", newPlayerPointsFront9);
+        console.log("playersPointsBack9", newPlayerPointsBack9);
+
+        setPlayerPointsFront9(newPlayerPointsFront9);
+        setPlayerPointsBack9(newPlayerPointsBack9);
+
+        //setPlayerScoresFront9(newPlayerScoresFront9);
+
+        // calculatePlayerPointsFront9(newPlayerScoresFront9);
+
+        setGolfEvent({
+          ...event,
+          id: response.data.golfEventDTO?.id,
+        });
+        console.log("Golf EVent " + JSON.stringify(golfEvent));
+        console.log(scores);
+        response.data.body;
       });
-
-      console.log("newPlayerScoresFront9", newPlayerScoresFront9);
-      setPlayerScoresFront9(newPlayerScoresFront9);
-      setPlayerScoresBack9(newPlayerScoresBack9);
-
-      console.log("playersPointsFront9", newPlayerPointsFront9);
-      console.log("playersPointsBack9", newPlayerPointsBack9);
-
-      setPlayerPointsFront9(newPlayerPointsFront9);
-      setPlayerPointsBack9(newPlayerPointsBack9);
-
-      //setPlayerScoresFront9(newPlayerScoresFront9);
-
-      // calculatePlayerPointsFront9(newPlayerScoresFront9);
-
-      setGolfEvent({
-        ...event,
-        id: response.data.golfEvent.id,
-      });
-      console.log("Golf EVent " + JSON.stringify(golfEvent));
-      console.log(scores);
-      response.data.body;
-    });
     console.log("Log this");
   }, []);
 
@@ -625,11 +631,15 @@ If the API call is successful, the function logs a success message to the consol
                     data-hole-number={item.holeNumber}
                     data-id={item.id}
                     defaultValue={
-                      players[0]?.id && item?.id
+                      players[0] && players[0]?.id && item?.id
                         ? getPlayerScoreForHole(players[0].id, item.id)
                         : ""
                     }
-                    id={players[0]?.id && `${players[0].id}-${item.holeNumber}`}
+                    id={
+                      players[0] &&
+                      players[0]?.id &&
+                      `${players[0].id}-${item.holeNumber}`
+                    }
                     onChange={(event) =>
                       handleChange(
                         event,
@@ -707,7 +717,7 @@ If the API call is successful, the function logs a success message to the consol
                         ? getPlayerScoreForHole(players[3].id, item.id)
                         : ""
                     }
-                    id={players[0]?.id && `${players[3].id}-${item.holeNumber}`}
+                    id={players[3]?.id && `${players[3].id}-${item.holeNumber}`}
                     onChange={(event) =>
                       handleChange(
                         event,

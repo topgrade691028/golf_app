@@ -60,7 +60,7 @@ export default function App() {
             />
             <Route
               exact
-              path="/scorecardview/:id"
+              path="/scorecardview/:eventId/:groupNumber"
               render={(props) => <ScoreCard {...props} apiUrl={apiUrl} />}
             />
             <Route

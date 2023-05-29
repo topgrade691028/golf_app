@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.pr.golf.golfapp.dto.PlayerGroupingDTO;
+import com.pr.golf.golfapp.model.GolfEvent;
 import com.pr.golf.golfapp.model.PlayerGrouping;
 
 @Component
@@ -23,7 +24,7 @@ public class PlayerGroupingMapper {
 	            .map(playerGrouping -> PlayerGroupingDTO.builder()	
 	            		.id(playerGrouping.getGroupingId())
 	            		.groupNumber(playerGrouping.getGroupNumber())
-		                .eventId(playerGrouping.getEventId())
+		                .eventId(playerGrouping.getEvent().getId())
 		                .player(playerMapper.toDto(List.of(playerGrouping.getPlayer())).get(0))
 	                .build())
 	            .collect(Collectors.toList());
@@ -36,7 +37,7 @@ public class PlayerGroupingMapper {
 	            .map(playerGroupingDTO -> PlayerGrouping.builder()
 	            	.groupingId(playerGroupingDTO.getId())
 	            	.groupNumber(playerGroupingDTO.getGroupNumber())
-	                .eventId(playerGroupingDTO.getEventId())
+	                .event(GolfEvent.builder().id(playerGroupingDTO.getEventId()).build())
 	                .player(playerMapper.toEntity(List.of(playerGroupingDTO.getPlayer())).get(0))
 	                .build())
 	            .collect(Collectors.toList());

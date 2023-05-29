@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pr.golf.golfapp.dto.CompetitionDTO;
 import com.pr.golf.golfapp.dto.CompetitionPlayerDTO;
+import com.pr.golf.golfapp.dto.GolfEventDTO;
 import com.pr.golf.golfapp.dto.PlayerDTO;
 import com.pr.golf.golfapp.enums.CompetitionType;
 import com.pr.golf.golfapp.model.Competition;
@@ -34,7 +36,7 @@ public class CompetitionController {
     	this.competitionService = competitionService;
     }
     
-    @RequestMapping(value = "/createcompetition",
+    @RequestMapping(value = "/create",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Competition> createCompetition(@RequestBody CompetitionDTO competitionDTO) throws URISyntaxException {
@@ -102,5 +104,18 @@ public class CompetitionController {
         System.out.print("Deleting Competition");
         competitionService.deleteCompetition(competitionId);
         return ResponseEntity.accepted().body(String.format("Sucessfully deleted competition %s, ", competitionId));
+    }
+    
+    @PutMapping("/update/{id}")
+    public ResponseEntity updateEvent(@RequestBody CompetitionDTO competition) {
+        Competition currentCompetition = competitionService.getCompetitionById(competition.getId());
+        Competition updatedCompetition = Competition.builder()
+        						.id(currentCompetition.getId())
+        						.name(competition.getName())
+        						.competitionType(competition.getCompetitionType())
+        						.build();
+        competitionService.updateCompetition(updatedCompetition);
+
+        return ResponseEntity.ok(competition);
     }
 }

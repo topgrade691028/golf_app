@@ -4,8 +4,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.annotations.Cascade;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -49,13 +52,16 @@ public class GolfEvent extends Event {
 	/**
 	 * @FIXME Set below throws a wobbly.
 	 */
-    @OneToMany(mappedBy="event", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="event", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Score> scores;
     
-    @ManyToMany(fetch=FetchType.LAZY)
-    @JoinTable(name = "golf_event_player",
-               joinColumns = @JoinColumn(name = "event_id"),
-               inverseJoinColumns = @JoinColumn(name = "player_id"))
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "golf_event_player",
+        joinColumns = @JoinColumn(name = "event_id"),
+        inverseJoinColumns = @JoinColumn(name = "player_id")
+    )
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
     private List<Player> players;
     
     @PrePersist

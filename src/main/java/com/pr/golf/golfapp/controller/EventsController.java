@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pr.golf.golfapp.dto.GolfCourseDTO;
 import com.pr.golf.golfapp.dto.GolfEventDTO;
 import com.pr.golf.golfapp.dto.GroupPairingsRequest;
 import com.pr.golf.golfapp.dto.PlayerDTO;
 import com.pr.golf.golfapp.dto.PlayerGroupingDTO;
 import com.pr.golf.golfapp.enums.GolfEventType;
+import com.pr.golf.golfapp.service.GolfCourseService;
 import com.pr.golf.golfapp.service.GolfEventService;
 
 @RestController
@@ -30,9 +32,12 @@ import com.pr.golf.golfapp.service.GolfEventService;
 public class EventsController {
 
     private GolfEventService golfEventService;
+    
+    private GolfCourseService golfCourseService;
 
-	public EventsController(@Autowired GolfEventService golfEventService ) {
+	public EventsController(@Autowired GolfEventService golfEventService, @Autowired GolfCourseService golfCourseService ) {
 		this.golfEventService = golfEventService;
+		this.golfCourseService = golfCourseService;
 	}
 
     @GetMapping("/{id}")
@@ -82,12 +87,18 @@ public class EventsController {
     }
   
     @GetMapping("/types")
-    public List<GolfEventType> getCompetitionTypes(){
+    public List<GolfEventType> getGolfEventTypes(){
     	
       return Arrays.asList(GolfEventType.values());
     }
     
-    @PostMapping
+    @GetMapping("/courses")
+    public List<GolfCourseDTO> getGolfCourses(){
+    	
+      return golfCourseService.findAllGolfCourses();
+    }
+    
+    @PostMapping("/create")
     public ResponseEntity<GolfEventDTO> createEvent(@RequestBody GolfEventDTO event) throws URISyntaxException {
         GolfEventDTO savedEvent = golfEventService.save(event);
         return ResponseEntity.created(new URI("/events/" + savedEvent.getId())).body(savedEvent);

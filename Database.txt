@@ -33,12 +33,12 @@ create table golfapp.golf_course(
     primary key(id)
 );
 
-create table golfapp.competition(
-    id BIGINT auto_increment,
-    name varchar(40) not null, 
-    competition_type varchar(20) null, 
-    primary key(id)
-);
+CREATE TABLE golfapp.competition (
+  id bigint NOT NULL AUTO_INCREMENT,
+  name varchar(40) NOT NULL,
+  competition_type varchar(20) DEFAULT NULL,
+  PRIMARY KEY (id)
+)
 
 create table golfapp.golf_leader_board(
     id BIGINT auto_increment,
@@ -55,18 +55,17 @@ create table golfapp.golf_leader_board(
 );
 
 CREATE TABLE golfapp.golf_event (
-  id BIGINT NOT NULL AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL,
-  competition_id BIGINT,
-  venue VARCHAR(255) DEFAULT NULL,
-  type VARCHAR(255) DEFAULT NULL,
-  date date, 
-  golf_course_id BIGINT,
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  name varchar(255) NOT NULL,
+  venue varchar(255) DEFAULT NULL,
+  type varchar(255) DEFAULT NULL,
+  competition_id bigint(20) DEFAULT NULL,
+  date date DEFAULT NULL,
+  golf_course_id bigint(20) DEFAULT NULL,
   PRIMARY KEY (id),
-  foreign key(competition_id)
-  references golfapp.COMPETITION(id)
-);
-
+  KEY fk_competition_id (competition_id),
+  CONSTRAINT fk_competition_id FOREIGN KEY (competition_id) REFERENCES competition (id) ON DELETE CASCADE
+)
 CREATE TABLE golfapp.player (
   id BIGINT NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
@@ -134,15 +133,17 @@ create table golfapp.EVENT_LEADER_BOARD(
           references event(id)
 );
 
-CREATE TABLE player_grouping(
-  grouping_id BIGINT PRIMARY KEY auto_increment,
-  event_id BIGINT,
-  group_number INT,
-  player_id BIGINT,
-  FOREIGN KEY (event_id) REFERENCES golf_event(id),
-  FOREIGN KEY (player_id) REFERENCES player(id)
-);
-
+CREATE TABLE player_grouping (
+  grouping_id bigint NOT NULL AUTO_INCREMENT,
+  event_id bigint DEFAULT NULL,
+  group_number int(11) DEFAULT NULL,
+  player_id bigint DEFAULT NULL,
+  PRIMARY KEY (grouping_id),
+  KEY player_id (player_id),
+  KEY player_grouping_ibfk_1 (event_id),
+  CONSTRAINT player_grouping_ibfk_1 FOREIGN KEY (event_id) REFERENCES golf_event (id) ON DELETE CASCADE,
+  CONSTRAINT player_grouping_ibfk_2 FOREIGN KEY (player_id) REFERENCES player (id)
+)
 
 INSERT INTO player (name, username, handicap) VALUES
   ('Darragh Flynn', 'dflynn', 28),

@@ -17,6 +17,10 @@ const GolfEventService = {
     const response = await axios.delete(`${baseUrl}/${id}`);
     return response.data;
   },
+  getPlayerGroupsForEvent: async (eventId) => {
+    const response = await axios.get(`${baseUrl}/getplayergroups/${eventId}`);
+    return response.data;
+  },
 };
 
 export default GolfEventService;

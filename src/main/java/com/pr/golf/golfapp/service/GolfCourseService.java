@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pr.golf.golfapp.dto.GolfCourseDTO;
 import com.pr.golf.golfapp.mapper.GolfCourseMapper;
 import com.pr.golf.golfapp.model.GolfCourse;
 import com.pr.golf.golfapp.model.Hole;
@@ -106,8 +107,9 @@ public class GolfCourseService {
         }
     }
     
-    public List<GolfCourse> findAllGolfCourses() {
-    	return  golfCourseRepository.findAll();
+    public List<GolfCourseDTO> findAllGolfCourses() {
+    	return  golfCourseMapper.toDto(golfCourseRepository.findAll());
     }
+
 }
 

@@ -2,7 +2,6 @@ package com.pr.golf.golfapp.dto;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import com.pr.golf.golfapp.enums.GolfEventType;
 
@@ -29,4 +28,5 @@ public class GolfEventDTO {
 	private Date date;
 	private List<ScoreDTO> scores;
 	private List<PlayerDTO> players;
+	private GolfCourseDTO golfCourse;
 }
