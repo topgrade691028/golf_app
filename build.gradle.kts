@@ -2,7 +2,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
 	java
-	id("org.springframework.boot") version "3.0.4"
+	id("org.springframework.boot") version "3.1.0"
 	id("io.spring.dependency-management") version "1.1.0"
 }
 
@@ -17,14 +17,14 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-	
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
+
 	implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
 
 	implementation("net.sourceforge.tess4j:tess4j:4.5.1")
-	
-	implementation("ch.qos.logback:logback-classic:1.4.6")
-	
+
+	//implementation("ch.qos.logback:logback-classic:1.4.7")
+
 
 	compileOnly("org.projectlombok:lombok:1.18.26")
 	annotationProcessor("org.projectlombok:lombok:1.18.26")
@@ -48,7 +48,7 @@ tasks.withType<Test> {
 }
 
 tasks.getByName<BootJar>("bootJar") {
-    archiveFileName.set("my-app.jar")
-    mainClass.set("com.pr.golf.golfapp.GolfAppApplication")
+	archiveFileName.set("my-app.jar")
+	mainClass.set("com.pr.golf.golfapp.GolfAppApplication")
 }
 

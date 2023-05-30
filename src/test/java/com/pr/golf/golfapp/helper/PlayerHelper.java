@@ -2,15 +2,13 @@ package com.pr.golf.golfapp.helper;
 
 import java.util.List;
 
-import org.assertj.core.api.MatcherAssert;
-import org.assertj.core.util.Arrays;
-import org.hamcrest.collection.HasItemInArray;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.pr.golf.golfapp.controller.PlayerController;
 import com.pr.golf.golfapp.model.Player;
+
 
 public class PlayerHelper {
 	
@@ -36,7 +34,7 @@ public class PlayerHelper {
 	                    responseSpec.expectBodyList(Player.class)
 	                    .consumeWith(result -> {
 	                        List<Player> responseBody = result.getResponseBody();
-	                        log.info(responseBody);
+							System.out.println("Player REsponseBody  " + responseBody);
 	                      });
 	                    
 	                }).expectBodyList(Player.class).returnResult().getResponseBody();

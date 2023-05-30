@@ -30,4 +30,6 @@ public class ScoreRequestBody {
 	private long holeId;
 	
 	private int holeNumber;
+	
+	private String competitionType;
 }

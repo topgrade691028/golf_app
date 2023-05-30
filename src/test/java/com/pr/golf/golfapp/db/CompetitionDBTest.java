@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
-import com.pr.golf.golfapp.model.Competition;
+import com.pr.golf.golfapp.dto.CompetitionDTO;
 import com.pr.golf.golfapp.service.CompetitionService;
 
 @SpringBootTest
@@ -24,10 +24,10 @@ public class CompetitionDBTest {
 
     @Test
     public void bookExistsInTableTest() {
-        Competition competition = Competition.builder().name("Sinkers Society").build();
+        CompetitionDTO competition = CompetitionDTO.builder().name("Sinkers Society").build();
         competitionService.addCompetition(competition);
 
-        List<Competition> competitionList = competitionService.getAllCompetitions();
+        List<CompetitionDTO> competitionList = competitionService.getAllCompetitions();
         Assertions.assertEquals(1, competitionList.size());
     }
     

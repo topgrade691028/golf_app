@@ -7,15 +7,16 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.pr.golf.golfapp.controller.ScoreController;
+import com.pr.golf.golfapp.dto.ScoreDTO;
 import com.pr.golf.golfapp.model.EventLeaderBoard;
-import com.pr.golf.golfapp.model.Score;
 
 import reactor.core.publisher.Flux;
+
 
 public class ScoreHelper {
 	
 
-	public static Flux<EventLeaderBoard> addScore(List<Score> scores, ScoreController scoreController, int port) {
+	public static Flux<EventLeaderBoard> addScore(List<ScoreDTO> scores, ScoreController scoreController, int port) {
 	     UriComponents uri = UriComponentsBuilder.newInstance()
                  .port(port)
                  .host("127.0.0.1").port(port).build();
@@ -33,7 +34,7 @@ public class ScoreHelper {
 	                    jsonBodySpec.expectBody().jsonPath("competitionId").isEqualTo(1l);
 	                }, responseSpec -> {
 	                    responseSpec.expectBody(EventLeaderBoard.class).value(leaderBoard -> {
-	                        leaderBoard.getCompetitionId();
+	                        leaderBoard.getEventId();
 	                    });
 	                }).returnResult(EventLeaderBoard.class).getResponseBody();
 		 

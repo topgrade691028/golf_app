@@ -3,6 +3,9 @@ package com.pr.golf.golfapp.controller.test;
 import com.pr.golf.golfapp.GolfAppApplication;
 import com.pr.golf.golfapp.controller.ScoreController;
 import com.pr.golf.golfapp.model.Score;
+
+
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
+
 
 @SpringBootTest(classes = GolfAppApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ScoreControllerWebTest {
@@ -46,8 +50,8 @@ public class ScoreControllerWebTest {
                     });
                 }).returnResult(Score.class).getResponseBody();
 
-        log.info("Got here");
-        log.info(returnedScore.blockFirst().getId());
+        System.out.println("Got here");
+        System.out.println("Expected "+ returnedScore.blockFirst().getId());
 
         Assertions.assertTrue(returnedScore.blockFirst().getId() == (1l));
 

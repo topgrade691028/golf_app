@@ -46,12 +46,12 @@ public class PlayerWebTest {
                         jsonBodySpec.expectBody().jsonPath("name").isEqualTo("Player 1");
                     }, responseSpec -> {
                     responseSpec.expectBody(List.class).value(playerList -> {
-                    	((Player)playerList.get(0)).getId().equals("Player 1");
+                    	//((Player)playerList.get(0)).getId().equals("Player 1");
                     });
                 }).returnResult(Player.class).getResponseBody();
 
-        log.info("Got here");
-        log.info(returnedPlayer.blockFirst().getName());
+        System.out.println("Got here");
+        System.out.println(returnedPlayer.blockFirst().getName());
 
         Assertions.assertTrue(returnedPlayer.blockFirst().getName().equals("Player 1"));
 

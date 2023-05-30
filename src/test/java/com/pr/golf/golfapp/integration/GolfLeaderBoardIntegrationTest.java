@@ -26,6 +26,8 @@ import com.pr.golf.golfapp.controller.EventsController;
 import com.pr.golf.golfapp.controller.GolfLeaderBoardController;
 import com.pr.golf.golfapp.controller.PlayerController;
 import com.pr.golf.golfapp.controller.ScoreController;
+import com.pr.golf.golfapp.dto.CompetitionDTO;
+import com.pr.golf.golfapp.dto.GolfEventDTO;
 import com.pr.golf.golfapp.helper.GolfEventHelper;
 import com.pr.golf.golfapp.helper.GolfLeaderBoardHelper;
 import com.pr.golf.golfapp.helper.PlayerHelper;
@@ -36,6 +38,7 @@ import com.pr.golf.golfapp.model.GolfLeaderBoard;
 import com.pr.golf.golfapp.model.Player;
 import com.pr.golf.golfapp.model.Score;
 import com.pr.golf.golfapp.utility.JsonFileReader;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = GolfAppApplication.class)
@@ -133,7 +136,7 @@ public class GolfLeaderBoardIntegrationTest {
 	@Test
 	public void testPlayerCreation() throws InterruptedException, URISyntaxException {
 
-		Competition competition = competitionController.createCompetition(Competition.builder().name("Sinkers Society").build()).getBody();
+		Competition competition = competitionController.createCompetition(CompetitionDTO.builder().name("Sinkers Society").build()).getBody();
 		
 		DateTimeFormatter expectedDateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		
@@ -229,7 +232,7 @@ public class GolfLeaderBoardIntegrationTest {
 		Competition retrievedCompetition = competitionController.getCompetition(leaderBoardAfterFirstEvent.get(0).getCompetitionId()).getBody();
 		assertEquals(2, retrievedCompetition.getEvents().size());
 		
-		GolfEvent event = eventsController.getEvent(silvermereEvent.getId());
+		GolfEventDTO event = eventsController.getEvent(silvermereEvent.getId());
 		
 		assertEquals("silvermere", event.getName());
 		

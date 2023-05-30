@@ -11,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.pr.golf.golfapp.controller.GolfLeaderBoardController;
 import com.pr.golf.golfapp.model.GolfLeaderBoard;
 
+
 public class GolfLeaderBoardHelper {
 
 
@@ -43,7 +44,7 @@ public class GolfLeaderBoardHelper {
 	                    responseSpec.expectBodyList(GolfLeaderBoard.class)
 	                    .consumeWith(result -> {
 	                    	List<GolfLeaderBoard> golfLeaderBoard = result.getResponseBody();
-	                        log.info(golfLeaderBoard);
+	                       System.out.println("GolfleaderBoard returned " + golfLeaderBoard);
 	                      });
 	                    
 	                }).expectBodyList(GolfLeaderBoard.class).returnResult().getResponseBody();

@@ -1,16 +1,18 @@
 package com.pr.golf.golfapp.helper;
 
-import com.pr.golf.golfapp.controller.EventsController;
-import com.pr.golf.golfapp.model.Event;
-import com.pr.golf.golfapp.model.GolfEvent;
+
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
+import com.pr.golf.golfapp.controller.EventsController;
+import com.pr.golf.golfapp.model.Event;
+import com.pr.golf.golfapp.model.GolfEvent;
+
 
 public class GolfEventHelper {
 	
@@ -37,7 +39,7 @@ public class GolfEventHelper {
 	                    responseSpec.expectBodyList(GolfEvent.class)
 	                    .consumeWith(result -> {
 	                        List<GolfEvent> responseBody = result.getResponseBody();
-	                        log.info(responseBody);
+							System.out.println("Expected responseBody "+ responseBody);
 	                      });
 	                    
 	                }).expectBodyList(Event.class).returnResult().getResponseBody();

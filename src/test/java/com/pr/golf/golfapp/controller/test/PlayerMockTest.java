@@ -33,7 +33,7 @@ public class PlayerMockTest {
     public void greetingShouldReturnMessageFromService() throws Exception {
         Player player = Player.builder().id(1l).name("Player 1").build();
         List<Player> players = Lists.newArrayList(player);
-        when(service.save(players)).thenReturn(players);
+        when(service.saveAll(players)).thenReturn(players);
         this.mockMvc.perform(post("/players")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("Player 1")));
     }

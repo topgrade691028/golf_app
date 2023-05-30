@@ -13,13 +13,14 @@ import org.springframework.test.context.ContextConfiguration;
 import com.pr.golf.golfapp.GolfAppApplication;
 import com.pr.golf.golfapp.controller.PlayerController;
 import com.pr.golf.golfapp.controller.ScoreController;
+import com.pr.golf.golfapp.dto.ScoreDTO;
 import com.pr.golf.golfapp.helper.PlayerHelper;
 import com.pr.golf.golfapp.helper.ScoreHelper;
 import com.pr.golf.golfapp.model.EventLeaderBoard;
 import com.pr.golf.golfapp.model.Player;
-import com.pr.golf.golfapp.model.Score;
 
 import reactor.core.publisher.Flux;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = GolfAppApplication.class)
@@ -122,22 +123,22 @@ public class PlayerScoreIntegrationTest {
 	     * | Player 2    | 4   |  4    | 3      | 1    | 18     | 22
 	     * | Player 3    | 4   |  6    | 1      | 1    | 18     | 24
 	     */ 
-		Score player1Score1 = Score.builder().id(1l).playerId(1l).handicap(18).par(4).score(5).points(2).hole(1)
+		ScoreDTO player1Score1 = ScoreDTO.builder().id(1l).playerId(1l).handicap(18).par(4).score(5).points(2).holeId(1)
 				.stroke(18).build();
 
-		Score player2Score1 = Score.builder().id(2l).playerId(2l).handicap(22).par(4).score(4).points(3).hole(1)
+		ScoreDTO player2Score1 = ScoreDTO.builder().id(2l).playerId(2l).handicap(22).par(4).score(4).points(3).holeId(1)
 				.stroke(18).build();
 
-		Score player3Score1 = Score.builder().id(3l).playerId(3l).handicap(24).par(4).score(6).points(1).hole(1)
+		ScoreDTO player3Score1 = ScoreDTO.builder().id(3l).playerId(3l).handicap(24).par(4).score(6).points(1).holeId(1)
 				.stroke(18).build();
 
 		Flux<EventLeaderBoard> leaderBoardAfterHole1 = ScoreHelper
 				.addScore(Lists.newArrayList(player1Score1, player2Score1, player3Score1), scoreController, port);
 
-		log.info("Got here");
-		log.info(leaderBoardAfterHole1.blockFirst().getCompetitionId());
+		System.out.println("Got here");
+		System.out.println("Leaderboard eventId  " + leaderBoardAfterHole1.blockFirst().getEventId());
 
-		Assertions.assertTrue(leaderBoardAfterHole1.blockFirst().getCompetitionId() == 1l);
+		Assertions.assertTrue(leaderBoardAfterHole1.blockFirst().getEventId() == 1l);
 
 	    /* Player 1 submits scores for Player 1(1), Player 2(2), Player 3(1) for 2nd hole
 	     * | ________________________________________________
@@ -146,13 +147,13 @@ public class PlayerScoreIntegrationTest {
 	     * | Player 2    | 5   |  6    | 2      | 2    | 4      | 22
 	     * | Player 3    | 5   |  7    | 1      | 2    | 4      | 24
 	     */ 
-		Score player1Score2 = Score.builder().id(4l).playerId(1l).handicap(18).par(4).score(6).points(2).hole(2)
+		ScoreDTO player1Score2 = ScoreDTO.builder().id(4l).playerId(1l).handicap(18).par(4).score(6).points(2).holeId(2)
 				.stroke(4).build();
 
-		Score player2Score2 = Score.builder().id(5l).playerId(2l).handicap(22).par(4).score(4).points(3).hole(1)
+		ScoreDTO player2Score2 = ScoreDTO.builder().id(5l).playerId(2l).handicap(22).par(4).score(4).points(3).holeId(1)
 				.stroke(4).build();
 
-		Score player3Score2 = Score.builder().id(6l).playerId(3l).handicap(24).par(4).score(6).points(1).hole(1)
+		ScoreDTO player3Score2 = ScoreDTO.builder().id(6l).playerId(3l).handicap(24).par(4).score(6).points(1).holeId(1)
 				.stroke(18).build();
 		
 		Flux<EventLeaderBoard> leaderBoardAfterHole2 = ScoreHelper

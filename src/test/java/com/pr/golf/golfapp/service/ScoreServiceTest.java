@@ -12,6 +12,7 @@ import com.pr.golf.golfapp.GolfAppApplication;
 import com.pr.golf.golfapp.dto.ScoreDTO;
 import com.pr.golf.golfapp.utility.JsonFileReader;
 
+
 @SpringBootTest
 @ContextConfiguration(classes = GolfAppApplication.class)
 public class ScoreServiceTest {
@@ -24,11 +25,11 @@ public class ScoreServiceTest {
 	public void testScoreCreation() throws InterruptedException, URISyntaxException {
 
 		List<ScoreDTO> scores = (List<ScoreDTO>) JsonFileReader.getListFromFile(ScoreDTO.class, "src\\test\\resources\\scores\\chesunt_scores.json");
-		log.info(scores);
-		log.info("Points for Player 1 for Hole 1 is " + scores.get(0).getPoints());
-		log.info("Points for Player 2 for Hole 1 is " + scores.get(1).getPoints());
-		log.info("Points for Player 1 for Hole 2 is " + scores.get(2).getPoints());
-		log.info("Points for Player 2 for Hole 2 is " + scores.get(3).getPoints());
+		System.out.println(scores.toString());
+		System.out.println("Points for Player 1 for Hole 1 is " + scores.get(0).getPoints());
+		System.out.println("Points for Player 2 for Hole 1 is " + scores.get(1).getPoints());
+		System.out.println("Points for Player 1 for Hole 2 is " + scores.get(2).getPoints());
+		System.out.println("Points for Player 2 for Hole 2 is " + scores.get(3).getPoints());
 		
 		
 	}
