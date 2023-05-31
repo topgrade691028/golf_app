@@ -1,84 +1,85 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
-  Container,
-  Grid,
-  Typography,
+  Modal,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Dialog,
   DialogTitle,
   DialogContent,
+  Container,
+  Grid,
+  Typography,
   DialogActions,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
+  Fragment,
 } from "@material-ui/core";
-import axios from "axios";
+
 import { apiUrl } from "./config";
 
 const GroupPairingsModal = ({ open, onClose, golfEvent }) => {
+  const [playersRegisteredForEvent, setPlayersRegisteredForEvent] = useState(
+    []
+  );
   const [groupPairings, setGroupPairings] = useState([]);
+  const [manuallyCreatedPairings, setManuallyCreatedPairings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [modalKey, setModalKey] = useState(0); // Add modalKey state variable
-
-  console.log("get groupings with golfEvent " + JSON.stringify(golfEvent));
 
   useEffect(() => {
-    const fetchPairings = async () => {
-      console.log("get groupings with eventId " + golfEvent.id);
-      try {
-        const response = await axios.get(
-          `${apiUrl}/events/getplayergroups/${golfEvent.id}`
-        );
-        console.log("Response data:", response.data);
-
-        // Group players by their "groupNumber"
-        const groupedPairings = response.data.reduce((acc, pairing) => {
-          const { groupNumber, player } = pairing;
-          if (acc[groupNumber]) {
-            acc[groupNumber].push(player);
-          } else {
-            acc[groupNumber] = [player];
-          }
-          return acc;
-        }, {});
-
-        console.log("Grouped pairings:", groupedPairings);
-
-        // Convert the grouped pairings object into an array of arrays
-        const pairings = Object.values(groupedPairings);
-
-        setGroupPairings(pairings);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching group pairings:", error);
-        // Handle error or show notification
-      }
-    };
-
-    const fetchPlayersForEvent = async () => {
-      console.log("get groupings with eventId " + golfEvent.id);
-      try {
-        const response = await axios.get(
-          `${apiUrl}/events/getPlayersForEvent/${golfEvent.id}`
-        );
-        console.log("Response data:", response.data);
-
-        // Set players on golfEvent
-        const updatedGolfEvent = { ...golfEvent, players: response.data };
-        //golfEvent(updatedGolfEvent);
-      } catch (error) {
-        console.error("Error fetching group pairings:", error);
-        // Handle error or show notification
-      }
-    };
-
     if (open) {
-      fetchPlayersForEvent();
-      fetchPairings();
+      // Fetch players registered for the event
+      fetch(`${apiUrl}/events/getPlayersForEvent/${golfEvent.id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(
+            "Response from getPlayersForEvent:",
+            JSON.stringify(data)
+          );
+          setPlayersRegisteredForEvent(data);
+        })
+        .catch((error) => console.error("Error fetching players:", error))
+        .finally(() => setIsLoading(false));
+
+      // Fetch group pairings
+      fetch(`${apiUrl}/events/getplayergroups/${golfEvent.id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Response from getplayergroups:", JSON.stringify(data));
+          setGroupPairings(data); // Ensure that data is being set correctly here
+        })
+        .catch((error) =>
+          console.error("Error fetching group pairings:", error)
+        );
     }
-  }, [open, golfEvent, modalKey]);
+  }, [open, golfEvent.id]);
+
+  const handleSaveGroups = async () => {
+    const requestBody = {
+      eventId: golfEvent.id,
+      playerGroups: groupPairings,
+    };
+
+    fetch(`${apiUrl}/events/savegroupsforevent`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => {
+        if (response.ok) {
+          onClose(); // Close the modal on successful save
+          console.log("Groups saved successfully");
+          setModalKey((prevKey) => prevKey + 1);
+        } else {
+          console.error("Error saving groups:", response.statusText);
+        }
+      })
+      .catch((error) => console.error("Error saving groups:", error));
+  };
 
   const generatePairings = () => {
     // Create a copy of the players array to avoid mutation
@@ -109,22 +110,38 @@ const GroupPairingsModal = ({ open, onClose, golfEvent }) => {
     console.log("pairings is ", JSON.stringify(pairings));
 
     setGroupPairings(pairings);
+    //alert("Pairings are " + pairings);
   };
 
-  const saveGroups = async () => {
-    try {
-      await axios.post(`${apiUrl}/events/savegroupsforevent`, {
-        eventId: golfEvent.id,
-        playerGroups: groupPairings,
-      });
-      // Handle success or show notification
-      console.log("Groups saved successfully");
-      setModalKey((prevKey) => prevKey + 1); // Update modalKey to trigger effect on next open
-    } catch (error) {
-      console.error("Error saving groups:", error);
-      // Handle error or show notification
+  const handleAddManuallyCreatedPairing = () => {
+    if (manuallyCreatedPairings.length < 4) {
+      setManuallyCreatedPairings((prevPairings) => [
+        ...prevPairings,
+        { groupNumber: prevPairings.length + 1, players: [] },
+      ]);
     }
   };
+
+  const handleAddPlayerToGroup = (player, groupNumber) => {
+    setManuallyCreatedPairings((prevPairings) =>
+      prevPairings.map((pairing) => {
+        if (pairing.groupNumber === groupNumber) {
+          return {
+            ...pairing,
+            players: [...pairing.players, player],
+          };
+        }
+        return pairing;
+      })
+    );
+  };
+
+  const handleCloseModal = () => {
+    setManuallyCreatedPairings([]); // Clear manually created pairings when closing the modal
+    onClose();
+  };
+
+  const canAddGroup = playersRegisteredForEvent.length > 0;
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -156,14 +173,14 @@ const GroupPairingsModal = ({ open, onClose, golfEvent }) => {
                 variant="contained"
                 color="primary"
                 onClick={generatePairings}
-                disabled={isLoading}
+                disabled={isLoading || groupPairings.length > 0}
               >
                 {groupPairings.length === 0
                   ? "Generate Pairings"
                   : "Generate New Pairings"}
               </Button>
             </Grid>
-            {groupPairings && Object.keys(groupPairings).length > 0 ? (
+            {groupPairings.length > 0 && (
               <Grid item>
                 {/* Display the group pairings */}
                 <Typography variant="h6">Group Pairings:</Typography>
@@ -175,11 +192,53 @@ const GroupPairingsModal = ({ open, onClose, golfEvent }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {groupPairings.map((pairing, index) => (
+                    {groupPairings
+                      .reduce((groups, pairing) => {
+                        if (!groups[pairing.groupNumber]) {
+                          groups[pairing.groupNumber] = [];
+                        }
+                        groups[pairing.groupNumber].push(pairing.player.name);
+                        return groups;
+                      }, [])
+                      .map((players, groupNumber) => (
+                        <TableRow key={groupNumber}>
+                          <TableCell>{groupNumber}</TableCell>
+                          <TableCell>{players.join(", ")}</TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </Grid>
+            )}
+            {canAddGroup && (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleAddManuallyCreatedPairing}
+                  disabled={manuallyCreatedPairings.length >= 4}
+                >
+                  Add Group
+                </Button>
+              </Grid>
+            )}
+            {manuallyCreatedPairings.length > 0 && (
+              <Grid item>
+                {/* Display manually created pairings */}
+                <Typography variant="h6">Manually Created Pairings:</Typography>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Group</TableCell>
+                      <TableCell>Players</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {manuallyCreatedPairings.map((pairing, index) => (
                       <TableRow key={index}>
                         <TableCell>{pairing.groupNumber}</TableCell>
                         <TableCell>
-                          {pairing.players && pairing.players.length > 0
+                          {pairing.players.length > 0
                             ? pairing.players
                                 .map((player) => player.name)
                                 .join(", ")
@@ -190,16 +249,6 @@ const GroupPairingsModal = ({ open, onClose, golfEvent }) => {
                   </TableBody>
                 </Table>
               </Grid>
-            ) : (
-              <Grid item>
-                {isLoading ? (
-                  <Typography variant="body1">Loading...</Typography>
-                ) : (
-                  <Typography variant="h6">
-                    No Group Pairings available
-                  </Typography>
-                )}
-              </Grid>
             )}
           </Grid>
         </Container>
@@ -209,7 +258,11 @@ const GroupPairingsModal = ({ open, onClose, golfEvent }) => {
           Close
         </Button>
         {groupPairings.length > 0 && (
-          <Button variant="contained" color="primary" onClick={saveGroups}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSaveGroups}
+          >
             Save Groups
           </Button>
         )}
