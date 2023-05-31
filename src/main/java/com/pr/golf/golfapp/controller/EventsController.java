@@ -27,6 +27,9 @@ import com.pr.golf.golfapp.enums.GolfEventType;
 import com.pr.golf.golfapp.service.GolfCourseService;
 import com.pr.golf.golfapp.service.GolfEventService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/events")
 public class EventsController {
@@ -45,8 +48,9 @@ public class EventsController {
         return golfEventService.getGolfEventById(id).orElseThrow(RuntimeException::new);
     }
     
-    @GetMapping("/competition/{id}")
+    @GetMapping("/competition/{competitionId}")
     public List<GolfEventDTO> getEventsByCompetitionId(@PathVariable Long competitionId) {
+    	log.info("Retrieving events by " + competitionId);
         return golfEventService.findByCompetitionId(competitionId).orElseThrow(RuntimeException::new);
     }
 

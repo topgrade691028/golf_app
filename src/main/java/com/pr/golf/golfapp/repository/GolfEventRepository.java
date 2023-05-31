@@ -14,7 +14,7 @@ import com.pr.golf.golfapp.model.GolfEvent;
 public interface GolfEventRepository extends JpaRepository<GolfEvent, Long> {
 
 	@Query(value = "SELECT e.*  FROM golf_event e WHERE competition_id = :competitionId", nativeQuery = true)
-	public List<GolfEvent> findByCompetitionId(Long competitionId);
+	public List<GolfEvent> findByCompetitionId(@Param("competitionId") Long competitionId);
 
 	@Query(value = "SELECT e.*  FROM golf_event e WHERE name = :name", nativeQuery = true)
 	public Optional<GolfEvent> findByEventName(@Param("name") String name);

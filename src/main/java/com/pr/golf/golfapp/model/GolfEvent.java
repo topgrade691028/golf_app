@@ -61,9 +61,9 @@ public class GolfEvent extends Event {
         joinColumns = @JoinColumn(name = "event_id"),
         inverseJoinColumns = @JoinColumn(name = "player_id")
     )
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
     private List<Player> players;
-    
+
     @PrePersist
     @PreUpdate
     private void validate() {

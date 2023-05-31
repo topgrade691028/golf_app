@@ -55,7 +55,7 @@ create table golfapp.golf_leader_board(
 );
 
 CREATE TABLE golfapp.golf_event (
-  id bigint(20) NOT NULL AUTO_INCREMENT,
+  id bigint NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
   venue varchar(255) DEFAULT NULL,
   type varchar(255) DEFAULT NULL,
@@ -66,6 +66,7 @@ CREATE TABLE golfapp.golf_event (
   KEY fk_competition_id (competition_id),
   CONSTRAINT fk_competition_id FOREIGN KEY (competition_id) REFERENCES competition (id) ON DELETE CASCADE
 )
+
 CREATE TABLE golfapp.player (
   id BIGINT NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,

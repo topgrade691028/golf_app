@@ -30,9 +30,9 @@ public class GolfCourseMapper {
 
 	public GolfCourseDTO toDto(GolfCourse golfCourse) {
 		GolfCourseDTO golfCourseDTO = new GolfCourseDTO();
-		golfCourseDTO.setId(golfCourseDTO.getId());
-		golfCourseDTO.setName(golfCourseDTO.getName());
-		golfCourseDTO.setAddress(golfCourseDTO.getAddress());
+		golfCourseDTO.setId(golfCourse.getId());
+		golfCourseDTO.setName(golfCourse.getName());
+		golfCourseDTO.setAddress(golfCourse.getAddress());
 		golfCourseDTO.setHoles(holeMapper.toDto(golfCourse.getHoles()));
 
 		return golfCourseDTO;
