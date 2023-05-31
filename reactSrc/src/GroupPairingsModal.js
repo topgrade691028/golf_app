@@ -15,6 +15,7 @@ import {
   TableCell,
 } from "@material-ui/core";
 import axios from "axios";
+import { apiUrl } from "./config";
 
 const GroupPairingsModal = ({ open, onClose, golfEvent }) => {
   const [groupPairings, setGroupPairings] = useState([]);
@@ -28,7 +29,7 @@ const GroupPairingsModal = ({ open, onClose, golfEvent }) => {
       console.log("get groupings with eventId " + golfEvent.id);
       try {
         const response = await axios.get(
-          `http://localhost:8080/events/getplayergroups/${golfEvent.id}`
+          `${apiUrl}/events/getplayergroups/${golfEvent.id}`
         );
         console.log("Response data:", response.data);
 
@@ -60,13 +61,13 @@ const GroupPairingsModal = ({ open, onClose, golfEvent }) => {
       console.log("get groupings with eventId " + golfEvent.id);
       try {
         const response = await axios.get(
-          `http://localhost:8080/events/getPlayersForEvent/${golfEvent.id}`
+          `${apiUrl}/events/getPlayersForEvent/${golfEvent.id}`
         );
         console.log("Response data:", response.data);
 
         // Set players on golfEvent
         const updatedGolfEvent = { ...golfEvent, players: response.data };
-        setGolfEvent(updatedGolfEvent);
+        //golfEvent(updatedGolfEvent);
       } catch (error) {
         console.error("Error fetching group pairings:", error);
         // Handle error or show notification
@@ -112,7 +113,7 @@ const GroupPairingsModal = ({ open, onClose, golfEvent }) => {
 
   const saveGroups = async () => {
     try {
-      await axios.post("http://localhost:8080/events/savegroupsforevent", {
+      await axios.post(`${apiUrl}/events/savegroupsforevent`, {
         eventId: golfEvent.id,
         playerGroups: groupPairings,
       });

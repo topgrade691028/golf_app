@@ -1,6 +1,23 @@
 import React, { useState, useEffect } from "react";
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@material-ui/core/";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles(() => ({
+  table: {
+    margin: "auto",
+    maxWidth: 600,
+    marginTop: 20,
+  },
+}));
 
 function Leaderboard() {
+  const classes = useStyles();
   const [eventLeaderboard, setEventLeaderboard] = useState([]);
 
   useEffect(() => {
@@ -20,30 +37,32 @@ function Leaderboard() {
     fetchData();
   }, []);
 
-  // sort the eventLeaderboard array by totalPoints and then by lowest totalScore value
-  eventLeaderboard.sort((a, b) => {
-    if (a.totalPoints !== b.totalPoints) {
-      return b.totalPoints - a.totalPoints; // sort by totalPoints in descending order
-    }
-    return a.totalScore - b.totalScore; // if totalPoints are equal, sort by lowest totalScore value
-  });
+  useEffect(() => {
+    // sort the eventLeaderboard array by totalPoints and then by lowest totalScore value
+    eventLeaderboard.sort((a, b) => {
+      if (a.totalPoints !== b.totalPoints) {
+        return b.totalPoints - a.totalPoints; // sort by totalPoints in descending order
+      }
+      return a.totalScore - b.totalScore; // if totalPoints are equal, sort by lowest totalScore value
+    });
+  }, [eventLeaderboard]);
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Event ID</th>
-          <th>Player ID</th>
-          <th>Hole</th>
-          <th>Total Score</th>
-          <th>Total Points</th>
-          <th>Holes Played</th>
-          <th>Handicap</th>
-        </tr>
-      </thead>
-      <tbody>
+    <Table className={classes.table}>
+      <TableHead>
+        <TableRow>
+          <TableCell>Event ID</TableCell>
+          <TableCell>Player ID</TableCell>
+          <TableCell>Hole</TableCell>
+          <TableCell>Total Score</TableCell>
+          <TableCell>Total Points</TableCell>
+          <TableCell>Holes Played</TableCell>
+          <TableCell>Handicap</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
         {eventLeaderboard.map((row, index) => (
-          <tr
+          <TableRow
             key={index}
             style={{
               backgroundColor: `rgba(135, 206, 235, ${
@@ -51,17 +70,17 @@ function Leaderboard() {
               })`,
             }}
           >
-            <td>{row.eventId}</td>
-            <td>{row.playerId}</td>
-            <td>{row.hole}</td>
-            <td>{row.totalScore}</td>
-            <td>{row.totalPoints}</td>
-            <td>{row.holesPlayed}</td>
-            <td>{row.handicap}</td>
-          </tr>
+            <TableCell>{row.eventId}</TableCell>
+            <TableCell>{row.playerId}</TableCell>
+            <TableCell>{row.hole}</TableCell>
+            <TableCell>{row.totalScore}</TableCell>
+            <TableCell>{row.totalPoints}</TableCell>
+            <TableCell>{row.holesPlayed}</TableCell>
+            <TableCell>{row.handicap}</TableCell>
+          </TableRow>
         ))}
-      </tbody>
-    </table>
+      </TableBody>
+    </Table>
   );
 }
 

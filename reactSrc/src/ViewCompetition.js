@@ -116,6 +116,18 @@ const Search = () => {
     console.log("Edited competition : " + JSON.stringify(editedCompetition));
   };
 
+  const handleViewEvents = (competitionId) => {
+    const selectedCompetition = competitions.find(
+      (competition) => competition.id === competitionId
+    );
+    if (selectedCompetition) {
+      history.push("/viewcompetitionevents", {
+        competitionId: selectedCompetition.id,
+        competitionName: selectedCompetition.name,
+      });
+    }
+  };
+
   const handleDelete = (competitionId) => {
     console.log(`handleDelete called with competition ID: ${competitionId}`);
 
@@ -223,6 +235,7 @@ const Search = () => {
                 <TableCell align="left">Name</TableCell>
                 <TableCell align="left">Competition Type</TableCell>
                 <TableCell align="left">Action</TableCell>
+                <TableCell align="left">Events</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -244,6 +257,18 @@ const Search = () => {
                         </Button>
                         <Button onClick={() => handleDelete(competition.id)}>
                           Delete
+                        </Button>
+                      </ButtonGroup>
+                    </TableCell>
+                    <TableCell align="left">
+                      <ButtonGroup
+                        color="primary"
+                        aria-label="outlined primary button group"
+                      >
+                        <Button
+                          onClick={() => handleViewEvents(competition.id)}
+                        >
+                          View Events
                         </Button>
                       </ButtonGroup>
                     </TableCell>

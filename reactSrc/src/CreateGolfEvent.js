@@ -52,7 +52,8 @@ export default function CreateGolfEvent({ apiUrl, competitionId }) {
     }
 
     async function getGolfCourses() {
-      const response = await fetch(`${apiUrl}/events/courses`);
+      console.log("Getting golf courses");
+      const response = await fetch(`${apiUrl}/courses/getAll`);
       const data = await response.json();
       setGolfCourses(data);
     }
@@ -60,7 +61,7 @@ export default function CreateGolfEvent({ apiUrl, competitionId }) {
     if (competitionId == null) {
       // Fetch all competitions
       axios
-        .get(`${apiUrl}/competitions`)
+        .get(`${apiUrl}/competition/retrieveAll`)
         .then((response) => {
           if (isMounted) {
             console.log("response.data", response.data);

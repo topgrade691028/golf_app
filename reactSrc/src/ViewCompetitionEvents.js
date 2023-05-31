@@ -56,6 +56,8 @@ const ViewCompetitionEvents = ({ apiUrl }) => {
   const location = useLocation();
   const competitionId = location?.state?.competitionId;
   const competitionName = location?.state?.competitionName;
+  console.log("CompetitionID is " + competitionId);
+  console.log("CompetitionName is " + competitionName);
   const [searchQuery, setSearchQuery] = useState("");
   const classes = useStyles();
 
@@ -65,6 +67,18 @@ const ViewCompetitionEvents = ({ apiUrl }) => {
   const [golfEvents, setGolfEvents] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showViewPairingsModal, setViewPairingsModal] = useState(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      // You can await here
+      const response = await GolfEventService.getAllEventsForCompetition(
+        competitionId
+      );
+      console.log("Setting Golf Events " + JSON.stringify(response));
+      setGolfEvents(response); // ...
+    }
+    fetchData();
+  }, [location?.state?.competitionId]);
 
   const handleEdit = (event) => {
     // Open the modal and set the current event being edited
@@ -87,8 +101,21 @@ const ViewCompetitionEvents = ({ apiUrl }) => {
   };
 
   const handleDelete = async (event) => {
-    const response = await GolfEventService.deleteGolfEvent(event.id);
-    // Remove the deleted event from the state
+    console.log("Event id in delete is " + JSON.stringify(event));
+    try {
+      await GolfEventService.deleteGolfEvent(event.id);
+      // Remove the deleted event from the state
+      setGolfEvents((prevEvents) =>
+        prevEvents.filter((e) => {
+          console.log("Setting golf event check " + e.id !== event.id);
+          console.log("e.id is  " + e.id);
+          e.id !== event.id;
+        })
+      );
+    } catch (error) {
+      // Handle the error if needed
+      console.log("Error deleting golf event:", error);
+    }
   };
 
   const handleSave = async (event) => {

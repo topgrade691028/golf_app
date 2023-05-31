@@ -14,11 +14,19 @@ const GolfEventService = {
     return response.data;
   },
   deleteGolfEvent: async (id) => {
-    const response = await axios.delete(`${baseUrl}/${id}`);
+    const response = await axios.delete(`${baseUrl}/events/${id}`);
     return response.data;
   },
   getPlayerGroupsForEvent: async (eventId) => {
-    const response = await axios.get(`${baseUrl}/getplayergroups/${eventId}`);
+    const response = await axios.get(
+      `${baseUrl}/events/getplayergroups/${eventId}`
+    );
+    return response.data;
+  },
+  getAllEventsForCompetition: async (competitionId) => {
+    const response = await axios.get(
+      `${baseUrl}/events/competition/${competitionId}`
+    );
     return response.data;
   },
 };

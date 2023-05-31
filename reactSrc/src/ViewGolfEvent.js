@@ -83,8 +83,21 @@ const ViewGolfEvent = () => {
   };
 
   const handleDelete = async (event) => {
-    const response = await GolfEventService.deleteGolfEvent(event.id);
-    // Remove the deleted event from the state
+    console.log("Event id in delete is " + JSON.stringify(event));
+    try {
+      await GolfEventService.deleteGolfEvent(event.id);
+      // Remove the deleted event from the state
+      setGolfEvents((prevEvents) =>
+        prevEvents.filter((e) => {
+          console.log("Setting golf event check " + e.id !== event.id);
+          console.log("e.id is  " + e.id);
+          e.id !== event.id;
+        })
+      );
+    } catch (error) {
+      // Handle the error if needed
+      console.log("Error deleting golf event:", error);
+    }
   };
 
   const handleSave = async (event) => {
