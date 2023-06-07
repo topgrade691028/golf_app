@@ -63,7 +63,7 @@ export default function UserUpdate() {
     })
       .then((res) => res.json())
       .then((result) => {
-        alert(result["message"]);
+        console.log(result["message"]);
         if (result["status"] === "ok") {
           window.location.href = "/";
         }

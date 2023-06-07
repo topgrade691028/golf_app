@@ -76,8 +76,8 @@ const Search = () => {
 
   const handleSearch = async () => {
     try {
-      alert("searchText is " + searchText);
-      alert("searchType is " + searchType);
+      console.log("searchText is " + searchText);
+      console.log("searchType is " + searchType);
       const response = await axios.get(`${apiUrl}/competition/search`, {
         params: {
           searchText,

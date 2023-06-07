@@ -101,7 +101,7 @@ export default function App() {
           </IconButton>
           <Link className={classes.navlink} to="/">
             <Typography variant="h6" className={classes.title}>
-              CRUD
+              GolF Society App
             </Typography>
           </Link>
         </Toolbar>
@@ -138,14 +138,14 @@ export default function App() {
           </Link>
           <Link
             className={classes.navlink}
-            to="/create"
+            to="/addPlayer"
             onClick={() => setOpen(false)}
           >
             <ListItem button>
               <ListItemIcon>
                 <PersonAddIcon style={{ color: "#fff" }} />
               </ListItemIcon>
-              <ListItemText primary="Create User" />
+              <ListItemText primary="Add Player" />
             </ListItem>
           </Link>
           <ListItem button onClick={handleGolfEventClick}>

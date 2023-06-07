@@ -62,8 +62,8 @@ const ViewScoreCards = ({ history }) => {
   const handleView = (scoreCard) => {
     // Handle edit functionality
     console.log(JSON.stringify(" score card is " + scoreCard));
-    alert("scorecard eventId is " + scoreCard.eventId);
-    alert("scorecard groupNumber is " + scoreCard.groupNumber);
+    console.log("scorecard eventId is " + scoreCard.eventId);
+    console.log("scorecard groupNumber is " + scoreCard.groupNumber);
     history.push(
       `/scorecardview/${scoreCard.eventId}/${scoreCard.groupNumber}`
     );

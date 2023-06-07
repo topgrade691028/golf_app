@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,10 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pr.golf.golfapp.dto.AddPlayerDTO;
 import com.pr.golf.golfapp.dto.PlayerDTO;
 import com.pr.golf.golfapp.model.Player;
 import com.pr.golf.golfapp.service.PlayerService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/players")
 public class PlayerController {
@@ -36,12 +41,19 @@ public class PlayerController {
     @RequestMapping(
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity createPlayer(@RequestBody List<Player> players) throws URISyntaxException {
-        System.out.print("Test");
-        players.forEach(score -> {
-            Long playerId = subIdCounter.incrementAndGet();
-            score.setId(playerId);
-        });
+    public ResponseEntity createPlayer(@RequestBody List<AddPlayerDTO> playersToAdd) throws URISyntaxException {
+    	log.info("Adding players for " + playersToAdd);
+    	List<Player> players = playersToAdd.stream()
+    	    .map(addPlayerDTO -> {
+    	        // Perform necessary transformations from AddPlayerDTO to Player
+    	        // Create a new Player object based on the AddPlayerDTO attributes
+    	        // Return the new Player object
+    	        return Player.builder().name(addPlayerDTO.getFirstName() + " " + addPlayerDTO.getLastName())
+    	        						.handicap(addPlayerDTO.getHandicap())
+    	        						.build();
+    	    })
+    	    .collect(Collectors.toList());
+
         List<Player> savedPlayer = playerService.saveAll(players);
         return ResponseEntity.created(new URI("/players/" + 1l)).body(savedPlayer);
     }

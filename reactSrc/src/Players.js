@@ -56,7 +56,7 @@ export default function UserList(props) {
     })
       .then((res) => res.json())
       .then((result) => {
-        alert(result);
+        console.log(result);
         setUsers(result);
       });
   };
@@ -79,7 +79,7 @@ export default function UserList(props) {
     })
       .then((res) => res.json())
       .then((result) => {
-        alert(result["message"]);
+        console.log(result["message"]);
         if (result["status"] === "ok") {
           UsersGet();
         }

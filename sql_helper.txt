@@ -37,3 +37,22 @@ ALTER TABLE golf_event_player ADD CONSTRAINT fk_event_player_player FOREIGN KEY 
 ALTER TABLE golf_leader_board ADD CONSTRAINT fk_golf_leader_board_competition FOREIGN KEY (competition_id) REFERENCES competition (id);
 ALTER TABLE hole ADD CONSTRAINT hole_ibfk_1 FOREIGN KEY (id) REFERENCES competition (id);
 ALTER TABLE score ADD CONSTRAINT score_ibfk_1 FOREIGN KEY (competition_id) REFERENCES competition (id);
+
+
+ALTER TABLE score DROP FOREIGN KEY score_ibfk_2;
+ALTER TABLE player_grouping DROP FOREIGN KEY player_grouping_ibfk_2;
+ALTER TABLE golf_leader_board DROP FOREIGN KEY golf_leader_board_ibfk_2;
+ALTER TABLE golf_event_player DROP FOREIGN KEY golf_event_player_ibfk_2;
+ALTER TABLE competition_player DROP FOREIGN KEY competition_player_ibfk_2;
+ALTER TABLE golf_event_score DROP FOREIGN KEY golf_event_score_ibfk_2;
+ALTER TABLE player MODIFY id bigint AUTO_INCREMENT;
+
+
+ALTER TABLE score ADD CONSTRAINT score_ibfk_2 FOREIGN KEY (player_id) REFERENCES player(id);
+ALTER TABLE player_grouping ADD CONSTRAINT player_grouping_ibfk_2 FOREIGN KEY (player_id) REFERENCES player(id);
+ALTER TABLE golf_leader_board ADD CONSTRAINT golf_leader_board_ibfk_2 FOREIGN KEY (player_id) REFERENCES player(id);
+ALTER TABLE golf_event_player ADD CONSTRAINT golf_event_player_ibfk_2 FOREIGN KEY (player_id) REFERENCES player(id);
+ALTER TABLE competition_player ADD CONSTRAINT competition_player_ibfk_2 FOREIGN KEY (player_id) REFERENCES player(id);
+ALTER TABLE competition_player ADD CONSTRAINT competition_player_ibfk_2 FOREIGN KEY (player_id) REFERENCES player(id);
+ALTER TABLE score ADD CONSTRAINT golf_event_score_ibfk_2 FOREIGN KEY (player_id) REFERENCES player(id);
+

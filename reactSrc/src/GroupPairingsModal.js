@@ -197,7 +197,13 @@ const GroupPairingsModal = ({ open, onClose, golfEvent }) => {
                         if (!groups[pairing.groupNumber]) {
                           groups[pairing.groupNumber] = [];
                         }
-                        groups[pairing.groupNumber].push(pairing.player.name);
+
+                        const playerName =
+                          pairing.player && pairing.player.name
+                            ? pairing.player.name
+                            : "";
+                        groups[pairing.groupNumber].push(playerName);
+
                         return groups;
                       }, [])
                       .map((players, groupNumber) => (

@@ -15,6 +15,10 @@ import ViewCompetitionEvents from "./ViewCompetitionEvents";
 import ViewScoreCards from "./ViewScoreCards";
 import RegisterPlayers from "./RegisterPlayers";
 import { apiUrl } from "./config";
+import Dashboard from "./Dashboard";
+import PlayerCreate from "./PlayerCreate";
+import GolfPlayerEventDashboard from "./PlayerDashboard";
+import EventScoreCard from "./EventScoreCard";
 
 export default function App() {
   return (
@@ -26,12 +30,12 @@ export default function App() {
             <Route
               exact
               path="/"
-              component={(props) => <Users {...props} apiUrl={apiUrl} />}
+              component={(props) => <Dashboard {...props} />}
             />
             <Route
               exact
-              path="/create"
-              component={(props) => <UserCreate {...props} apiUrl={apiUrl} />}
+              path="/addPlayer"
+              component={(props) => <PlayerCreate {...props} apiUrl={apiUrl} />}
             />
             <Route
               exact
@@ -58,11 +62,18 @@ export default function App() {
                 <RegisterPlayers {...props} apiUrl={apiUrl} />
               )}
             />
+
             <Route
               exact
               path="/scorecardview/:eventId/:groupNumber"
               render={(props) => <ScoreCard {...props} apiUrl={apiUrl} />}
             />
+            <Route
+              exact
+              path="/eventscorecard/:eventId/:groupNumber"
+              render={(props) => <EventScoreCard {...props} apiUrl={apiUrl} />}
+            />
+
             <Route
               exact
               path="/ViewScoreCards"
@@ -75,7 +86,7 @@ export default function App() {
             />
             <Route
               exact
-              path="/eventleaderboard"
+              path="/event/leaderboard/:eventId"
               component={(props) => (
                 <EventLeaderBoard {...props} apiUrl={apiUrl} />
               )}
@@ -99,6 +110,14 @@ export default function App() {
               path="/viewcompetitionevents"
               component={(props) => (
                 <ViewCompetitionEvents {...props} apiUrl={apiUrl} />
+              )}
+            />
+
+            <Route
+              exact
+              path="/player/dashboard/:eventId"
+              component={(props) => (
+                <GolfPlayerEventDashboard {...props} apiUrl={apiUrl} />
               )}
             />
           </Switch>

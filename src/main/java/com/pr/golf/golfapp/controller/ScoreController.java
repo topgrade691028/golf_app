@@ -75,4 +75,21 @@ public class ScoreController {
     													@RequestParam Long playerId) {
         return scoreService.findByEventIdAndPlayerId(eventId, playerId).orElseThrow(RuntimeException::new);
     }
+  /*  
+    @RequestMapping(value = "/event/playerGroup",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Score> getScoresForPlayerGroup(@RequestParam Long eventId, 
+    													@RequestParam List<Long> playerIds) {
+        return scoreService.findByEventIdAndPlayerIds(eventId, playerIds).orElseThrow(RuntimeException::new);
+    }
+    
+    @RequestMapping(value = "/event/playergroup",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Score> getScoresForPlayerGroup(@RequestParam Long eventId, 
+    													@RequestParam Long playerGroupdId) {
+        return scoreService.findByEventIdAndPlayerGroupId(eventId, playerGroupdId).orElseThrow(RuntimeException::new);
+    }
+    */
 }

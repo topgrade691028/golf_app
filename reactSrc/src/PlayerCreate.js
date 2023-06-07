@@ -2,144 +2,200 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
+import IconButton from "@material-ui/core/IconButton";
+import AddIcon from "@material-ui/icons/Add";
+import SaveIcon from "@material-ui/icons/Save";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import TableContainer from "@material-ui/core/TableContainer";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 
 import axios from "axios";
+import { apiUrl } from "./config";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    padding: theme.spacing(2),
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: "100%",
     marginTop: theme.spacing(3),
   },
-  submit: {
+  addButton: {
+    marginBottom: theme.spacing(2),
+  },
+  saveButton: {
     margin: theme.spacing(3, 0, 2),
+  },
+  textField: {
+    marginBottom: theme.spacing(1),
   },
 }));
 
-export default function UserCreate() {
+export default function PlayerCreate() {
   const classes = useStyles();
 
-  const handleSubmit = (event) => {
-    alert("hello ");
-    event.preventDefault();
-    var data = {
-      name: fname,
-      lname: lname,
-      username: username,
-      email: email,
-      avatar: avatar,
-    };
+  const [players, setPlayers] = useState([]);
+  const [newPlayer, setNewPlayer] = useState({ name: "", handicap: "" });
+  const [openImportDialog, setOpenImportDialog] = useState(false);
 
-    fetch("${apiUrl}/players", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "Access-Control-Request-Method": "POST",
-        "Access-Control-Request-Headers": "Content-Type, Authorization",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        //alert(result["username"]);
-        alert(result);
-        if (result["status"] === "ok") {
+  const handleImportClick = () => {
+    setOpenImportDialog(true);
+  };
+
+  const handleImportClose = () => {
+    setOpenImportDialog(false);
+  };
+
+  const handleImportPlayers = (file) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target.result;
+      const rows = content.split("\n");
+      const importedPlayers = rows.map((row) => {
+        const [name, handicap] = row.split(",");
+        return { name, handicap };
+      });
+      setPlayers(importedPlayers);
+      handleImportClose();
+    };
+    reader.readAsText(file);
+  };
+
+  const handleAddPlayer = () => {
+    if (newPlayer.name && newPlayer.handicap) {
+      setPlayers([...players, newPlayer]);
+      setNewPlayer({ name: "", handicap: "" });
+    } else {
+      alert("Please enter both the name and handicap");
+    }
+  };
+
+  const handleSave = () => {
+    if (players.some((player) => !player.name || !player.handicap)) {
+      alert("Please enter all player details");
+      return;
+    }
+
+    axios
+      .post(`${apiUrl}/players`, players)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.status === "ok") {
           window.location.href = "/";
         }
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [avatar, setAvatar] = useState("");
   return (
-    <Container maxWidth="xs">
-      <div className={classes.paper}>
-        <Typography component="h1" variant="h5">
-          User
-        </Typography>
-        <form className={classes.form} onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                onChange={(e) => setFname(e.target.value)}
-                autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                onChange={(e) => setLname(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="username"
-                label="Username"
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="email"
-                label="Email"
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="avatar"
-                label="Avatar"
-                onChange={(e) => setAvatar(e.target.value)}
-              />
-            </Grid>
-          </Grid>
+    <Paper>
+      <Container maxWidth="xs">
+        <div className={classes.paper}>
+          <Typography component="h1" variant="h5">
+            Player
+          </Typography>
           <Button
-            type="submit"
-            fullWidth
-            variant="contained"
+            className={classes.addButton}
             color="primary"
-            className={classes.submit}
+            variant="outlined"
+            onClick={handleImportClick}
           >
-            Create
+            Import Players
           </Button>
-        </form>
-      </div>
-    </Container>
+          <form className={classes.form} onSubmit={handleSave}>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Handicap</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {players.map((player, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{player.name}</TableCell>
+                      <TableCell>{player.handicap}</TableCell>
+                    </TableRow>
+                  ))}
+                  <TableRow>
+                    <TableCell>
+                      <TextField
+                        variant="outlined"
+                        size="small"
+                        label="Name"
+                        className={classes.textField}
+                        value={newPlayer.name}
+                        onChange={(e) =>
+                          setNewPlayer({ ...newPlayer, name: e.target.value })
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        variant="outlined"
+                        size="small"
+                        label="Handicap"
+                        className={classes.textField}
+                        value={newPlayer.handicap}
+                        onChange={(e) =>
+                          setNewPlayer({
+                            ...newPlayer,
+                            handicap: e.target.value,
+                          })
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        className={classes.addButton}
+                        color="primary"
+                        onClick={handleAddPlayer}
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.saveButton}
+              startIcon={<SaveIcon />}
+            >
+              Save
+            </Button>
+          </form>
+        </div>
+        <Dialog open={openImportDialog} onClose={handleImportClose}>
+          <DialogTitle>Import Players</DialogTitle>
+          <DialogContent>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={(e) => handleImportPlayers(e.target.files[0])}
+            />
+          </DialogContent>
+        </Dialog>
+      </Container>
+    </Paper>
   );
 }

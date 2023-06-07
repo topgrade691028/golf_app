@@ -16,7 +16,8 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function Leaderboard() {
+function Leaderboard(props) {
+  const { eventId } = props.match.params;
   const classes = useStyles();
   const [eventLeaderboard, setEventLeaderboard] = useState([]);
 
