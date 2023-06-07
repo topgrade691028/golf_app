@@ -1,11 +1,5 @@
 package com.pr.golf.golfapp.controller.test;
 
-import com.pr.golf.golfapp.GolfAppApplication;
-import com.pr.golf.golfapp.controller.ScoreController;
-import com.pr.golf.golfapp.model.Score;
-
-
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +8,11 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.pr.golf.golfapp.GolfAppApplication;
+import com.pr.golf.golfapp.controller.ScoreController;
+import com.pr.golf.golfapp.model.Score;
+
 import reactor.core.publisher.Flux;
 
 

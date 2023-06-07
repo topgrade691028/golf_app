@@ -75,6 +75,14 @@ const Dashboard = () => {
             Here you can create competitions, events, scorecards, and view
             leaderboards.
           </Typography>
+          <div className={classes.authLinks}>
+            <Link to="/signin" className={classes.link}>
+              Sign In
+            </Link>
+            <Link to="/register" className={classes.link}>
+              Register
+            </Link>
+          </div>
         </Paper>
 
         <Grid container spacing={2} className={classes.paperContainer}>

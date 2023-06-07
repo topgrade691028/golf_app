@@ -1,9 +1,8 @@
 package com.pr.golf.golfapp.conversion;
 
-import net.sourceforge.tess4j.Tesseract;
-import org.junit.jupiter.api.Assertions;
-
 import java.io.File;
+
+import net.sourceforge.tess4j.Tesseract;
 public class ImageConversion {
     public static void main(String[] args) throws Exception { // main method for extracting text from image
         File image = new File("src/main/resources/images/silvermere.jpg");

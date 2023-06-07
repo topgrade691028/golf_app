@@ -146,6 +146,22 @@ CREATE TABLE player_grouping (
   CONSTRAINT player_grouping_ibfk_2 FOREIGN KEY (player_id) REFERENCES player (id)
 )
 
+CREATE TABLE users (
+  id bigint AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL,
+  username VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE user_roles (
+  id bigint AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  role VARCHAR(50) NOT NULL,
+  CONSTRAINT fk_user_roles_user FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+
+
+
 INSERT INTO player (name, username, handicap) VALUES
   ('Darragh Flynn', 'dflynn', 28),
   ('Paul Ronane', 'pronane', 21);

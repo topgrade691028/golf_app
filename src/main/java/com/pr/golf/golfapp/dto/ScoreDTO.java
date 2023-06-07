@@ -1,8 +1,6 @@
 package com.pr.golf.golfapp.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

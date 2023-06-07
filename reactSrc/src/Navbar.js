@@ -1,21 +1,22 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import CloseIcon from "@material-ui/icons/Close";
-import { Link } from "react-router-dom";
 import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
   Drawer,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  withTheme,
   Collapse,
+  Button,
+  Divider,
 } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import CloseIcon from "@material-ui/icons/Close";
+import { Link } from "react-router-dom";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import GolfCourseIcon from "@material-ui/icons/GolfCourse";
@@ -23,6 +24,10 @@ import AssessmentIcon from "@material-ui/icons/Assessment";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import LockOpenIcon from "@material-ui/icons/LockOpen";
+import { AuthContext } from "./AuthStateProvider";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,13 +67,27 @@ const useStyles = makeStyles((theme) => ({
   listItemTextDark: {
     color: "#fff",
   },
+  rightToolbar: {
+    marginLeft: "auto",
+    marginRight: -12,
+  },
 }));
 
-export default function App() {
+export default function Navbar({ isLoggedIn }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [openCompetition, setOpenCompetition] = React.useState(false);
   const [openGolfEvent, setOpenGolfEvent] = React.useState(false);
+
+  const { isAuthenticated, login, logout } = useContext(AuthContext);
+
+  useEffect(() => {
+    alert("is authenticated " + isAuthenticated);
+  }, [isAuthenticated]);
+  const handleLogout = () => {
+    // Implement the logic to perform the logout action
+    logout();
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -101,9 +120,24 @@ export default function App() {
           </IconButton>
           <Link className={classes.navlink} to="/">
             <Typography variant="h6" className={classes.title}>
-              GolF Society App
+              Golf Society App
             </Typography>
           </Link>
+          {isAuthenticated ? (
+            <div className={classes.rightToolbar}>
+              <Button color="inherit" component={Link} to="/logout">
+                <AccountCircleIcon />
+                Logged In User
+              </Button>
+            </div>
+          ) : (
+            <div className={classes.rightToolbar}>
+              <Button color="inherit" component={Link} to="/signin">
+                <LockOpenIcon />
+                Sign In
+              </Button>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer

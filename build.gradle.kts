@@ -18,6 +18,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	//implementation("org.springframework.boot:spring-boot-starter-security")
+
 
 	implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
 
@@ -36,6 +38,9 @@ dependencies {
 	implementation ("org.mariadb.jdbc:mariadb-java-client:3.0.8")
 
 	implementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+	
+	// Firebase SDK
+    implementation ("com.google.firebase:firebase-admin:8.0.0")
 
 // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")

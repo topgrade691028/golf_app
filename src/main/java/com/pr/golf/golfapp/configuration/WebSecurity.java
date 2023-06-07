@@ -6,17 +6,17 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebSecurity implements WebMvcConfigurer {
- 
-    public void addCorsMappings(CorsRegistry reg) {
-        reg.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST","PUT", "DELETE");
+//@EnableWebSecurity
+public class WebSecurity implements WebMvcConfigurer  {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE");
     }
-	
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/{path:[^\\.]+}/**")
                 .setViewName("forward:/index.html");
     }
- 
 }
-
