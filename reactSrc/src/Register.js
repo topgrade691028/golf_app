@@ -40,7 +40,7 @@ const Register = () => {
         // Call the function to create roles
         await createRoles(createRolesRequest);
         console.log("Roles created");
-        //history.push("/dashboard");
+        history.push("/dashboard");
       } catch (error) {
         // Error occurred during user registration
         console.error("User registration error:", error);
