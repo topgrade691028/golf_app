@@ -3,7 +3,6 @@ package com.pr.golf.golfapp.configuration;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class FirebaseConfig {
 
   @Bean
-  public FirebaseAuth firebaseAuth(@Autowired WebSecurity webSecurity) throws IOException {
+  public FirebaseAuth firebaseAuth() throws IOException {
     FileInputStream serviceAccount = new FileInputStream("D:/irish/serviceAccount.json");
 
     FirebaseOptions options = new FirebaseOptions.Builder()

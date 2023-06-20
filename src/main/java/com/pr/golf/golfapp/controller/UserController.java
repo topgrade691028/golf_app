@@ -2,8 +2,12 @@ package com.pr.golf.golfapp.controller;
 
 import java.util.List;
 
+import javax.swing.RepaintManager;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus.Series;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,27 +57,27 @@ public class UserController {
 	// #oauth2.isValidToken()")
 	public ResponseEntity<List<UserRole>> getUserRoles(@RequestParam("email") String email,
 			HttpServletRequest request) {
+	
 		String authorizationHeader = request.getHeader("Authorization");
-		if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		}
 		String idToken = authorizationHeader.substring(7); // Remove "Bearer " prefix
 
 		FirebaseToken decodedToken;
 		try {
 			decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+
+			String uid = decodedToken.getUid();
+			User user = userRepository.findByEmail(uid);
+			if (user == null) {
+				return ResponseEntity.notFound().build();
+			}
+
+			List<UserRole> userRoles = userRoleRepository.findByUserId(user.getId());
+			return ResponseEntity.ok(userRoles);
+
 		} catch (FirebaseAuthException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			//return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-
-		String uid = decodedToken.getUid();
-		User user = userRepository.findByEmail(uid);
-		if (user == null) {
-			return ResponseEntity.notFound().build();
-		}
-
-		List<UserRole> userRoles = userRoleRepository.findByUserId(user.getId());
-		return ResponseEntity.ok(userRoles);
+		return ResponseEntity.status(204).build();
 	}
 
 }
