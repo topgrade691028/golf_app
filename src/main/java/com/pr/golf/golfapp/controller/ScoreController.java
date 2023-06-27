@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pr.golf.golfapp.dto.ScoreDTO;
 import com.pr.golf.golfapp.model.EventLeaderBoard;
 import com.pr.golf.golfapp.model.Score;
 import com.pr.golf.golfapp.request.ScoreRequestBody;
@@ -82,14 +83,14 @@ public class ScoreController {
     public List<Score> getScoresForPlayerGroup(@RequestParam Long eventId, 
     													@RequestParam List<Long> playerIds) {
         return scoreService.findByEventIdAndPlayerIds(eventId, playerIds).orElseThrow(RuntimeException::new);
-    }
+    } */
     
     @RequestMapping(value = "/event/playergroup",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Score> getScoresForPlayerGroup(@RequestParam Long eventId, 
-    													@RequestParam Long playerGroupdId) {
-        return scoreService.findByEventIdAndPlayerGroupId(eventId, playerGroupdId).orElseThrow(RuntimeException::new);
+    public List<ScoreDTO> getScoresForPlayerGroup(@RequestParam Long eventId, 
+    													@RequestParam int groupNumber) {
+        return scoreService.findByEventIdAndGroupNumber(eventId, groupNumber).orElseThrow(RuntimeException::new);
     }
-    */
+   
 }

@@ -21,6 +21,7 @@ import GolfPlayerEventDashboard from "./PlayerDashboard";
 import EventScoreCard from "./EventScoreCard";
 import SignIn from "./SignIn";
 import Register from "./Register";
+import Logout from "./logout";
 
 export default function App() {
   return (
@@ -126,6 +127,11 @@ export default function App() {
             exact
             path="/register"
             component={(props) => <Register {...props} apiUrl={apiUrl} />}
+          />
+          <Route
+            exact
+            path="/logout"
+            component={(props) => <Logout {...props} apiUrl={apiUrl} />}
           />
         </Switch>
       </div>

@@ -79,10 +79,16 @@ export default function Navbar({ isLoggedIn }) {
   const [openCompetition, setOpenCompetition] = React.useState(false);
   const [openGolfEvent, setOpenGolfEvent] = React.useState(false);
 
-  const { isAuthenticated, login, logout } = useContext(AuthContext);
+  const { isAuthenticated, user, userRoles, logout } = useContext(AuthContext);
+
+  console.log("isAuthenticated " + isAuthenticated);
+  // alert("user is " + user.role);
+  console.log("user is " + user);
+
+  console.log("user roles is " + JSON.stringify(userRoles));
 
   useEffect(() => {
-    alert("is authenticated " + isAuthenticated);
+    console.log("is authenticated " + isAuthenticated);
   }, [isAuthenticated]);
   const handleLogout = () => {
     // Implement the logic to perform the logout action
@@ -104,6 +110,13 @@ export default function Navbar({ isLoggedIn }) {
   const handleGolfEventClick = () => {
     setOpenGolfEvent(!openGolfEvent);
   };
+
+  const isManagerOrAdmin =
+    (isAuthenticated &&
+      userRoles &&
+      userRoles.map((roleObj) => roleObj.role).includes("ROLE_MANAGER")) ||
+    (userRoles &&
+      userRoles.map((roleObj) => roleObj.role).includes("ROLE_ADMIN"));
 
   return (
     <div className={classes.root}>
@@ -127,7 +140,7 @@ export default function Navbar({ isLoggedIn }) {
             <div className={classes.rightToolbar}>
               <Button color="inherit" component={Link} to="/logout">
                 <AccountCircleIcon />
-                Logged In User
+                Logout
               </Button>
             </div>
           ) : (
@@ -170,18 +183,20 @@ export default function Navbar({ isLoggedIn }) {
               <ListItemText primary="Dashboard" />
             </ListItem>
           </Link>
-          <Link
-            className={classes.navlink}
-            to="/addPlayer"
-            onClick={() => setOpen(false)}
-          >
-            <ListItem button>
-              <ListItemIcon>
-                <PersonAddIcon style={{ color: "#fff" }} />
-              </ListItemIcon>
-              <ListItemText primary="Add Player" />
-            </ListItem>
-          </Link>
+          {isManagerOrAdmin && (
+            <Link
+              className={classes.navlink}
+              to="/addPlayer"
+              onClick={() => setOpen(false)}
+            >
+              <ListItem button>
+                <ListItemIcon>
+                  <PersonAddIcon style={{ color: "#fff" }} />
+                </ListItemIcon>
+                <ListItemText primary="Add Player" />
+              </ListItem>
+            </Link>
+          )}
           <ListItem button onClick={handleGolfEventClick}>
             <ListItemIcon>
               <GolfCourseIcon
@@ -205,18 +220,20 @@ export default function Navbar({ isLoggedIn }) {
 
           <Collapse in={openGolfEvent} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <Link
-                className={classes.navlink}
-                to="/creategolfevent"
-                onClick={() => setOpen(false)}
-              >
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    <PersonAddIcon style={{ color: "#fff" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Create Golf Event" />
-                </ListItem>
-              </Link>
+              {isManagerOrAdmin && (
+                <Link
+                  className={classes.navlink}
+                  to="/creategolfevent"
+                  onClick={() => setOpen(false)}
+                >
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <PersonAddIcon style={{ color: "#fff" }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Create Golf Event" />
+                  </ListItem>
+                </Link>
+              )}
               <Link
                 className={classes.navlink}
                 to="/viewGolfevent"
@@ -280,18 +297,20 @@ export default function Navbar({ isLoggedIn }) {
 
           <Collapse in={openCompetition} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <Link
-                className={classes.navlink}
-                to="/createcompetition"
-                onClick={() => setOpen(false)}
-              >
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    <PersonAddIcon style={{ color: "#fff" }} />
-                  </ListItemIcon>
-                  <ListItemText primary="Create Competition" />
-                </ListItem>
-              </Link>
+              {isManagerOrAdmin && (
+                <Link
+                  className={classes.navlink}
+                  to="/createcompetition"
+                  onClick={() => setOpen(false)}
+                >
+                  <ListItem button className={classes.nested}>
+                    <ListItemIcon>
+                      <PersonAddIcon style={{ color: "#fff" }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Create Competition" />
+                  </ListItem>
+                </Link>
+              )}
               <Link
                 className={classes.navlink}
                 to="/viewcompetition"

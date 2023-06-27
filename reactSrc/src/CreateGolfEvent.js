@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -10,6 +10,7 @@ import { MenuItem } from "@material-ui/core";
 import { apiUrl } from "./config";
 import axios from "axios";
 import EntityCreationConfirmationModal from "./EntityCreationConfirmationModal";
+import { AuthContext } from "./AuthStateProvider";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -42,12 +43,20 @@ export default function CreateGolfEvent({ apiUrl, competitionId }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const { isAuthenticated, token } = useContext(AuthContext);
+
   useEffect(() => {
     let isMounted = true;
 
     async function getEventTypes() {
-      const response = await fetch(`${apiUrl}/events/types`);
+      console.log("token is " + token);
+      const response = await fetch(`${apiUrl}/events/types`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await response.json();
+      console.log("Fetched event types:", data); // Check the data received from the API
       setEventTypes(data);
     }
 
@@ -59,7 +68,7 @@ export default function CreateGolfEvent({ apiUrl, competitionId }) {
     }
 
     if (competitionId == null) {
-      // Fetch all competitions
+      // fetchWithAuth all competitions
       axios
         .get(`${apiUrl}/competition/retrieveAll`)
         .then((response) => {
@@ -206,7 +215,7 @@ export default function CreateGolfEvent({ apiUrl, competitionId }) {
                 variant="outlined"
               >
                 <MenuItem value="">--Select Event Type--</MenuItem>
-                {eventTypes.map((eventType) => (
+                {eventTypes?.map((eventType) => (
                   <MenuItem key={eventType} value={eventType}>
                     {eventType}
                   </MenuItem>

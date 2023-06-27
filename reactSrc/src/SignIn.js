@@ -43,7 +43,15 @@ const SignIn = () => {
   const [loginError, setLoginError] = useState("");
   const history = useHistory();
 
-  const { setIsAuthenticated } = useContext(AuthContext);
+  const {
+    isAuthenticated,
+    setIsAuthenticated,
+    token,
+    setToken,
+    userRoles,
+    setUserRoles,
+    login,
+  } = useContext(AuthContext);
 
   const handleSignIn = async () => {
     const auth = getAuth(app);
@@ -66,6 +74,7 @@ const SignIn = () => {
 
         // Call backend API to get user roles
         const token = await user.getIdToken();
+
         //const token = "12345token";
         const response = await fetch(url, {
           method: "GET",
@@ -78,6 +87,12 @@ const SignIn = () => {
           const userRoles = await response.json();
           // Handle user roles data
           console.log("User roles:", userRoles);
+          // login({ ...user, roles: userRoles });
+          setUserRoles(userRoles);
+          alert("token");
+          setToken(token);
+          //login({ user, roles: userRoles }, userRoles, token);
+          login({ user, roles: userRoles }, userRoles, token);
         } else {
           // Error occurred while fetching user roles
           console.error("Failed to fetch user roles:", response.statusText);

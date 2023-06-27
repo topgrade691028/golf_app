@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Typography,
   Container,
@@ -15,6 +15,7 @@ import SportsGolfIcon from "@material-ui/icons/SportsGolf";
 import EventIcon from "@material-ui/icons/Event";
 import ViewListIcon from "@material-ui/icons/ViewList";
 import ScoreIcon from "@material-ui/icons/Score";
+import { AuthContext } from "./AuthStateProvider";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -57,6 +58,8 @@ const Dashboard = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const { isAuthenticated, user, userRoles, logout } = useContext(AuthContext);
+
   return (
     <div>
       <Container className={classes.container}>
@@ -75,14 +78,24 @@ const Dashboard = () => {
             Here you can create competitions, events, scorecards, and view
             leaderboards.
           </Typography>
-          <div className={classes.authLinks}>
-            <Link to="/signin" className={classes.link}>
-              Sign In
-            </Link>
-            <Link to="/register" className={classes.link}>
-              Register
-            </Link>
-          </div>
+          {!isAuthenticated && (
+            <div className={classes.authLinks}>
+              <Link
+                to="/signin"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/register"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Register
+              </Link>
+            </div>
+          )}
         </Paper>
 
         <Grid container spacing={2} className={classes.paperContainer}>

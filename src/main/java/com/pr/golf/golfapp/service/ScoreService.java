@@ -107,6 +107,11 @@ public class ScoreService {
 	    return leaderboard;
 	}
 
+	public Optional<List<Score>> findByEventIdAndGroupNumber(Long eventId, int playerGroupNumber) {
+		// TODO Auto-generated method stub
+		return scoreRepository.findByEventIdAndGroupNumber(eventId, playerGroupNumber);
+	}
+
     
 
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Container,
@@ -19,6 +19,7 @@ import {
 import axios from "axios";
 import { apiUrl } from "./config";
 import { useHistory } from "react-router-dom";
+import { AuthContext } from "./AuthStateProvider";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -46,6 +47,8 @@ export default function CompetitionPage() {
   const [competitions, setCompetitions] = useState([]);
   const classes = useStyles();
   const history = useHistory();
+
+  const { fetchWithAuth } = useContext(AuthContext);
 
   useEffect(() => {
     // Fetch competition types

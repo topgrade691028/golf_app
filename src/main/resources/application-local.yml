@@ -16,3 +16,7 @@ spring:
     level:
       org.springframework.jdbc.core: DEBUG
       org.hibernate.SQL: DEBUG
+
+firebase:
+  serviceAccountPath: D:/irish/serviceAccount.json
+      

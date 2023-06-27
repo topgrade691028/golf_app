@@ -7,6 +7,7 @@ import GolfPinIcon from "@material-ui/icons/Room";
 import GolfBallIcon from "@material-ui/icons/SportsGolf";
 import PodiumIcon from "@material-ui/icons/EmojiEvents";
 import HoleInOneIcon from "@material-ui/icons/GolfCourse";
+import { apiUrl } from "./config";
 
 const useStyles = makeStyles((theme) => ({
   dashboardContainer: {
@@ -55,7 +56,7 @@ const GolfPlayerEventDashboard = (props) => {
   useEffect(() => {
     const fetchGolfEvent = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/events/${eventId}`);
+        const response = await fetch(`${apiUrl}/events/${eventId}`);
         const data = await response.json();
         setGolfEvent(data);
       } catch (error) {
