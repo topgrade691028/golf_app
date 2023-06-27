@@ -5,6 +5,7 @@ import app from "./FirebaseConfig";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"; // Import the necessary functions
 import axios from "axios";
 import { AuthContext } from "./AuthStateProvider";
+import { apiUrl } from "./config";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -21,6 +22,9 @@ const Register = () => {
       console.log("App is initialized");
 
       try {
+        alert("email is " + email);
+
+        alert("password is " + password);
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           email,
@@ -31,6 +35,7 @@ const Register = () => {
         console.log("User registered:", user);
 
         // Create roles for the registered user
+        const token = await user.getIdToken();
         const roles = ["manager", "player"]; // Roles to be assigned
         const createRolesRequest = {
           email: email,
@@ -38,7 +43,7 @@ const Register = () => {
         };
 
         // Call the function to create roles
-        await createRoles(createRolesRequest);
+        await createRoles(createRolesRequest, token);
         console.log("Roles created");
         history.push("/dashboard");
       } catch (error) {
@@ -51,9 +56,19 @@ const Register = () => {
     }
   };
 
-  const createRoles = async (createRolesRequest) => {
+  const createRoles = async (createRolesRequest, token) => {
     try {
-      await axios.post("/createRoles", createRolesRequest);
+      const response = await axios.post(
+        `${apiUrl}/users/createRoles`,
+        createRolesRequest,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Handle the response as needed
+      console.log("Roles created:", response.data);
     } catch (error) {
       console.error("Error creating roles:", error);
     }
@@ -70,13 +85,26 @@ const Register = () => {
           <Typography variant="h4" align="center" gutterBottom>
             Register
           </Typography>
-          <TextField label="Email" type="email" fullWidth margin="normal" />
           <TextField
+            name="email"
+            label="Email"
+            type="email"
+            fullWidth
+            margin="normal"
+            value={email} // Add the value prop and assign it to the email state variable
+            onChange={(e) => setEmail(e.target.value)} // Add the onChange prop and update the email state variable
+          />
+
+          <TextField
+            name="password"
             label="Password"
             type="password"
             fullWidth
             margin="normal"
+            value={password} // Add the value prop and assign it to the password state variable
+            onChange={(e) => setPassword(e.target.value)} // Add the onChange prop and update the password state variable
           />
+
           <Button
             variant="contained"
             color="primary"

@@ -13,9 +13,11 @@ import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Getter
 @jakarta.persistence.Table(name = "users")
@@ -27,6 +29,10 @@ public class User {
 
   @Column(nullable = false)
   private String email;
+  
+  @Column(nullable = false)
+  private String username;
+  
   
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<UserRole> roles;

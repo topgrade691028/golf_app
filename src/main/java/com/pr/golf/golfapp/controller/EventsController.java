@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pr.golf.golfapp.authorize.UserRoleAuthorizationChecker;
 import com.pr.golf.golfapp.dto.GolfCourseDTO;
 import com.pr.golf.golfapp.dto.GolfEventDTO;
 import com.pr.golf.golfapp.dto.GroupPairingsRequest;
@@ -27,20 +29,28 @@ import com.pr.golf.golfapp.enums.GolfEventType;
 import com.pr.golf.golfapp.service.GolfCourseService;
 import com.pr.golf.golfapp.service.GolfEventService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("/events")
+@PreAuthorize("hasRole('MANAGER')")
 public class EventsController {
 
     private GolfEventService golfEventService;
     
     private GolfCourseService golfCourseService;
+    
+    @Autowired
+    private UserRoleAuthorizationChecker userRoleAuthorizationChecker;
 
-	public EventsController(@Autowired GolfEventService golfEventService, @Autowired GolfCourseService golfCourseService ) {
+	public EventsController(@Autowired GolfEventService golfEventService, 
+								@Autowired GolfCourseService golfCourseService,
+									@Autowired UserRoleAuthorizationChecker userRoleAuthorizationChecker) {
 		this.golfEventService = golfEventService;
 		this.golfCourseService = golfCourseService;
+		this.userRoleAuthorizationChecker = userRoleAuthorizationChecker;
 	}
 
     @GetMapping("/{id}")
@@ -91,9 +101,10 @@ public class EventsController {
     }
   
     @GetMapping("/types")
-    public List<GolfEventType> getGolfEventTypes(){
-    	
-      return Arrays.asList(GolfEventType.values());
+   // @PreAuthorize("@userRoleAuthorizationChecker.hasManagerOrAdminRole(request.getHeader('Authorization'))")
+    @PreAuthorize("#UserRoleAuthorizationChecker.test(request.getHeader('Authorization'))")  
+    public List<GolfEventType> getGolfEventTypes(HttpServletRequest request){
+        return Arrays.asList(GolfEventType.values());
     }
     
     @GetMapping("/courses")

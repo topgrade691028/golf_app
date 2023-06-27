@@ -48,14 +48,14 @@ public class SecurityConfiguration {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
             .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET, "/health", "/public/**").permitAll()
-                .requestMatchers("/api/**", "/events/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/health", "/public/**", "/player/**").permitAll()
+                .requestMatchers("/api/**", "/events/types").authenticated()
                 .anyRequest().permitAll()
                 .and()
-            .addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-            .exceptionHandling()
-                .authenticationEntryPoint((request, response, authException) ->
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+            .addFilterBefore(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+            //.exceptionHandling()
+            //    .authenticationEntryPoint((request, response, authException) ->
+            //        response.sendError(HttpServletResponse.SC_UNAUTHORIZED));
 
         return http.build();
     }

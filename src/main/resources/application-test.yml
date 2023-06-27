@@ -1,4 +1,4 @@
- spring:
+spring:
   datasource:
     url: jdbc:mariadb://82.180.154.143:3306/golfapp
     username: pronane
@@ -9,5 +9,7 @@
      hibernate:
       dialect: org.hibernate.dialect.MariaDB103Dialect
       enable_lazy_load_no_trans: true
+
+firebase:
+  serviceAccountPath: /root/serviceAccount.json
       
-    

@@ -154,11 +154,10 @@ CREATE TABLE users (
 
 CREATE TABLE user_roles (
   id bigint AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL,
+  user_id bigint NOT NULL,
   role VARCHAR(50) NOT NULL,
   CONSTRAINT fk_user_roles_user FOREIGN KEY (user_id) REFERENCES users (id)
 );
-
 
 
 
