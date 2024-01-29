@@ -22,9 +22,9 @@ const Register = () => {
       console.log("App is initialized");
 
       try {
-        alert("email is " + email);
+        console.log("email is " + email);
 
-        alert("password is " + password);
+        console.log("password is " + password);
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           email,

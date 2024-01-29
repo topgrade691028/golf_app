@@ -89,7 +89,7 @@ const SignIn = () => {
           console.log("User roles:", userRoles);
           // login({ ...user, roles: userRoles });
           setUserRoles(userRoles);
-          alert("token");
+          console.log("token");
           setToken(token);
           //login({ user, roles: userRoles }, userRoles, token);
           login({ user, roles: userRoles }, userRoles, token);

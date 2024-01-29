@@ -19,9 +19,11 @@ import Dashboard from "./Dashboard";
 import PlayerCreate from "./PlayerCreate";
 import GolfPlayerEventDashboard from "./PlayerDashboard";
 import EventScoreCard from "./EventScoreCard";
+import EventScoreCardNew from "./EventScoreCardNew";
 import SignIn from "./SignIn";
 import Register from "./Register";
 import Logout from "./logout";
+import QuickStart from "./QuickStart";
 
 export default function App() {
   return (
@@ -75,6 +77,11 @@ export default function App() {
           />
           <Route
             exact
+            path="/eventscorecardNew/:eventId/:groupNumber"
+            render={(props) => <EventScoreCardNew {...props} apiUrl={apiUrl} />}
+          />
+          <Route
+            exact
             path="/ViewScoreCards"
             render={(props) => <ViewScoreCards {...props} apiUrl={apiUrl} />}
           />
@@ -96,6 +103,11 @@ export default function App() {
             component={(props) => (
               <CreateCompetition {...props} apiUrl={apiUrl} />
             )}
+          />
+          <Route
+            exact
+            path="/quickstart"
+            component={(props) => <QuickStart {...props} apiUrl={apiUrl} />}
           />
           <Route
             exact

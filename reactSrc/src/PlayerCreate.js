@@ -78,7 +78,7 @@ export default function PlayerCreate() {
       setPlayers([...players, newPlayer]);
       setNewPlayer({ name: "", handicap: "" });
     } else {
-      alert("Please enter both the name and handicap");
+      console.log("Please enter both the name and handicap");
     }
   };
 

@@ -30,7 +30,7 @@ export const AuthStateProvider = ({ children }) => {
   const login = (userData, roles, token) => {
     setIsAuthenticated(true);
     setUser(userData.user);
-    alert("userRoles is  " + userRoles);
+    console.log("userRoles is  " + userRoles);
     setUserRoles(roles);
 
     setToken(token); // Update the token state
@@ -56,7 +56,7 @@ export const AuthStateProvider = ({ children }) => {
     }
 
     try {
-      alert("options are " + JSON.stringify(options));
+      console.log("options are " + JSON.stringify(options));
       const response = await fetch(url, options);
       // Handle the response
       return response;

@@ -16,30 +16,68 @@ const EventScoreCard = (props) => {
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [currentHoleIndex, setCurrentHoleIndex] = useState(0);
 
+  const [scoreInputValue, setScoreInputValue] = useState("");
+  const [currentHoleT, setCurrentHoleT] = useState(null);
+
+  const [calculatedPoints, setCalculatedPoints] = useState(0);
+
+  const [holePoints, setHolePoints] = useState([]);
+
+  const [playerPointsMap, setPlayerPointsMap] = useState(new Map());
+
   useEffect(() => {
     const fetchScoreCardData = async () => {
       try {
-        const scoreCardResponse = await axios.get(
+        const scoreCardResponse = await fetch(
           `${apiUrl}/scorecard/${eventId}/${groupNumber}`
         );
-        const scoreResponse = await axios.get(
+
+        const scoreResponse = await fetch(
           `${apiUrl}/event/playergroup?eventId=${eventId}&playerGroupId=${groupNumber}`
         );
 
-        const scoreCardData = scoreCardResponse.data;
-        const scoresData = scoreResponse.data;
+        const scoreCardData = await scoreCardResponse.json();
+        const scoresData = await scoreResponse.json(); // Extract the JSON data from the response
 
-        // Combine scorecard data with scores data
-        const updatedScoreCardData = { ...scoreCardData };
-        updatedScoreCardData.scoreDTOs.forEach((player) => {
-          const playerScores = scoresData.filter(
-            (score) => score.playerId === player.playerId
-          );
+        // Check if scoreDTOs is null or empty
+        if (!scoreCardData.scoreDTOs || scoreCardData.scoreDTOs.length === 0) {
+          let currentPlayerId;
+          if (scoresData) {
+            currentPlayerId = scoreCardData.players[0].id;
+          } else {
+            currentPlayerId = scoresData[0].playerId;
+          }
 
-          player.scores = playerScores.length > 0 ? playerScores : null;
-        });
+          const holesCount = scoreCardData.holes.length;
 
-        setScoreCardData(updatedScoreCardData);
+          // Create a new scoreDTOs array and populate it
+          const newScoreDTOs = [];
+
+          scoreCardData.players.forEach((player) => {
+            for (let i = 0; i < holesCount; i++) {
+              newScoreDTOs.push({
+                playerId: player.id, // Use "id" instead of "playerId"
+                holeId: scoreCardData.holes[i].id, // Use "id" instead of "holeId"
+                holeNumber: scoreCardData.holes[i].holeNumber,
+                score: 0, // You can set an initial score value here if needed
+              });
+            }
+          });
+          const initialPlayerPointsMap = new Map();
+          scoreCardData.players.forEach((player) => {
+            const holePointsArray = scoreCardData.holes.map((hole) => ({
+              holeNumber: hole.holeNumber,
+              points: null,
+            }));
+            initialPlayerPointsMap.set(player.id, holePointsArray);
+          });
+          setPlayerPointsMap(initialPlayerPointsMap);
+
+          // Update the scoreCardData with the new scoreDTOs array
+          scoreCardData.scoreDTOs = newScoreDTOs;
+        }
+        console.log(scoreCardData.scoreDTOs);
+        setScoreCardData(scoreCardData);
       } catch (error) {
         console.error("Error fetching scorecard data:", error);
       }
@@ -47,6 +85,28 @@ const EventScoreCard = (props) => {
 
     fetchScoreCardData();
   }, [eventId, groupNumber]);
+
+  useEffect(() => {
+    if (scoreCardData && scoreCardData.scoreDTOs) {
+      const updatedPlayerScores = scoreCardData.players.map((player) => ({
+        playerId: player.id,
+        totalPoints: 0,
+      }));
+
+      scoreCardData.scoreDTOs.forEach((scoreDTO) => {
+        const currentPlayerIndex = updatedPlayerScores.findIndex(
+          (playerScore) => playerScore.playerId === scoreDTO.playerId
+        );
+        console.log("scoreDTO.Points " + scoreDTO.points);
+        updatedPlayerScores[currentPlayerIndex].totalPoints += scoreDTO.points;
+      });
+
+      setScoreCardData((prevData) => ({
+        ...prevData,
+        playerScores: updatedPlayerScores,
+      }));
+    }
+  }, [scoreCardData && scoreCardData.scoreDTOs]);
 
   const handleNextPlayer = () => {
     setCurrentPlayerIndex((prevPlayerIndex) => prevPlayerIndex + 1);
@@ -58,6 +118,37 @@ const EventScoreCard = (props) => {
     setCurrentHoleIndex(0);
   };
 
+  /*
+  const handleNextHole = () => {
+    const currentHoleIndex = scoreCardData.holes.findIndex(
+      (hole) => hole === currentHole
+    );
+    const nextHoleIndex = currentHoleIndex + 1;
+
+    if (nextHoleIndex < scoreCardData.holes.length) {
+      setCurrentHole(scoreCardData.holes[nextHoleIndex]);
+      updateCurrentPlayerScore(
+        scoreCardData.holes[nextHoleIndex],
+        currentPlayer
+      );
+    }
+  };
+
+  const handlePreviousHole = () => {
+    const currentHoleIndex = scoreCardData.holes.findIndex(
+      (hole) => hole === currentHole
+    );
+    const previousHoleIndex = currentHoleIndex - 1;
+
+    if (previousHoleIndex >= 0) {
+      setCurrentHole(scoreCardData.holes[previousHoleIndex]);
+      updateCurrentPlayerScore(
+        scoreCardData.holes[previousHoleIndex],
+        currentPlayer
+      );
+    }
+  };
+*/
   const handleNextHole = () => {
     setCurrentHoleIndex((prevHoleIndex) =>
       prevHoleIndex === scoreCardData.holes.length - 1 ? 0 : prevHoleIndex + 1
@@ -70,58 +161,68 @@ const EventScoreCard = (props) => {
     );
   };
 
+  const updateCurrentPlayerScore = (hole, player) => {
+    // Find the scoreDTO for the current hole and player combination
+    const currentPlayerScoreDTO = scoreCardData.scoreDTOs.find(
+      (scoreDTO) =>
+        scoreDTO.playerId === player.id &&
+        scoreDTO.holeNumber === hole.holeNumber
+    );
+
+    if (currentPlayerScoreDTO) {
+      setScoreInputValue(currentPlayerScoreDTO.score);
+    } else {
+      setScoreInputValue(""); // Set the input value to empty if no score is found
+    }
+  };
+
   const handleScoreChange = (event) => {
     const { value } = event.target;
+    setScoreInputValue(value);
 
-    if (scoreCardData) {
-      const updatedScoreCardData = { ...scoreCardData };
-      const currentPlayerData =
-        updatedScoreCardData.scoreDTOs[currentPlayerIndex];
+    // Find the index of currentPlayerScores in scoreCardData.scoreDTOs
+    const currentPlayerIndex = scoreCardData.scoreDTOs.findIndex(
+      (scoreDTO) =>
+        scoreDTO.playerId === currentPlayer.id &&
+        scoreDTO.holeNumber === currentHole.holeNumber
+    );
 
-      if (currentPlayerData && currentPlayerData.scores) {
-        const currentPlayerScores = currentPlayerData.scores;
+    // Create a copy of scoreCardData.scoreDTOs to update the specific score
+    const updatedScoreDTOs = [...scoreCardData.scoreDTOs];
 
-        currentPlayerScores[currentHoleIndex].score = parseInt(value);
-        setScoreCardData(updatedScoreCardData);
-      }
-    }
-  };
+    // Update the score in the copy
+    updatedScoreDTOs[currentPlayerIndex].score = value;
 
-  const handleIncrementScore = () => {
-    if (scoreCardData) {
-      const updatedScoreCardData = { ...scoreCardData };
-      const currentPlayerData =
-        updatedScoreCardData.scoreDTOs[currentPlayerIndex];
+    // Calculate and update the points for the current scoreDTO
+    const holePoints = calculatePoints(
+      currentHole.par,
+      value,
+      currentPlayer.handicap,
+      currentHole.stroke
+    );
+    updatedScoreDTOs[currentPlayerIndex].points = holePoints;
 
-      if (currentPlayerData && currentPlayerData.scores) {
-        const currentPlayerScores = currentPlayerData.scores;
+    // Update the scoreCardData with the updated scoreDTOs
+    setScoreCardData((prevData) => ({
+      ...prevData,
+      scoreDTOs: updatedScoreDTOs,
+    }));
 
-        if (
-          currentPlayerScores[currentHoleIndex].score <
-          currentPlayerScores[currentHoleIndex].par
-        ) {
-          currentPlayerScores[currentHoleIndex].score += 1;
-          setScoreCardData(updatedScoreCardData);
-        }
-      }
-    }
-  };
+    setHolePoints((prevHolePoints) => {
+      const updatedHolePoints = [...prevHolePoints];
+      updatedHolePoints[currentHoleIndex] = holePoints;
+      return updatedHolePoints;
+    });
 
-  const handleDecrementScore = () => {
-    if (scoreCardData) {
-      const updatedScoreCardData = { ...scoreCardData };
-      const currentPlayerData =
-        updatedScoreCardData.scoreDTOs[currentPlayerIndex];
-
-      if (currentPlayerData && currentPlayerData.scores) {
-        const currentPlayerScores = currentPlayerData.scores;
-
-        if (currentPlayerScores[currentHoleIndex].score > 1) {
-          currentPlayerScores[currentHoleIndex].score -= 1;
-          setScoreCardData(updatedScoreCardData);
-        }
-      }
-    }
+    setPlayerPointsMap((prevPlayerPointsMap) => {
+      const updatedPlayerPointsMap = new Map(prevPlayerPointsMap);
+      const playerPoints = updatedPlayerPointsMap.get(currentPlayer.id);
+      const holeIndex = playerPoints.findIndex(
+        (point) => point.holeNumber === currentHole.holeNumber
+      );
+      playerPoints[holeIndex].points = holePoints;
+      return updatedPlayerPointsMap;
+    });
   };
 
   const handleSubmitScores = async () => {
@@ -159,6 +260,24 @@ const EventScoreCard = (props) => {
   if (!scoreCardData) {
     return <div>Loading...</div>;
   }
+  /*
+  const getCurrentPlayerScore = (holeNumber) => {
+    const currentPlayerId = 1; // Assuming the current player ID is 1
+    const scoreDTO = scoreCardData.scoreDTOs.find(
+      (score) =>
+        score.playerId === currentPlayerId && score.holeNumber === holeNumber
+    );
+    return scoreDTO ? scoreDTO.score : ""; // Return an empty string if scoreDTO is not found
+  };
+  */
+  const getCurrentPlayerScore = (holeNumber) => {
+    const scoreDTO = scoreCardData.scoreDTOs.find(
+      (score) =>
+        score.playerId === scoreCardData.players[currentPlayerIndex].id &&
+        score.holeNumber === holeNumber
+    );
+    return scoreDTO ? scoreDTO.score : "";
+  };
 
   const currentPlayer = scoreCardData.players[currentPlayerIndex];
   const currentHole = scoreCardData.holes[currentHoleIndex];
@@ -169,6 +288,66 @@ const EventScoreCard = (props) => {
     scoreCardData.scoreDTOs[currentPlayerIndex].scores
       ? scoreCardData.scoreDTOs[currentPlayerIndex].scores[currentHoleIndex]
       : null;
+
+  const calculateNetScore = () => {
+    if (currentPlayerScores) {
+      return currentPlayerScores.score - currentPlayer.handicap;
+    }
+    return null;
+  };
+
+  function calculatePoints(par, score, handicap, stroke) {
+    /**
+     * L = Gross Score
+     * O = Par - Gross Score
+     * M = Handicap - Stroke Index
+     * N = IF(M12<0,0,IF(M12<18,1,IF(M12<36,2,3)))
+     * points = =IF(L12<1,"",IF((2+O12+N12)>-1,(2+O12+N12),0))
+     *
+     */
+    //0
+    var o = par - score;
+    var m = handicap - stroke;
+    var n;
+    var points;
+    if (m < 0) {
+      n = 0;
+    } else if (m < 18) {
+      n = 1;
+    } else if (m < 36) {
+      n = 2;
+    } else {
+      n = 3;
+    }
+
+    if (score < 1) {
+      points = 0;
+    } else if (2 + 0 + n > -1) {
+      points = 2 + o + n;
+    } else {
+      points = 0;
+    }
+    console.log(
+      "  par, score, handicap, stroke and points " + " " + par,
+      score,
+      handicap,
+      stroke,
+      points
+    );
+    return points;
+  }
+
+  //const totalPoints = holePoints.reduce((total, points) => total + points, 0);
+  const totalPoints = Array.from(playerPointsMap.values()).reduce(
+    (total, playerPoints) => {
+      const playerTotalPoints = playerPoints.reduce(
+        (sum, { points }) => sum + points,
+        0
+      );
+      return total + playerTotalPoints;
+    },
+    0
+  );
 
   return (
     <Container maxWidth="sm">
@@ -188,20 +367,31 @@ const EventScoreCard = (props) => {
         <Typography variant="body1">
           Length: {currentHole.yellow} yards
         </Typography>
-        <TextField
-          label="Score"
-          type="number"
-          value={currentPlayerScores ? currentPlayerScores.score : ""}
+        <input
+          name="score"
+          type="text"
+          value={getCurrentPlayerScore(
+            scoreCardData.holes[currentHoleIndex].holeNumber
+          )}
           onChange={handleScoreChange}
         />
+
         <Typography variant="body1">
-          Net: {/* Calculate net score based on handicap */}
+          <Typography variant="body1">Net: {calculateNetScore()}</Typography>
         </Typography>
-        {/* Render additional fields based on competition type */}
+        {/* Render additional fields based on competition type 
+          par, score, handicap, stroke
+        */}
         {scoreCardData.competition.competitionType === "STABLEFORD" && (
-          <Typography variant="body1">
-            Points: {/* Calculate points */}
-          </Typography>
+          <div>
+            <Typography variant="body1">
+              Points:{" "}
+              {getCurrentPlayerScore(
+                scoreCardData.holes[currentHoleIndex].holeNumber
+              )}
+            </Typography>
+            <Typography variant="body1">Total Points: {totalPoints}</Typography>
+          </div>
         )}
 
         {/* Render navigation buttons */}
@@ -237,26 +427,6 @@ const EventScoreCard = (props) => {
             disabled={currentPlayerIndex === scoreCardData.players.length - 1}
           >
             Next Player
-          </Button>
-        </div>
-
-        {/* Render score increment and decrement buttons */}
-        <div>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleDecrementScore}
-            disabled={!currentPlayerScores}
-          >
-            Decrease Score
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleIncrementScore}
-            disabled={!currentPlayerScores}
-          >
-            Increase Score
           </Button>
         </div>
 

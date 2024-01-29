@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Typography from "@material-ui/core/Typography";
@@ -21,6 +21,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/Add";
 import { apiUrl } from "./config";
+import { AuthContext } from "./AuthStateProvider";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -71,6 +72,8 @@ const GolfEventModal = ({ open, onClose, golfEvent, onEdit }) => {
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [registeredPlayers, setRegisteredPlayers] = useState([]);
 
+  const { isAuthenticated, token } = useContext(AuthContext);
+
   useEffect(() => {
     if (open) {
       openModal();
@@ -96,7 +99,11 @@ const GolfEventModal = ({ open, onClose, golfEvent, onEdit }) => {
     }
 
     async function getEventTypes() {
-      const response = await fetch(`${apiUrl}/events/types`);
+      const response = await fetch(`${apiUrl}/events/types`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await response.json();
       setEventTypes(data);
     }
@@ -319,9 +326,9 @@ const GolfEventModal = ({ open, onClose, golfEvent, onEdit }) => {
             onChange={handleInputChange}
             fullWidth
           >
-            {eventTypes.map((type) => (
-              <MenuItem key={type} value={type}>
-                {type}
+            {eventTypes?.map((eventType) => (
+              <MenuItem key={eventType} value={eventType}>
+                {eventType}
               </MenuItem>
             ))}
           </TextField>
