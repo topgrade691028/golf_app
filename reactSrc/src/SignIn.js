@@ -74,7 +74,6 @@ const SignIn = () => {
 
         // Call backend API to get user roles
         const token = await user.getIdToken();
-
         //const token = "12345token";
         const response = await fetch(url, {
           method: "GET",

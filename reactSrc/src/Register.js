@@ -24,7 +24,7 @@ const Register = () => {
       try {
         console.log("email is " + email);
 
-        console.log("password is " + password);
+
         const userCredential = await createUserWithEmailAndPassword(
           auth,
           email,
@@ -35,7 +35,6 @@ const Register = () => {
         console.log("User registered:", user);
 
         // Create roles for the registered user
-        const token = await user.getIdToken();
         const roles = ["manager", "player"]; // Roles to be assigned
         const createRolesRequest = {
           email: email,
