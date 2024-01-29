@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:mariadb://82.180.154.143:3306/golfapp
     username: pronane
-    password: DingBat9
+    password: password
     driverClassName: org.mariadb.jdbc.Driver
   jpa:
     properties:
