@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pr.golf.golfapp.dto.ScoreDTO;
+import com.pr.golf.golfapp.mapper.ScoreMapper;
 import com.pr.golf.golfapp.model.EventLeaderBoard;
 import com.pr.golf.golfapp.model.Score;
 import com.pr.golf.golfapp.request.ScoreRequestBody;
@@ -32,8 +33,11 @@ public class ScoreController {
 
     private ScoreService scoreService;
     
-    public ScoreController(@Autowired  ScoreService scoreService) {
+    private ScoreMapper scoreMapper;
+    
+    public ScoreController(@Autowired  ScoreService scoreService, @Autowired ScoreMapper scoreMapper) {
     	this.scoreService = scoreService;
+    	this.scoreMapper = scoreMapper;
     }
 
     @RequestMapping(
@@ -90,7 +94,7 @@ public class ScoreController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ScoreDTO> getScoresForPlayerGroup(@RequestParam Long eventId, 
     													@RequestParam int groupNumber) {
-        return scoreService.findByEventIdAndGroupNumber(eventId, groupNumber).orElseThrow(RuntimeException::new);
+        return scoreMapper.toDto(scoreService.findByEventIdAndGroupNumber(eventId, groupNumber).orElseThrow(RuntimeException::new));
     }
    
 }
