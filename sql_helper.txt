@@ -1,4 +1,5 @@
 mysql -h localhost -u pronane -ppassword golfapp
+D:\Program Files\MariaDB 11.1\bin>mysqldump -u pronane -ppassword golfapp > export.sql
 
 DingB@t12345
 
@@ -55,4 +56,36 @@ ALTER TABLE golf_event_player ADD CONSTRAINT golf_event_player_ibfk_2 FOREIGN KE
 ALTER TABLE competition_player ADD CONSTRAINT competition_player_ibfk_2 FOREIGN KEY (player_id) REFERENCES player(id);
 ALTER TABLE competition_player ADD CONSTRAINT competition_player_ibfk_2 FOREIGN KEY (player_id) REFERENCES player(id);
 ALTER TABLE score ADD CONSTRAINT golf_event_score_ibfk_2 FOREIGN KEY (player_id) REFERENCES player(id);
+
+
+-- Create roles table
+CREATE TABLE `roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_role_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- Insert roles
+INSERT INTO `roles` (`name`) VALUES
+('ROLE_ADMIN'),
+('ROLE_COMPETITION_MANAGER'),
+('ROLE_PLAYER');
+
+-- Assuming you have obtained the role IDs for 'ROLE_ADMIN', 'ROLE_COMPETITION_MANAGER', and 'ROLE_PLAYER'
+
+-- Insert user into users table
+INSERT INTO `users` VALUES (5,'pronane@yahoo.com','Rnm3dWBciaRfFGdh4IdAont8rUR2');
+
+-- Retrieve user ID for the newly inserted user
+SET @user_id = LAST_INSERT_ID();
+
+-- Assuming you have obtained the user ID for the user with email 'pronane@yahoo.com'
+SET @user_id = (SELECT `id` FROM `users` WHERE `email` = 'pronane@yahoo.com');
+
+-- Insert user roles into user_roles table
+INSERT INTO `user_roles` (`user_id`, `role_id`)
+SELECT @user_id, r.`id`
+FROM `roles` r
+WHERE r.`name` IN ('ROLE_ADMIN', 'ROLE_COMPETITION_MANAGER', 'ROLE_PLAYER');
 

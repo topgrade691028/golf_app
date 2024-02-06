@@ -1,7 +1,5 @@
 package com.pr.golf.golfapp.dto;
 
-import java.util.List;
-
 import com.pr.golf.golfapp.model.User;
 
 import lombok.AllArgsConstructor;
