@@ -1,6 +1,7 @@
 HELP.md
 .gradle
 build/
+serviceAccount.json
 reactSrc/node_modules
 reactSrc/src/FirebaseConfig.js
 reworkedFrontEnd/node_modules
