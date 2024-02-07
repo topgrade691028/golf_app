@@ -2,7 +2,9 @@ HELP.md
 .gradle
 build/
 reactSrc/node_modules
+reactSrc/src/FirebaseConfig.js
 reworkedFrontEnd/node_modules
+reworkedFrontEnd/dist
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
