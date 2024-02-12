@@ -18,11 +18,13 @@ import {
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import useStyle from './styles';
-
+import { selectedCompetition } from 'store/actions/competitionActions';
+import { useDispatch } from 'react-redux';
 import { gridSpacing } from 'store/constant';
 
 const Competition = () => {
   const classes = useStyle();
+  const dispatch = useDispatch();
   // const [isLoading, setLoading] = useState(true);
   // useEffect(() => {
   //   setLoading(false);
@@ -150,11 +152,12 @@ const Competition = () => {
   };
 
   const handleViewEvents = (competitionId) => {
-    const selectedCompetition = competitions.find((competition) => competition.id === competitionId);
-    if (selectedCompetition) {
-      navigate('/viewcompetitionevents', {
-        competitionId: selectedCompetition.id,
-        competitionName: selectedCompetition.name
+    const selectedCompetitionObj = competitions.find((competition) => competition.id === competitionId);
+    if (selectedCompetitionObj) {
+      dispatch(selectedCompetition(competitionId))
+      navigate('/competition/events', {
+        competitionId: selectedCompetitionObj.id,
+        competitionName: selectedCompetitionObj.name
       });
     }
   };
