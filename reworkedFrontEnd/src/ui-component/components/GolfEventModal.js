@@ -21,7 +21,7 @@ import {
 import { makeStyles } from '@mui/styles';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import { AuthContext } from "../../../service/AuthStateProvider";
+import { AuthContext } from "../../service/AuthStateProvider";
 
 const useStyles = makeStyles((theme) => ({
   paper: {

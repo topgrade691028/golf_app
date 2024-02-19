@@ -29,6 +29,7 @@ export const AuthStateProvider = ({ children }) => {
 
   const login = (userData, roles, token) => {
     setIsAuthenticated(true);
+    console.log("userData is  " + userData);
     setUser(userData.user);
     console.log("userRoles is  " + userRoles);
     setUserRoles(roles);
@@ -41,9 +42,7 @@ export const AuthStateProvider = ({ children }) => {
     setIsAuthenticated(false);
     setUser(null);
     setUserRoles(null);
-
-    // Remove token from storage
-    //localStorage.removeItem("token");
+    localStorage.removeItem("token");
     setToken(null);
   };
 

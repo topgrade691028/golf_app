@@ -26,13 +26,13 @@ const golfEvent = {
           id: 'golfevent.register',
           title: 'View Score Card',
           type: 'item',
-          url: '/golf/registerplayers'
+          url: '/golf/scorecard'
         },
         {
           id: 'golfevent.events',
           title: 'Event Leaderboard',
           type: 'item',
-          url: '/golf/events'
+          url: '/golf/leaderboard'
         }
       ]
     }

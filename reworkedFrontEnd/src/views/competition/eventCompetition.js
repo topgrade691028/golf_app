@@ -20,9 +20,9 @@ import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
 import { gridSpacing } from 'store/constant';
 import GolfEventService from "../../service/GolfEventService";
-import GolfEventModalComponent from "./components/GolfEventModal";
-import GroupPairingsModal from "./components/GroupPairingsModal";
-import "./ViewGolfEvent.css";
+import GolfEventModalComponent from "../../ui-component/components/GolfEventModal";
+import GroupPairingsModal from "../../ui-component/components/GroupPairingsModal";
+import "../../styles/ViewGolfEvent.css";
 import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({

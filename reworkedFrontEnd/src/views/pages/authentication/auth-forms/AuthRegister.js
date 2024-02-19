@@ -1,8 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-// import { useSelector } from 'react-redux';
-
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import {
   Box,
@@ -20,37 +17,27 @@ import {
   Typography,
   useMediaQuery
 } from '@mui/material';
-
-// third party
+import axios from "axios";
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-
-// project imports
-import useScriptRef from 'hooks/useScriptRef';
-// import Google from 'assets/images/icons/social-google.svg';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
-
-// assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
-// ===========================|| FIREBASE - REGISTER ||=========================== //
+import { AuthContext } from 'service/AuthStateProvider';
+import app from "../../../../utils/FirebaseConfig";
+import { useNavigate } from 'react-router-dom';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const FirebaseRegister = ({ ...others }) => {
   const theme = useTheme();
-  const scriptedRef = useScriptRef();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-  // const customization = useSelector((state) => state.customization);
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [checked, setChecked] = useState(true);
-
+  const { isAuthenticated, token } = useContext(AuthContext);
   const [strength, setStrength] = useState(0);
   const [level, setLevel] = useState();
-
-  // const googleHandler = async () => {
-  //   console.error('Register');
-  // };
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -69,53 +56,46 @@ const FirebaseRegister = ({ ...others }) => {
   useEffect(() => {
     changePassword('123456');
   }, []);
+  const handleRegister = async (value) => {
+    const auth = getAuth(app);
 
+    if (app && app.options.apiKey) {
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, value.email, value.password);
+        const user = userCredential.user;
+        console.log("User registered:", user);
+
+        const roles = ["manager", "player"]; // Roles to be assigned
+        await createRoles(value.email, roles, token);
+        navigate("/");
+      } catch (error) {
+        throw new Error("User registration failed. Please try again."); // Throw error for better error handling
+      }
+    } else {
+      throw new Error("Firebase app is not initialized. Please try again later.");
+    }
+  };
+
+  const createRoles = async (email, roles, token) => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API}/users/createRoles`, { email, roles }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Roles created:", response.data);
+    } catch (error) {
+      console.error("Error creating roles:", error);
+      throw new Error("Error creating roles. Please try again later."); // Throw error for better error handling
+    }
+  };
+
+  if (isAuthenticated) {
+    navigate('/');
+  }
   return (
     <>
       <Grid container direction="column" justifyContent="center" spacing={2}>
-        <Grid item xs={12}>
-          {/* <AnimateButton>
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={googleHandler}
-              size="large"
-              sx={{
-                color: 'grey.700',
-                backgroundColor: theme.palette.grey[50],
-                borderColor: theme.palette.grey[100]
-              }}
-            >
-              <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
-                <img src={Google} alt="google" width={16} height={16} style={{ marginRight: matchDownSM ? 8 : 16 }} />
-              </Box>
-              Sign up with Google
-            </Button>
-          </AnimateButton> */}
-        </Grid>
-        {/* <Grid item xs={12}>
-          <Box sx={{ alignItems: 'center', display: 'flex' }}>
-            <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
-            <Button
-              variant="outlined"
-              sx={{
-                cursor: 'unset',
-                m: 2,
-                py: 0.5,
-                px: 7,
-                borderColor: `${theme.palette.grey[100]} !important`,
-                color: `${theme.palette.grey[900]}!important`,
-                fontWeight: 500,
-                borderRadius: `${customization.borderRadius}px`
-              }}
-              disableRipple
-              disabled
-            >
-              OR
-            </Button>
-            <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
-          </Box>
-        </Grid> */}
         <Grid item xs={12} container alignItems="center" justifyContent="center">
           <Box sx={{ mb: 2 }}>
             <Typography variant="subtitle1">Sign up with Email address</Typography>
@@ -135,17 +115,14 @@ const FirebaseRegister = ({ ...others }) => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            if (scriptedRef.current) {
-              setStatus({ success: true });
-              setSubmitting(false);
-            }
+            handleRegister(values)
+            setStatus({ success: true });
+            setSubmitting(false);
           } catch (err) {
             console.error(err);
-            if (scriptedRef.current) {
-              setStatus({ success: false });
-              setErrors({ submit: err.message });
-              setSubmitting(false);
-            }
+            setStatus({ success: false });
+            setErrors({ submit: err.message });
+            setSubmitting(false);
           }
         }}
       >

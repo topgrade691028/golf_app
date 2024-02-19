@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import PlayerService from "../../service/PlayerService";
-import "./ViewScoreCards.css";
+import "../../styles/ViewScoreCards.css";
 
 const useStyles = makeStyles((theme) => ({
   container: {

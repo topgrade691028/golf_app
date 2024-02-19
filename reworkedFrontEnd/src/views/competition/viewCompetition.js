@@ -18,8 +18,8 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import useStyles from './styles';
-import EditCompetitionModal from './components/editCompetitionModal';
-import DeleteConfirmationModal from './components/deleteConfirmationModal';
+import EditCompetitionModal from '../../ui-component/components/editCompetitionModal';
+import DeleteConfirmationModal from '../../ui-component/components/deleteConfirmationModal';
 import { selectedCompetition } from 'store/actions/competitionActions';
 
 import { gridSpacing } from 'store/constant';

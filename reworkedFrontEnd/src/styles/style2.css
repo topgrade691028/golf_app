@@ -1,0 +1,156 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.grid {
+  width: 50%;
+  display: inline-grid;
+  grid-template-columns: repeat(13, 1fr);
+  padding: 10px;
+  padding-bottom: 0;
+}
+
+.griditem {
+  background-color: rgba(255, 255, 255, 0.8);
+
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: start;
+  border: 0.5px solid gray;
+}
+
+.col-8 {
+  grid-column: 1/9;
+}
+
+.col-6 {
+  grid-column: 1/6;
+}
+
+.col-1 {
+  grid-column: 9/10;
+}
+
+.col-2 {
+  grid-column: 10/11;
+}
+
+.col-3 {
+  grid-column: 11/14;
+}
+.col-4 {
+  grid-column: 6/9;
+}
+.row-1 {
+  border-bottom: none;
+}
+.row-2 {
+  border-top: none;
+}
+
+.yellow {
+  background-color: rgb(241, 236, 104);
+}
+.red {
+  background-color: red;
+}
+.input {
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.playersname {
+  display: flex;
+  gap: 1rem;
+}
+.name {
+  width: 70%;
+}
+.name2 {
+  width: 40%;
+}
+.fred {
+  color: red;
+}
+
+@media screen and (max-width: 1450px) {
+  .grid {
+    width: 60%;
+    grid-template-columns: repeat(13, 40px);
+  }
+  .griditem {
+    font-size: 10px;
+    font-weight: 200;
+    text-align: start;
+  }
+  .input {
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    font-size: 10px;
+    font-weight: 200;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .grid {
+    width: 30%;
+    grid-template-columns: repeat(13, 25px);
+  }
+  .griditem {
+    font-size: 8px;
+    font-weight: 200;
+    text-align: start;
+    padding: 0;
+  }
+  .input {
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    font-size: 8px;
+    font-weight: 200;
+  }
+}
+@media screen and (max-width: 300px) {
+  .grid {
+    width: 30%;
+    grid-template-columns: repeat(13, 20px);
+  }
+  .griditem {
+    font-size: 8px;
+    font-weight: 200;
+    text-align: start;
+    padding: 0;
+  }
+
+  .input {
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    font-size: 8px;
+    font-weight: 200;
+  }
+}
+.bonus-rule-hole {
+  background-color: yellowgreen;
+  display: flex;
+}
+.asterisk {
+  padding: 0 10px;
+}
+
+.sticky-item {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  padding: 7px;
+  border-bottom: 1px solid #ddd;
+  /*height: 100vh; /* or any other fixed height value */
+  overflow: auto; /* or scroll */
+}

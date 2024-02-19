@@ -1,13 +1,9 @@
-import { useState } from 'react';
-// import { useSelector } from 'react-redux';
-
-// material-ui
+import { useState, useContext } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
   Box,
   Button,
   Checkbox,
-  // Divider,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -18,37 +14,29 @@ import {
   OutlinedInput,
   Stack,
   Typography
-  // useMediaQuery
 } from '@mui/material';
-
-// third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-
-// project imports
-import useScriptRef from 'hooks/useScriptRef';
+// import { useNavigate } from 'react-router';
 import AnimateButton from 'ui-component/extended/AnimateButton';
-
-// assets
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
-// import Google from 'assets/images/icons/social-google.svg';
-
-// ============================|| FIREBASE - LOGIN ||============================ //
+import app from "../../../../utils/FirebaseConfig";
+import { AuthContext } from 'service/AuthStateProvider';
 
 const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
-  const scriptedRef = useScriptRef();
-  // const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-  // const customization = useSelector((state) => state.customization);
+  // const navigate = useNavigate();
   const [checked, setChecked] = useState(true);
-
-  // const googleHandler = async () => {
-  //   console.error('Login');
-  // };
-
   const [showPassword, setShowPassword] = useState(false);
+  const {
+    setIsAuthenticated,
+    setToken,
+    setUserRoles,
+    login,
+  } = useContext(AuthContext);
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -56,61 +44,60 @@ const FirebaseLogin = ({ ...others }) => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const handleSignIn = async (values) => {
+    const auth = getAuth(app);
+
+    try {
+      if (!app || !app.options.apiKey) {
+        throw new Error("Firebase app is not initialized properly");
+      }
+
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      const user = userCredential.user;
+      setIsAuthenticated(true);
+      console.log("User signed in:", user);
+
+      const token = await user.getIdToken();
+      const userRoles = await fetchUserRoles(values.email, token);
+      setUserRoles(userRoles);
+      setToken(token);
+      login({ user, roles: userRoles }, userRoles, token);
+      console.log("User roles:", userRoles);
+
+      return "success"
+    } catch (error) {
+      handleSignInError(error);
+    }
+  };
+
+  const fetchUserRoles = async (email, token) => {
+    const url = new URL(`${process.env.REACT_APP_API}/users/roles`, window.location.origin);
+    url.searchParams.append("email", encodeURIComponent(email));
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch user roles: ${response.statusText}`);
+    }
+    return response.json();
+  };
+
+  const handleSignInError = (error) => {
+    console.error("User sign-in error:", error);
+    if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+      return ("Login failed. Please check your email and password.");
+    } else {
+      return ("Login failed. Please try again.");
+    }
+  };
 
   return (
     <>
       <Grid container direction="column" justifyContent="center" spacing={2}>
-        {/* <Grid item xs={12}>
-          <AnimateButton>
-            <Button
-              disableElevation
-              fullWidth
-              onClick={googleHandler}
-              size="large"
-              variant="outlined"
-              sx={{
-                color: 'grey.700',
-                backgroundColor: theme.palette.grey[50],
-                borderColor: theme.palette.grey[100]
-              }}
-            >
-              <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
-                <img src={Google} alt="google" width={16} height={16} style={{ marginRight: matchDownSM ? 8 : 16 }} />
-              </Box>
-              Sign in with Google
-            </Button>
-          </AnimateButton>
-        </Grid>
-        <Grid item xs={12}>
-          <Box
-            sx={{
-              alignItems: 'center',
-              display: 'flex'
-            }}
-          >
-            <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
-
-            <Button
-              variant="outlined"
-              sx={{
-                cursor: 'unset',
-                m: 2,
-                py: 0.5,
-                px: 7,
-                borderColor: `${theme.palette.grey[100]} !important`,
-                color: `${theme.palette.grey[900]}!important`,
-                fontWeight: 500,
-                borderRadius: `${customization.borderRadius}px`
-              }}
-              disableRipple
-              disabled
-            >
-              OR
-            </Button>
-
-            <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
-          </Box>
-        </Grid> */}
         <Grid item xs={12} container alignItems="center" justifyContent="center">
           <Box sx={{ mb: 2 }}>
             <Typography variant="subtitle1">Sign in with Email address</Typography>
@@ -120,27 +107,26 @@ const FirebaseLogin = ({ ...others }) => {
 
       <Formik
         initialValues={{
-          email: 'info@codedthemes.com',
-          password: '123456',
+          email: '',
+          password: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
           password: Yup.string().max(255).required('Password is required')
         })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+        onSubmit={async (values, { setStatus, setErrors, setSubmitting }) => {
           try {
-            if (scriptedRef.current) {
-              setStatus({ success: true });
-              setSubmitting(false);
-            }
-          } catch (err) {
-            console.error(err);
-            if (scriptedRef.current) {
-              setStatus({ success: false });
-              setErrors({ submit: err.message });
-              setSubmitting(false);
-            }
+            const res = await handleSignIn(values);
+            console.log('success', res);
+            setStatus({ success: true });
+          } catch (error) {
+            console.error(error);
+            setErrors({ submit: error.message });
+            setStatus({ success: false });
+          } finally {
+            // Always set submitting to false
+            setSubmitting(false);
           }
         }}
       >

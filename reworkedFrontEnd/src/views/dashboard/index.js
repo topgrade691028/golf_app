@@ -48,7 +48,7 @@ const Dashboard = () => {
           </Grid>
 
           <Grid item xs={6} sm={3}>
-            <Link component={RouterLink} to="/creategolfevent" underline="none" color="inherit">
+            <Link component={RouterLink} to="/golf/createevent" underline="none" color="inherit">
               <Paper className={classes.paper} elevation={3}>
                 <EventIcon className={classes.icon} fontSize="large" />
                 <Typography variant="h6" gutterBottom>
@@ -59,7 +59,7 @@ const Dashboard = () => {
           </Grid>
 
           <Grid item xs={6} sm={3}>
-            <Link component={RouterLink} to="/viewGolfEvent" underline="none" color="inherit">
+            <Link component={RouterLink} to="/golf/view" underline="none" color="inherit">
               <Paper className={classes.paper} elevation={3}>
                 <EventIcon className={classes.icon} fontSize="large" />
                 <Typography variant="h6" gutterBottom>
@@ -70,7 +70,7 @@ const Dashboard = () => {
           </Grid>
 
           <Grid item xs={6} sm={3}>
-            <Link component={RouterLink} to="/ViewScoreCards" underline="none" color="inherit">
+            <Link component={RouterLink} to="/golf/scorecard" underline="none" color="inherit">
               <Paper className={classes.paper} elevation={3}>
                 <ViewListIcon className={classes.icon} fontSize="large" />
                 <Typography variant="h6" gutterBottom>

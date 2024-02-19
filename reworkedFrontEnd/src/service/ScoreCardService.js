@@ -1,13 +1,10 @@
-// ScoreCardService.js
-
 import axios from "axios";
-import { apiUrl } from "../config";
 
 const ScoreCardService = {
   getScoreCards: async (params) => {
     try {
       const response = await axios.get(
-        `${apiUrl}/scorecard/retrievescorecards`,
+        `${process.env.REACT_APP_API}/scorecard/retrievescorecards`,
         {
           params: params,
         }
