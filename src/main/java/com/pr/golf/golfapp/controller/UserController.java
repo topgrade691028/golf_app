@@ -15,22 +15,30 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.pr.golf.golfapp.dto.CreateUserRolesRequestBody;
 import com.pr.golf.golfapp.dto.UserRoleDTO;
+import com.pr.golf.golfapp.model.Role;
 import com.pr.golf.golfapp.model.User;
 import com.pr.golf.golfapp.model.UserRole;
+import com.pr.golf.golfapp.repository.RoleRepository;
 import com.pr.golf.golfapp.repository.UserRepository;
 import com.pr.golf.golfapp.service.UserRoleService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/users")
+@Slf4j
 public class UserController {
 	private final UserRepository userRepository;
 	private final UserRoleService userRoleService;
-
-	public UserController(UserRepository userRepository, UserRoleService userRoleService) {
+	private final RoleRepository roleRepository;
+	
+	public UserController(UserRepository userRepository, UserRoleService userRoleService,
+							RoleRepository roleRepository) {
 		this.userRepository = userRepository;
 		this.userRoleService = userRoleService;
+		this.roleRepository = roleRepository;
 	}
 
 	@PostMapping("/createRoles")
@@ -58,11 +66,21 @@ public class UserController {
 				//return ResponseEntity.notFound().build();
 			}
 
-			for (String role : requestBody.getRoles()) {
+			for (String roleName : requestBody.getRoles()) {
+			    // Create a UserRole instance with the user and role entities
+			    Role roleEntity = roleRepository.findByName("ROLE_" + roleName.toUpperCase());
+			    if (roleEntity == null) {
+			        // Handle case where the role does not exist
+			        // You may throw an exception or log a warning
+			        continue; // Skip to the next role
+			    }
+
 			    UserRole userRole = UserRole.builder()
-			        .user(user) // Set the User instance
-			        .role("ROLE_" + role.toUpperCase())
+			        .user(user)
+			        .role(roleEntity) // Pass the Role entity
 			        .build();
+
+			    // Save the user role
 			    userRoleService.save(userRole);
 			}
 		} catch (FirebaseAuthException e) {
@@ -78,6 +96,7 @@ public class UserController {
 	public ResponseEntity<List<UserRoleDTO>> getUserRoles(@RequestParam("email") String email,
 			HttpServletRequest request) {
 
+		log.info("in roles now");
 		String authorizationHeader = request.getHeader("Authorization");
 		String idToken = authorizationHeader.substring(7); // Remove "Bearer " prefix
 
