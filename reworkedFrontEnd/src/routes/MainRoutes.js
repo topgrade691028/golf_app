@@ -10,6 +10,7 @@ const PlayerCompetition = Loadable(lazy(() => import('views/competition/playerCo
 const ViewGolfEvent = Loadable(lazy(() => import('views/golf/viewGolfEvent')));
 const CreateGolfEvent = Loadable(lazy(() => import('views/golf/createGolfEvent')));
 const ScoreCard = Loadable(lazy(() => import('views/golf/scoreCard')));
+const ScoreCardView = Loadable(lazy(() => import('views/golf/scoreCardView')));
 const EventScoreCardView = Loadable(lazy(() => import('views/golf/eventScoreCard')));
 const Leaderboard = Loadable(lazy(() => import('views/golf/leaderboard')));
 
@@ -73,6 +74,10 @@ const MainRoutes = {
         {
           path: 'scorecardview/:eventId/:groupNumber',
           element: <EventScoreCardView />
+        },
+        {
+          path: 'fullscorecardview/:eventId/:groupNumber',
+          element: <ScoreCardView />
         },
         {
           path: 'leaderboard',

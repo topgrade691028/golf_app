@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Paper,
-  Button,
-  Typography
-} from '@mui/material';
+import { Container, Paper, Typography, Table, TableHead, TableBody, TableRow, TableCell, Button } from '@mui/material';
 import { useParams } from 'react-router';
 import axios from 'axios';
+import { useNavigate } from "react-router";
+import useStyles from './styles';
 
 const EventScoreCard = () => {
+  const classes = useStyles();
+  const navigate = useNavigate();
   const { eventId, groupNumber } = useParams();
   const [scoreCardData, setScoreCardData] = useState(null);
-  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+  // const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [currentHoleIndex, setCurrentHoleIndex] = useState(0);
 
   const [scoreInputValue, setScoreInputValue] = useState("");
@@ -74,7 +73,7 @@ const EventScoreCard = () => {
           // Update the scoreCardData with the new scoreDTOs array
           scoreCardData.scoreDTOs = newScoreDTOs;
         }
-        console.log(scoreCardData.scoreDTOs);
+        // console.log(scoreCardData.scoreDTOs);
         setScoreCardData(scoreCardData);
       } catch (error) {
         console.error("Error fetching scorecard data:", error);
@@ -95,7 +94,7 @@ const EventScoreCard = () => {
         const currentPlayerIndex = updatedPlayerScores.findIndex(
           (playerScore) => playerScore.playerId === scoreDTO.playerId
         );
-        console.log("scoreDTO.Points " + scoreDTO.points);
+        // console.log("scoreDTO.Points " + scoreDTO.points);
         updatedPlayerScores[currentPlayerIndex].totalPoints += scoreDTO.points;
       });
 
@@ -106,47 +105,6 @@ const EventScoreCard = () => {
     }
   }, [scoreCardData && scoreCardData.scoreDTOs]);
 
-  const handleNextPlayer = () => {
-    setCurrentPlayerIndex((prevPlayerIndex) => prevPlayerIndex + 1);
-    setCurrentHoleIndex(0);
-  };
-
-  const handlePreviousPlayer = () => {
-    setCurrentPlayerIndex((prevPlayerIndex) => prevPlayerIndex - 1);
-    setCurrentHoleIndex(0);
-  };
-
-  /*
-  const handleNextHole = () => {
-    const currentHoleIndex = scoreCardData.holes.findIndex(
-      (hole) => hole === currentHole
-    );
-    const nextHoleIndex = currentHoleIndex + 1;
-
-    if (nextHoleIndex < scoreCardData.holes.length) {
-      setCurrentHole(scoreCardData.holes[nextHoleIndex]);
-      updateCurrentPlayerScore(
-        scoreCardData.holes[nextHoleIndex],
-        currentPlayer
-      );
-    }
-  };
-
-  const handlePreviousHole = () => {
-    const currentHoleIndex = scoreCardData.holes.findIndex(
-      (hole) => hole === currentHole
-    );
-    const previousHoleIndex = currentHoleIndex - 1;
-
-    if (previousHoleIndex >= 0) {
-      setCurrentHole(scoreCardData.holes[previousHoleIndex]);
-      updateCurrentPlayerScore(
-        scoreCardData.holes[previousHoleIndex],
-        currentPlayer
-      );
-    }
-  };
-*/
   const handleNextHole = () => {
     setCurrentHoleIndex((prevHoleIndex) =>
       prevHoleIndex === scoreCardData.holes.length - 1 ? 0 : prevHoleIndex + 1
@@ -159,29 +117,14 @@ const EventScoreCard = () => {
     );
   };
 
-  // const updateCurrentPlayerScore = (hole, player) => {
-  //   // Find the scoreDTO for the current hole and player combination
-  //   const currentPlayerScoreDTO = scoreCardData.scoreDTOs.find(
-  //     (scoreDTO) =>
-  //       scoreDTO.playerId === player.id &&
-  //       scoreDTO.holeNumber === hole.holeNumber
-  //   );
-
-  //   if (currentPlayerScoreDTO) {
-  //     setScoreInputValue(currentPlayerScoreDTO.score);
-  //   } else {
-  //     setScoreInputValue(""); // Set the input value to empty if no score is found
-  //   }
-  // };
-
-  const handleScoreChange = (event) => {
+  const handleScoreChange = (event, player) => {
     const { value } = event.target;
     setScoreInputValue(value);
 
     // Find the index of currentPlayerScores in scoreCardData.scoreDTOs
-    const currentPlayerIndex = scoreCardData.scoreDTOs.findIndex(
+    const currentPlayerIndex1 = scoreCardData.scoreDTOs.findIndex(
       (scoreDTO) =>
-        scoreDTO.playerId === currentPlayer.id &&
+        scoreDTO.playerId === player.id &&
         scoreDTO.holeNumber === currentHole.holeNumber
     );
 
@@ -189,16 +132,16 @@ const EventScoreCard = () => {
     const updatedScoreDTOs = [...scoreCardData.scoreDTOs];
 
     // Update the score in the copy
-    updatedScoreDTOs[currentPlayerIndex].score = value;
+    updatedScoreDTOs[currentPlayerIndex1].score = value;
 
     // Calculate and update the points for the current scoreDTO
     const holePoints = calculatePoints(
       currentHole.par,
       value,
-      currentPlayer.handicap,
+      player.handicap,
       currentHole.stroke
     );
-    updatedScoreDTOs[currentPlayerIndex].points = holePoints;
+    updatedScoreDTOs[currentPlayerIndex1].points = holePoints;
 
     // Update the scoreCardData with the updated scoreDTOs
     setScoreCardData((prevData) => ({
@@ -214,7 +157,7 @@ const EventScoreCard = () => {
 
     setPlayerPointsMap((prevPlayerPointsMap) => {
       const updatedPlayerPointsMap = new Map(prevPlayerPointsMap);
-      const playerPoints = updatedPlayerPointsMap.get(currentPlayer.id);
+      const playerPoints = updatedPlayerPointsMap.get(player.id);
       const holeIndex = playerPoints.findIndex(
         (point) => point.holeNumber === currentHole.holeNumber
       );
@@ -258,41 +201,32 @@ const EventScoreCard = () => {
   if (!scoreCardData) {
     return <div>Loading...</div>;
   }
-  /*
-  const getCurrentPlayerScore = (holeNumber) => {
-    const currentPlayerId = 1; // Assuming the current player ID is 1
+
+  const getCurrentPlayerScore = (holeNumber, playerIndex) => {
     const scoreDTO = scoreCardData.scoreDTOs.find(
       (score) =>
-        score.playerId === currentPlayerId && score.holeNumber === holeNumber
-    );
-    return scoreDTO ? scoreDTO.score : ""; // Return an empty string if scoreDTO is not found
-  };
-  */
-  const getCurrentPlayerScore = (holeNumber) => {
-    const scoreDTO = scoreCardData.scoreDTOs.find(
-      (score) =>
-        score.playerId === scoreCardData.players[currentPlayerIndex].id &&
+        score.playerId === playerIndex &&
         score.holeNumber === holeNumber
     );
     return scoreDTO ? scoreDTO.score : "";
   };
 
-  const currentPlayer = scoreCardData.players[currentPlayerIndex];
+  // const currentPlayer = scoreCardData.players[currentPlayerIndex];
   const currentHole = scoreCardData.holes[currentHoleIndex];
-  const currentPlayerScores =
-    scoreCardData &&
-      scoreCardData.scoreDTOs &&
-      scoreCardData.scoreDTOs[currentPlayerIndex] &&
-      scoreCardData.scoreDTOs[currentPlayerIndex].scores
-      ? scoreCardData.scoreDTOs[currentPlayerIndex].scores[currentHoleIndex]
-      : null;
+  // const currentPlayerScores =
+  //   scoreCardData &&
+  //     scoreCardData.scoreDTOs &&
+  //     scoreCardData.scoreDTOs[currentPlayerIndex] &&
+  //     scoreCardData.scoreDTOs[currentPlayerIndex].scores
+  //     ? scoreCardData.scoreDTOs[currentPlayerIndex].scores[currentHoleIndex]
+  //     : null;
 
-  const calculateNetScore = () => {
-    if (currentPlayerScores) {
-      return currentPlayerScores.score - currentPlayer.handicap;
-    }
-    return null;
-  };
+  // const calculateNetScore = () => {
+  //   if (currentPlayerScores) {
+  //     return currentPlayerScores.score - currentPlayer.handicap;
+  //   }
+  //   return null;
+  // };
 
   function calculatePoints(par, score, handicap, stroke) {
     /**
@@ -325,16 +259,9 @@ const EventScoreCard = () => {
     } else {
       points = 0;
     }
-    console.log(
-      "  par, score, handicap, stroke and points " + " " + par,
-      score,
-      handicap,
-      stroke,
-      points
-    );
+    // console.log("par, score, handicap, stroke, points", par, score, handicap, stroke, points);
     return points;
   }
-
   //const totalPoints = holePoints.reduce((total, points) => total + points, 0);
   const totalPoints = Array.from(playerPointsMap.values()).reduce(
     (total, playerPoints) => {
@@ -346,96 +273,62 @@ const EventScoreCard = () => {
     },
     0
   );
-
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="lg">
       <Paper elevation={3} style={{ padding: "2rem" }}>
-        {/* Render player information for the current player */}
-        <Typography variant="h3">{currentPlayer.name}</Typography>
-        <Typography variant="subtitle1">
-          Handicap: {currentPlayer.handicap}
-        </Typography>
-        <Typography variant="subtitle1">
-          Group Tee Time: {scoreCardData.groupTeeTime}
-        </Typography>
-        {/* Render scorecard fields for the current hole */}
-        <Typography variant="body1">Hole {currentHole.holeNumber}</Typography>
-        <Typography variant="body1">Par: {currentHole.par}</Typography>
-        <Typography variant="body1">Stroke: {currentHole.stroke}</Typography>
-        <Typography variant="body1">
-          Length: {currentHole.yellow} yards
-        </Typography>
-        <input
-          name="score"
-          type="text"
-          value={getCurrentPlayerScore(
-            scoreCardData.holes[currentHoleIndex].holeNumber
-          )}
-          onChange={handleScoreChange}
-        />
+        <Typography variant="h3" style={{ marginBottom: '2rem'}}>Event Score Card</Typography>
 
-        <Typography variant="body1">
-          <Typography variant="body1">Net: {calculateNetScore()}</Typography>
-        </Typography>
-        {/* Render additional fields based on competition type 
-          par, score, handicap, stroke
-        */}
-        {scoreCardData.competition.competitionType === "STABLEFORD" && (
-          <div>
-            <Typography variant="body1">
-              Points:{" "}
-              {getCurrentPlayerScore(
-                scoreCardData.holes[currentHoleIndex].holeNumber
-              )}
-            </Typography>
-            <Typography variant="body1">Total Points: {totalPoints}</Typography>
-          </div>
-        )}
+        <Typography variant="h5">Hole {scoreCardData.holes[currentHoleIndex].holeNumber}</Typography>
+        <Typography variant="subtitle1">Par: {scoreCardData.holes[currentHoleIndex].par}</Typography>
+        <Typography variant="subtitle1">Stroke: {scoreCardData.holes[currentHoleIndex].stroke}</Typography>
+        <Typography variant="subtitle1">Length: {scoreCardData.holes[currentHoleIndex].yellow} yards</Typography>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Player Name (Handicap)</TableCell>
+              <TableCell>Score</TableCell>
+              <TableCell>Points</TableCell>
+              <TableCell>Total</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {scoreCardData.players.map((player) => (
+              <TableRow key={player.id}>
+                <TableCell>{player.name} ({player.handicap})</TableCell>
+                <TableCell>
+                  <input
+                    className={classes.scoreInput}
+                    name="score"
+                    type="number"
+                    value={getCurrentPlayerScore(
+                      scoreCardData.holes[currentHoleIndex].holeNumber, player.id
+                    )}
+                    onChange={(e) => handleScoreChange(e, player)}
+                  />
+                </TableCell>
+                <TableCell>
+                  {/* Calculate total for this player */}
+                  {getCurrentPlayerScore(
+                    scoreCardData.holes[currentHoleIndex].holeNumber, player.id
+                  )}
+                </TableCell>
+                <TableCell>
+                  {totalPoints}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
 
-        {/* Render navigation buttons */}
-        <div style={{display: 'flex', justifyContent: 'space-between', margin: '10px 0'}}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handlePreviousHole}
-          >
-            Previous Hole
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleNextHole}
-          >
-            Next Hole
-          </Button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', margin: '10px 0', gap: '8px' }}>
+          <Button variant="contained" color="primary" onClick={handlePreviousHole}>Previous Hole</Button>
+          <Button variant="contained" color="primary" onClick={handleNextHole}>Next Hole</Button>
+          <Button variant="contained" color="secondary" onClick={handleSubmitScores}>Submit Scores</Button>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', margin: '10px 0' }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handlePreviousPlayer}
-            disabled={currentPlayerIndex === 0}
-          >
-            Previous Player
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleNextPlayer}
-            disabled={currentPlayerIndex === scoreCardData.players.length - 1}
-          >
-            Next Player
-          </Button>
+        <div style={{ display: 'flex', justifyContent: 'space-around', margin: '100px 0 10px 0' }}>
+          <Button variant="contained" color="primary" onClick={() => navigate('/golf/leaderboard')}>LeaderBoard</Button>
+          <Button variant="contained" color="primary" onClick={() => navigate(`/golf/fullscorecardview/${eventId}/${groupNumber}`)}>Full Scorecard</Button>
         </div>
-
-        {/* Include submit button for submitting scores */}
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleSubmitScores}
-        >
-          Submit Scores
-        </Button>
       </Paper>
     </Container>
   );

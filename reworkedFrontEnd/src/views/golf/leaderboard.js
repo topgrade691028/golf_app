@@ -24,7 +24,7 @@ function Leaderboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${apiUrl}/scores/event/1`);
+        const response = await fetch(`${process.env.REACT_APP_API}/scores/event/1`);
         const data = await response.json();
         if (Array.isArray(data)) {
           setEventLeaderboard(data);
