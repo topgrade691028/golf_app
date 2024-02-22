@@ -28,7 +28,7 @@ const ProfileSection = () => {
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
   const navigate = useNavigate();
-  const { logout, isAuthenticated, user } = useContext(AuthContext);
+  const { logout, isAuthenticated } = useContext(AuthContext);
 
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
@@ -56,7 +56,6 @@ const ProfileSection = () => {
 
     prevOpen.current = open;
   }, [open]);
-  console.log('hey', user);
   return (
     <>
       <Chip

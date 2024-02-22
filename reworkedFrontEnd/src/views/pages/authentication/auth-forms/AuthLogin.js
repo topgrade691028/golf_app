@@ -13,7 +13,9 @@ import {
   InputLabel,
   OutlinedInput,
   Stack,
-  Typography
+  Typography,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -28,6 +30,14 @@ import { AuthContext } from 'service/AuthStateProvider';
 const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+
+  const [state, setState] = useState({
+    open: false,
+    status: true,
+    message: 'Hi'
+  });
+  const { open, status, message } = state;
+
   const [checked, setChecked] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const {
@@ -66,7 +76,8 @@ const FirebaseLogin = ({ ...others }) => {
 
       return "success"
     } catch (error) {
-      handleSignInError(error);
+      const err = handleSignInError(error);
+      setState({ ...state, open: true, status: false, message: err })
     }
   };
 
@@ -94,7 +105,6 @@ const FirebaseLogin = ({ ...others }) => {
       return ("Login failed. Please try again.");
     }
   };
-
   return (
     <>
       <Grid container direction="column" justifyContent="center" spacing={2}>
@@ -115,18 +125,15 @@ const FirebaseLogin = ({ ...others }) => {
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
           password: Yup.string().max(255).required('Password is required')
         })}
-        onSubmit={async (values, { setStatus, setErrors, setSubmitting }) => {
+        onSubmit={async (values, { setSubmitting }) => {
           try {
             const res = await handleSignIn(values);
-            console.log('success', res);
-            navigate('/dashboard');
-            setStatus({ success: true });
+            if (res === 'success') {
+              navigate('/dashboard');
+            }
           } catch (error) {
-            console.error(error);
-            setErrors({ submit: error.message });
-            setStatus({ success: false });
+            console.log('error====>', error);
           } finally {
-            // Always set submitting to false
             setSubmitting(false);
           }
         }}
@@ -210,6 +217,15 @@ const FirebaseLogin = ({ ...others }) => {
           </form>
         )}
       </Formik>
+      <Snackbar open={open} autoHideDuration={6000}>
+        <Alert
+          severity={status === true ? "success" : "error"}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {message}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
