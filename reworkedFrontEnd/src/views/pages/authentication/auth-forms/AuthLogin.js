@@ -217,7 +217,7 @@ const FirebaseLogin = ({ ...others }) => {
           </form>
         )}
       </Formik>
-      <Snackbar open={open} autoHideDuration={6000}>
+      <Snackbar open={open} autoHideDuration={6000} anchorOrigin={{vertical: "bottom", horizontal: "right"}}>
         <Alert
           severity={status === true ? "success" : "error"}
           variant="filled"
