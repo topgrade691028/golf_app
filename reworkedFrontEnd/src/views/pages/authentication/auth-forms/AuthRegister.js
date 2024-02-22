@@ -35,7 +35,7 @@ const FirebaseRegister = ({ ...others }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [checked, setChecked] = useState(true);
-  const { isAuthenticated, token } = useContext(AuthContext);
+  const { isAuthenticated } = useContext(AuthContext);
   const [strength, setStrength] = useState(0);
   const [level, setLevel] = useState();
 
@@ -64,10 +64,10 @@ const FirebaseRegister = ({ ...others }) => {
         const userCredential = await createUserWithEmailAndPassword(auth, value.email, value.password);
         const user = userCredential.user;
         console.log("User registered:", user);
-
+        const token = await user.getIdToken();
         const roles = ["manager", "player"]; // Roles to be assigned
         await createRoles(value.email, roles, token);
-        navigate("/");
+        navigate("/login");
       } catch (error) {
         throw new Error("User registration failed. Please try again."); // Throw error for better error handling
       }
@@ -77,6 +77,7 @@ const FirebaseRegister = ({ ...others }) => {
   };
 
   const createRoles = async (email, roles, token) => {
+    console.log('token', token);
     try {
       const response = await axios.post(`${process.env.REACT_APP_API}/users/createRoles`, { email, roles }, {
         headers: {

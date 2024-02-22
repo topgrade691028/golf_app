@@ -16,8 +16,8 @@ export const AuthStateProvider = ({ children }) => {
     const storedToken = localStorage.getItem("token");
     setToken(storedToken);
 
-    // const storedUserRoles = localStorage.getItem("userRoles");
-    setUserRoles(userRoles);
+    const storedUserRoles = localStorage.getItem("userRoles");
+    setUserRoles(storedUserRoles);
   }, []);
 
   useEffect(() => {

@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-// import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import AnimateButton from 'ui-component/extended/AnimateButton';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import Visibility from '@mui/icons-material/Visibility';
@@ -27,7 +27,7 @@ import { AuthContext } from 'service/AuthStateProvider';
 
 const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [checked, setChecked] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const {
@@ -119,6 +119,7 @@ const FirebaseLogin = ({ ...others }) => {
           try {
             const res = await handleSignIn(values);
             console.log('success', res);
+            navigate('/dashboard');
             setStatus({ success: true });
           } catch (error) {
             console.error(error);
